@@ -1,6 +1,6 @@
 # Testing Standards
 
-> **Purpose**: Define TDD workflow, coverage requirements, Fine-grained Assertions, and CDK Nag compliance testing standards.
+> **Purpose**: Define TDD workflow, coverage requirements, fine-grained assertions, and CDK Nag compliance testing standards.
 
 > Consult this document first when Claude generates CDK test code
 
@@ -14,16 +14,16 @@ This project fully adopts Test-Driven Development (TDD).
 
 ```
 1. Red: Write a failing test first
-2. Green: Write the minimum code to make the test pass
+2. Green: Write minimal code to make the test pass
 3. Refactor: Refactor code while keeping tests passing
 ```
 
-**Test integrity principle**: Never fabricate results to make tests pass. Test failure = code has a problem; fix the code.
+**Test integrity principle**: Never fake results to make tests pass. Test failure = code has a problem; the code must be fixed.
 
 ### Coverage Requirements
 
-| Layer | Minimum Coverage | Target Coverage |
-|-------|-----------------|----------------|
+| Level | Minimum Coverage | Target Coverage |
+|-------|-----------------|-----------------|
 | Constructs | 90% | 95% |
 | Stacks | 85% | 90% |
 | **Overall** | **85%** | **90%** |
@@ -39,10 +39,10 @@ pnpm test test/snapshot/main.test.ts   # Run specific test
 
 ### Test Types
 
-| Type | Purpose | Tools |
-|------|---------|-------|
+| Type | Purpose | Tool |
+|------|---------|------|
 | **Fine-grained** | Verify specific resource properties | CDK Assertions |
-| **Snapshot** | Detect unintended changes | Jest Snapshot |
+| **Snapshot** | Detect unexpected changes | Jest Snapshot |
 | **Compliance** | Security compliance checks | CDK Nag |
 
 ### CDK Assertions API
@@ -65,9 +65,9 @@ Match.arrayWith([...])       // Array contains
 
 | ✅ Do | ❌ Avoid |
 |-------|---------|
-| Test business configuration and security properties | Testing CDK internal implementation |
-| Create stack independently in beforeEach | Sharing global stack state |
-| Verify critical security properties | Only verifying resource existence |
+| Test business configuration and security properties | Test CDK internal implementation |
+| Create stack independently in beforeEach | Share global stack state |
+| Verify critical security properties | Only verify resource existence |
 
 ---
 
@@ -141,7 +141,7 @@ describe('Snapshot Tests', () => {
   it('NetworkStack matches snapshot', () => {
     const app = new cdk.App();
     const stack = new NetworkStack(app, 'TestStack', {
-      env: { account: '123456789012', region: 'ap-northeast-1' },  // Placeholder account for testing
+      env: { account: '123456789012', region: 'ap-northeast-1' },  // Test placeholder account
       vpcCidr: '10.0.0.0/16',
     });
 

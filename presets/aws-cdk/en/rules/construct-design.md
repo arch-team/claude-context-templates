@@ -1,8 +1,8 @@
 # Construct Design Standards
 
-> **Purpose**: Define Construct Props interface design, implementation patterns, secure default configurations, and JSDoc annotation standards.
+> **Purpose**: Define Construct Props interface design, implementation patterns, secure default configurations, and JSDoc comment standards.
 
-> Consult this document first when Claude generates CDK Construct code
+> Consult first when Claude generates CDK Construct code
 
 ---
 
@@ -10,8 +10,8 @@
 
 ### Props Design
 
-| Rule | ✅ Correct | ❌ Wrong |
-|------|-----------|---------|
+| Rule | ✅ Correct | ❌ Incorrect |
+|------|-----------|-------------|
 | readonly modifier | `readonly vpcCidr: string` | `vpcCidr: string` |
 | Optional parameters | `readonly timeout?: number` | `readonly timeout: number \| undefined` |
 | Default values | Set during destructuring | Set in Props interface |
@@ -26,7 +26,7 @@ export interface {Construct}Props {
 }
 
 /**
- * {Description} Construct - One-line summary of purpose.
+ * {Description} Construct - One-line purpose statement.
  * @remarks Default configuration: xxx, xxx
  */
 export class {Construct} extends Construct {
@@ -38,14 +38,14 @@ export class {Construct} extends Construct {
     // Create resources...
   }
 
-  /** Grant method for granting permissions */
+  /** Grant method for authorization */
   public grantXxx(grantee: iam.IGrantable): iam.Grant { ... }
 }
 ```
 
 ### Secure Default Configurations
 
-> For security requirements and rationale, see [security.md](security.md). This section only lists the required configuration items in code templates.
+> For security requirements and rationale, see [security.md](security.md). This section only lists required configuration items in code templates.
 
 | Resource | Required Configuration |
 |----------|----------------------|
@@ -76,7 +76,7 @@ export * from './aurora';
 // ✅ readonly + optional parameters
 export interface VpcConstructProps {
   readonly vpcCidr: string;
-  readonly maxAzs?: number;        // Optional, set defaults during destructuring
+  readonly maxAzs?: number;        // Optional, set default during destructuring
   readonly enableNatGateway?: boolean;
 }
 
@@ -123,7 +123,7 @@ export class VpcConstruct extends Construct {
 }
 ```
 
-### Exposed Property Rules
+### Exposed Properties Rules
 
 ```typescript
 // Expose properties for external use
@@ -141,7 +141,7 @@ public grantDataApiAccess(grantee: iam.IGrantable): iam.Grant {
 
 ## 3. Secure Default Configurations
 
-> **Responsibility boundary**: This section provides security configuration **code templates**. For security rationale, IAM least privilege, CDK Nag rules, etc., refer to [security.md](security.md)
+> **Responsibility boundary**: This section provides security configuration **code templates**. For security rationale, IAM least privilege, CDK Nag rules, etc., see [security.md](security.md)
 
 ### S3 Bucket
 
@@ -179,19 +179,19 @@ this.function = new lambda.Function(this, 'Function', {
 
 ---
 
-## 4. JSDoc Annotations
+## 4. JSDoc Comments
 
-### Construct Annotations
+### Construct Comments
 
 ```typescript
 /**
- * API Gateway Construct - Creates REST API entry point.
- * @remarks Access logs and WAF protection enabled by default.
+ * API Gateway Construct - Creates a REST API entry point.
+ * @remarks Enables access logs and WAF protection by default.
  */
 export class ApiGatewayConstruct extends Construct { ... }
 ```
 
-### Props Annotations
+### Props Comments
 
 ```typescript
 export interface ApiGatewayConstructProps {

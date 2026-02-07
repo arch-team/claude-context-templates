@@ -1,10 +1,10 @@
 # Deployment Standards
 
-> **Purpose**: Define deployment execution standards, including environment matrix, CI/CD Pipeline, deployment flow, and blue-green deployment strategy.
+> **Purpose**: Define deployment execution standards, including environment matrix, CI/CD Pipeline, deployment processes, and blue-green deployment strategies.
 
 > Consult this document first when Claude performs deployment-related operations
 
-> **Responsibility boundary**: This document focuses on **deployment execution** (environment matrix, CI/CD, deployment flow). For the **architectural design** of environment configuration (CDK Context structure), see [architecture.md §4](architecture.md#4-environment-configuration)
+> **Responsibility boundary**: This document focuses on **deployment execution** (environment matrix, CI/CD, deployment processes). For the **architectural design** of environment configuration (CDK Context structure), see [architecture.md §4](architecture.md#4-environment-configuration)
 
 ---
 
@@ -12,7 +12,7 @@
 
 ### Deployment Commands
 
-For the complete CDK commands, see [CLAUDE.md §CDK Commands](../CLAUDE.md#cdk-commands)
+Full CDK commands at [CLAUDE.md §CDK Commands](../CLAUDE.md#cdk-commands)
 
 ```bash
 # Deploy to specific environment
@@ -25,8 +25,8 @@ pnpm cdk diff && pnpm cdk deploy
 ### Environment Matrix
 
 | Environment | Purpose | Deployment Method | Approval |
-|-------------|---------|-------------------|----------|
-| dev | Development and testing | Manual | None |
+|-------------|---------|------------------|----------|
+| dev | Development testing | Manual | None |
 | staging | Pre-release | CI/CD | Automatic |
 | prod | Production | CI/CD | Manual approval |
 
@@ -34,7 +34,7 @@ pnpm cdk diff && pnpm cdk deploy
 
 ## 1. Environment Configuration
 
-For environment configuration architecture, see [architecture.md §4](architecture.md#4-environment-configuration)
+Environment configuration architecture at [architecture.md §4](architecture.md#4-environment-configuration)
 
 ### RemovalPolicy Strategy
 
@@ -113,13 +113,13 @@ pipeline.addStage(prodStage, {
 
 ---
 
-## 3. Deployment Flow
+## 3. Deployment Process
 
 ### Manual Deployment
 
 ```bash
 echo $AWS_PROFILE                                    # 1. Confirm environment
-pnpm cdk synth --context env=dev && pnpm cdk diff   # 2. Synthesize and review
+pnpm cdk synth --context env=dev && pnpm cdk diff   # 2. Synthesize and inspect
 pnpm test                                            # 3. Run tests
 pnpm cdk deploy --all --context env=dev             # 4. Deploy
 aws cloudformation describe-stacks --stack-name X   # 5. Verify
@@ -132,10 +132,10 @@ NetworkStack → SecurityStack → DatabaseStack → ComputeStack → ApiStack �
 ### Rollback Strategy
 
 ```bash
-# Rollback to previous version
+# Roll back to previous version
 pnpm cdk deploy --all --context env=dev --rollback
 
-# Emergency: Destroy and rebuild
+# Emergency: destroy and rebuild
 pnpm cdk destroy ComputeStack-dev && pnpm cdk deploy ComputeStack-dev
 ```
 
@@ -160,7 +160,7 @@ new codedeploy.EcsDeploymentGroup(this, 'DeploymentGroup', {
 
 ## 5. Secure Deployment
 
-For security standards, see [security.md](security.md)
+Security standards at [security.md](security.md)
 
 ### Pre-deployment Checks
 

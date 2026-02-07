@@ -1,14 +1,14 @@
 # Project Directory Structure Standards
 
-> **Purpose**: Define the infra project directory structure, configuration file purposes, and new project initialization checklist.
+> **Purpose**: Define the infra project's directory structure, configuration file purposes, and new project initialization checklist.
 
-> Consult this document first when Claude initializes or reviews project structure
+> Consult this document first when Claude initializes or inspects project structure
 
 ---
 
 ## 0. Quick Reference Card
 
-> For the monorepo structure overview, refer to the root-level common.md
+> For Monorepo structure overview, refer to root-level common.md
 
 ### Infra Directory Structure
 
@@ -18,7 +18,7 @@ infra/                          # CDK project root
 │   ├── CLAUDE.md               # Infrastructure entry point
 │   ├── project-config*.md
 │   └── rules/                  # Infra-specific rules
-├── bin/                        # CDK application entry
+├── bin/                        # CDK app entry point
 │   └── app.ts
 ├── lib/                        # Source code
 │   ├── constructs/             # Custom L3 Constructs
@@ -51,10 +51,10 @@ infra/                          # CDK project root
 
 | File | Purpose | Required |
 |------|---------|:--------:|
-| `cdk.json` | CDK application configuration | ✅ |
+| `cdk.json` | CDK app configuration | ✅ |
 | `package.json` | Project and scripts configuration | ✅ |
 | `tsconfig.json` | TypeScript configuration | ✅ |
-| `jest.config.js` | Jest testing configuration | ✅ |
+| `jest.config.js` | Jest test configuration | ✅ |
 | `.eslintrc.cjs` | ESLint configuration | Recommended |
 | `README.md` | Project documentation | ✅ |
 
@@ -73,8 +73,8 @@ infra/                          # CDK project root
 
 | Rule | Description |
 |------|-------------|
-| Business logic in bin/ | bin/app.ts should only handle Stack assembly |
-| Resources directly in Stacks | Complex resources should be encapsulated as Constructs |
+| Business logic in bin/ | bin/app.ts should only assemble Stacks |
+| Resources directly in Stack | Complex resources should be encapsulated as Constructs |
 | Hardcoded accounts/regions | Use CDK Context for management |
 | cdk.context.json in version control | Should be in .gitignore |
 
@@ -96,9 +96,9 @@ infra/                          # CDK project root
 }
 ```
 
-> **Note**: `<YOUR_*_ACCOUNT_ID>` are placeholders; for actual values, refer to [project-config.md](../project-config.md) environment configuration. Never commit real account IDs to public repositories.
+> **Note**: `<YOUR_*_ACCOUNT_ID>` are placeholders; actual values should reference the environment configuration in [project-config.md](../project-config.md). Never commit real account IDs to public repositories.
 
-**Key point**: `environments` is defined in context and read via `app.node.tryGetContext('env')`
+**Key point**: `environments` is defined in context, read via `app.node.tryGetContext('env')`
 
 ---
 
@@ -111,11 +111,11 @@ infra/                          # CDK project root
 - [ ] `.claude/CLAUDE.md` is configured
 
 ### Configuration Files
-- [ ] `cdk.json` contains application entry and context
-- [ ] `package.json` contains all necessary scripts
-- [ ] `tsconfig.json` is correctly configured
-- [ ] `jest.config.js` configures testing
-- [ ] `README.md` includes project description
+- [ ] `cdk.json` includes app entry point and context
+- [ ] `package.json` includes all required scripts
+- [ ] `tsconfig.json` is properly configured
+- [ ] `jest.config.js` is configured for tests
+- [ ] `README.md` includes project documentation
 
 ### Git Configuration
 - [ ] `.gitignore` includes `cdk.context.json`

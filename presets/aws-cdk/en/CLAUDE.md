@@ -6,11 +6,11 @@ tech_stack_ref: rules/tech-stack.md
 
 # CLAUDE.md - AWS CDK Infrastructure Project Standards
 
-> **Purpose**: Claude Code entry standards for the AWS CDK infrastructure project, providing tech stack overview, development commands, and standards navigation.
+> **Purpose**: Claude Code entry standards for AWS CDK infrastructure projects, providing tech stack overview, development commands, and standards navigation.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Note**: For common standards (response language, project overview), refer to the root-level [../.claude/CLAUDE.md](../../.claude/CLAUDE.md)
+> **Note**: For common standards (response language, project overview), refer to the root [../.claude/CLAUDE.md](../../.claude/CLAUDE.md)
 
 ---
 
@@ -22,7 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Testing**: Jest | CDK Assertions | CDK Nag
 
-**Tools**: pnpm (package management) | ESLint | Prettier
+**Tools**: pnpm (package manager) | ESLint | Prettier
 
 ---
 
@@ -31,11 +31,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 # First-time setup
 pnpm install
-pnpm cdk bootstrap  # First time using CDK (once per AWS account/Region)
+pnpm cdk bootstrap  # First-time CDK usage (run once per AWS account/region)
 
 # Verify environment
 node -v && pnpm -v && pnpm exec tsc --version && pnpm exec cdk --version
-pnpm cdk synth       # Ensure synthesis succeeds
+pnpm cdk synth       # Ensure successful synthesis
 pnpm test            # Ensure tests pass
 ```
 
@@ -67,17 +67,17 @@ pnpm cdk destroy <StackName>
 # List all Stacks
 pnpm cdk list
 
-# Bootstrap CDK (first time)
+# Bootstrap CDK (first-time usage)
 pnpm cdk bootstrap
 ```
 
 ### Code Quality
 
 ```bash
-# Lint
+# Lint check
 pnpm lint
 
-# Lint with auto-fix
+# Lint check with auto-fix
 pnpm lint --fix
 
 # Format check
@@ -117,7 +117,7 @@ pnpm test lib/constructs/
 
 **Core principles**: Layered abstraction + Secure defaults + Least privilege.
 
-For detailed information, refer to [rules/construct-design.md](rules/construct-design.md)
+For detailed guidelines, see [rules/construct-design.md](rules/construct-design.md)
 
 ### TDD Workflow
 
@@ -127,7 +127,7 @@ This project fully adopts Test-Driven Development (TDD). See [rules/testing.md](
 
 ## Code Style
 
-For code style standards, see [construct-design.md](rules/construct-design.md) and [project-structure.md](rules/project-structure.md)
+Code style standards are detailed in [construct-design.md](rules/construct-design.md) and [project-structure.md](rules/project-structure.md)
 
 ---
 
@@ -150,19 +150,19 @@ See [rules/security.md](rules/security.md)
 | Item | Description |
 |------|-------------|
 | **CDK Context cache** | `cdk.context.json` caches VPC/AZ lookup results; delete this file and re-synth if values are unexpected |
-| **CfnOutput pitfall** | After using Fn.importValue, the exporting Stack cannot modify/delete the export value; prefer passing via Props |
-| **NAT Gateway cost** | Use NAT Gateway cautiously in dev (~$30/month); prefer a single NAT or NAT Instance |
+| **CfnOutput pitfall** | After using Fn.importValue, the exporting Stack cannot modify/delete the exported value; prefer Props passing |
+| **NAT Gateway cost** | Use NAT Gateway cautiously in dev (~$30/month); prefer single NAT or NAT Instance |
 | **Package manager** | Use pnpm only; npm/yarn are prohibited |
 | **--hotswap** | `cdk deploy --hotswap` is for dev rapid iteration only; prohibited in staging/prod |
-| **CDK Nag version** | cdk-nag rules change with versions; new violations may appear after upgrades |
+| **CDK Nag versions** | cdk-nag rules change across versions; new violations may appear after upgrades |
 
 ---
 
 ## PR Review Checklist
 
-For the complete checklist, see [rules/checklist.md](rules/checklist.md)
+Full checklist at [rules/checklist.md](rules/checklist.md)
 
-**Pre-commit one-click validation**:
+**Pre-commit one-step verification**:
 ```bash
 pnpm lint && pnpm format:check && pnpm typecheck && pnpm cdk synth && pnpm test:coverage
 ```

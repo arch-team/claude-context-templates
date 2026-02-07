@@ -1,6 +1,6 @@
 # PR Review Checklist
 
-> **Purpose**: Single Source of Truth (SSoT) for the PR Review checklist, covering architecture, design, security, testing, deployment, and cost check items.
+> **Purpose**: The **Single Source of Truth (SSoT)** for the PR Review checklist, covering architecture, design, security, testing, deployment, and cost checks.
 
 ---
 
@@ -44,7 +44,7 @@ See [security.md](security.md)
 
 - [ ] Each Construct has corresponding tests
 - [ ] Critical properties have fine-grained assertions
-- [ ] Snapshot tests detect unintended changes
+- [ ] Snapshot tests detect unexpected changes
 - [ ] Coverage meets requirements (>=85%)
 
 See [testing.md](testing.md)
@@ -65,7 +65,7 @@ See [deployment.md](deployment.md)
 ## Cost
 
 - [ ] All resources have cost tags
-- [ ] Dev environment uses minimum specs
+- [ ] Dev environments use minimal specifications
 - [ ] S3 has lifecycle rules
 
 See [cost-optimization.md](cost-optimization.md)
@@ -82,6 +82,6 @@ See [project-structure.md](project-structure.md)
 
 ---
 
-## Pre-commit One-click Validation
+## Pre-commit One-step Verification
 
-For the complete validation command, see [CLAUDE.md §PR Review Checklist](../CLAUDE.md#pr-review-checklist)
+Full verification command at [CLAUDE.md §PR Review Checklist](../CLAUDE.md#pr-review-checklist)

@@ -2,7 +2,7 @@
 
 > **Purpose**: Define resource selection, environment resource matrix, storage optimization, network optimization, and cost monitoring strategies.
 
-> Consult this document first when Claude designs CDK infrastructure
+> Consult first when Claude designs CDK infrastructure
 
 ---
 
@@ -21,10 +21,10 @@
 
 ```typescript
 // bin/app.ts - Apply to all resources
-const requiredTags = { Project: '{{PROJECT_SLUG}}', Environment: envName, CostCenter: '<!-- TODO: Please fill in the cost center -->', ManagedBy: 'cdk' };
+const requiredTags = { Project: '{{PROJECT_SLUG}}', Environment: envName, CostCenter: 'TODO: Fill in cost center', ManagedBy: 'cdk' };
 Object.entries(requiredTags).forEach(([k, v]) => cdk.Tags.of(app).add(k, v));
 
-// Prod additional tags
+// Additional tags for Prod
 if (envName === 'prod') cdk.Tags.of(app).add('Criticality', 'high');
 ```
 
@@ -32,7 +32,7 @@ if (envName === 'prod') cdk.Tags.of(app).add('Criticality', 'high');
 
 ## 1. Compute Optimization
 
-### Dev Scheduled Scaling (Required)
+### Dev Scheduled Scale-down (Required)
 
 ```typescript
 // Dev: Scale down to 0 during non-working hours
@@ -53,7 +53,7 @@ memorySize: envConfig.lambdaMemory ?? 256, // Use Power Tuning to determine opti
 
 ## 2. Storage Optimization
 
-### S3 Lifecycle (Required)
+### S3 Lifecycle Rules (Required)
 
 ```typescript
 lifecycleRules: [
@@ -66,7 +66,7 @@ lifecycleRules: [
 ],
 ```
 
-### EBS: gp3 Over gp2
+### EBS: gp3 over gp2
 
 ```typescript
 volumeType: ec2.EbsDeviceVolumeType.GP3,  // Customizable IOPS/throughput, lower cost
@@ -79,7 +79,7 @@ volumeType: ec2.EbsDeviceVolumeType.GP3,  // Customizable IOPS/throughput, lower
 ### NAT Gateway Strategy
 
 | Environment | NAT Configuration | Cost Reference |
-|-------------|------------------|---------------|
+|-------------|------------------|----------------|
 | Dev | 1 or NAT Instance | ~$4/month (Instance) vs ~$30/month (Gateway) |
 | Prod | One per AZ | High availability |
 
@@ -106,7 +106,7 @@ if (envName === 'prod') {
 retention: envName === 'prod' ? logs.RetentionDays.ONE_YEAR : logs.RetentionDays.ONE_WEEK,
 ```
 
-> For RemovalPolicy strategy, see deployment.md §1
+> RemovalPolicy strategy details at deployment.md §1
 
 ---
 
@@ -123,12 +123,12 @@ new budgets.CfnBudget(this, 'Budget', {
   },
   notificationsWithSubscribers: [{
     notification: { threshold: 80, thresholdType: 'PERCENTAGE', comparisonOperator: 'GREATER_THAN', notificationType: 'ACTUAL' },
-    subscribers: [{ address: '<!-- TODO: Please fill in the alert email -->', subscriptionType: 'EMAIL' }],
+    subscribers: [{ address: 'TODO: Fill in alert email', subscriptionType: 'EMAIL' }],
   }],
 });
 ```
 
-Enable cost allocation tags in the Billing Console: `Project`, `Environment`, `CostCenter`
+Enable cost allocation tags in Billing Console: `Project`, `Environment`, `CostCenter`
 
 ---
 

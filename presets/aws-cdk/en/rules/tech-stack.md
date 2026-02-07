@@ -1,6 +1,6 @@
 # Tech Stack Standards
 
-> **Purpose**: Single Source of Truth (SSoT) for tech stack version requirements, including AWS CDK, TypeScript, Node.js, and other core dependency versions.
+> **Purpose**: The **Single Source of Truth (SSoT)** for tech stack version requirements, including AWS CDK, TypeScript, Node.js, and other core dependency versions.
 
 ---
 
@@ -9,15 +9,15 @@
 ### Version Requirements Matrix
 
 | Category | Technology | Minimum Version | Recommended Version |
-|----------|-----------|----------------|-------------------|
+|----------|-----------|----------------|---------------------|
 | **Core** | AWS CDK | >=2.130.0 | 2.170.0+ |
 | **Core** | TypeScript | >=5.0.0 | 5.4+ |
 | **Core** | Node.js | >=18.0.0 | 22 LTS |
-| **Package management** | pnpm | >=8.0.0 | 9.x |
+| **Package Manager** | pnpm | >=8.0.0 | 9.x |
 | **Testing** | Jest | >=29.0.0 | 29.7+ |
 | **Security** | cdk-nag | >=2.28.0 | 2.30+ |
-| **Code quality** | ESLint | >=8.0.0 | 9.x |
-| **Code quality** | Prettier | >=3.0.0 | 3.x |
+| **Code Quality** | ESLint | >=8.0.0 | 9.x |
+| **Code Quality** | Prettier | >=3.0.0 | 3.x |
 
 ### Key Constraints
 

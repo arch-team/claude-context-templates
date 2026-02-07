@@ -3,7 +3,7 @@
 > **Purpose**: Project-specific configuration for {{PROJECT_NAME}}, including Stack list, environment configuration, Construct list, and cost tags.
 
 > **Positioning**: This file supplements CLAUDE.md with **project-specific business configuration**.
-> **Principle**: Common standards go in `rules/`; project-specific information goes here.
+> **Principle**: Common standards go in `rules/`, project-specific information goes here.
 > For architecture standards, see [rules/architecture.md](rules/architecture.md)
 
 ---
@@ -13,7 +13,7 @@
 | Configuration | Value |
 |---------------|-------|
 | **Project name** | {{PROJECT_SLUG}}-infra |
-| **Project description** | <!-- TODO: Please fill in the project description --> |
+| **Project description** | TODO: Fill in project description |
 | **Architecture pattern** | CDK Construct layering (L1 → L2 → L3) |
 | **Tech stack versions** | See [tech-stack.md](rules/tech-stack.md) |
 | **Source root path** | `lib` |
@@ -22,9 +22,9 @@
 
 ## Stack List
 
-For Stack design standards, see [architecture.md §2.1](rules/architecture.md#21-stack-responsibilities)
+Stack design standards at [architecture.md §2.1](rules/architecture.md#21-stack-responsibilities)
 
-**Stacks in this project**:
+**Project Stacks**:
 
 | Stack | Dependencies |
 |-------|-------------|
@@ -35,43 +35,43 @@ For Stack design standards, see [architecture.md §2.1](rules/architecture.md#21
 | `ApiStack` | ComputeStack |
 | `MonitoringStack` | All Stacks |
 
-> <!-- TODO: Adjust the Stack list based on actual project requirements -->
+> TODO: Adjust Stack list based on actual project requirements
 
 ---
 
 ## Environment Configuration
 
-> **Design principle**: Use CDK Context to manage configuration across different environments.
+> **Design principle**: Use CDK Context to manage configuration for different environments.
 
 ### Environment Definitions
 
 | Environment | AWS Account | Region | Purpose |
-|-------------|-------------|--------|---------|
-| `dev` | <!-- TODO --> | <!-- TODO --> | Development and testing |
-| `staging` | <!-- TODO --> | <!-- TODO --> | Pre-release validation |
-| `prod` | <!-- TODO --> | <!-- TODO --> | Production |
+|-------------|------------|--------|---------|
+| `dev` | TODO | TODO | Development testing |
+| `staging` | TODO | TODO | Pre-release validation |
+| `prod` | TODO | TODO | Production |
 
 ### CDK Context Configuration
 
-For detailed configuration structure, see [deployment.md §1.1](rules/deployment.md#11-cdk-context)
+Detailed configuration structure at [deployment.md §1.1](rules/deployment.md#11-cdk-context)
 
-**Configuration values for this project**: See the environment table above
+**Project configuration values**: See environment table above
 
 ---
 
 ## Construct List
 
-> **Location convention**: Custom Constructs are placed under `lib/constructs/`.
+> **Location convention**: Custom Constructs go under `lib/constructs/`.
 
 | Construct | Responsibility | Composed Resources |
 |-----------|---------------|-------------------|
-| <!-- TODO --> | <!-- TODO --> | <!-- TODO --> |
+| TODO | TODO | TODO |
 
-> <!-- TODO: Fill in the Construct list based on actual project requirements -->
+> TODO: Fill in Construct list based on actual project requirements
 
 ---
 
-## Naming Convention
+## Naming Conventions
 
 **Project prefix**: `{{PROJECT_SLUG}}`
 **Stack naming**: `{{PROJECT_SLUG}}-{Resource}Stack-{env}`
@@ -114,7 +114,7 @@ const requiredTags = {
   Project: '{{PROJECT_SLUG}}',
   Environment: env,
   ManagedBy: 'cdk',
-  CostCenter: '<!-- TODO: Please fill in the cost center -->',
+  CostCenter: 'TODO: Fill in cost center',
 };
 
 // Apply tags
@@ -126,4 +126,4 @@ Tags.of(app).add('Environment', env);
 
 ## PR Review Checklist
 
-For the complete checklist, see [rules/checklist.md](rules/checklist.md)
+Full checklist at [rules/checklist.md](rules/checklist.md)

@@ -2,7 +2,7 @@
 
 > **Purpose**: Define CDK Construct layering (L1/L2/L3), Stack composition patterns, and cross-Stack communication standards.
 
-> Consult this document first when Claude generates CDK code
+> Consult first when Claude generates CDK code
 
 **Architecture pattern**: CDK Construct layering (L1 → L2 → L3)
 
@@ -18,7 +18,7 @@
 | **L2** | High-level abstraction + sensible defaults | `aws-*` modules | `s3.Bucket` |
 | **L3** | Business composition, multi-resource orchestration | Custom Construct | `VpcConstruct` |
 
-**Rule**: Prefer L2 → Use L3 when composition is needed → Use L1 only when L2 doesn't support the feature
+**Rule**: Prefer L2 → Use L3 when composition is needed → Use L1 only when L2 doesn't support it
 
 ### Dependency Direction
 
@@ -29,8 +29,8 @@ App → Stack A → L3 → L2 → L1
 ```
 
 **Core rules**:
-- Stacks communicate via Props or Outputs
-- Within a Construct, higher layers call lower layers
+- Pass dependencies between Stacks via Props or Outputs
+- Within Constructs, call from higher to lower layers
 - Circular dependencies are prohibited
 
 ### Stack Composition Patterns
@@ -44,7 +44,7 @@ App → Stack A → L3 → L2 → L1
 ### Stack Responsibility Division
 
 | Stack | Included Resources |
-|-------|-------------------|
+|-------|--------------------|
 | NetworkStack | VPC, Subnets, NAT |
 | SecurityStack | Security Groups, WAF, KMS |
 | DatabaseStack | RDS, DynamoDB, ElastiCache |
@@ -67,7 +67,7 @@ const bucket = new s3.Bucket(this, 'DataBucket', {
 bucket.grantRead(fn);  // Grant method for authorization
 ```
 
-### L3 Custom Construct
+### L3 Custom Constructs
 
 See [construct-design.md](construct-design.md) - Construct Design Standards
 
@@ -111,8 +111,8 @@ computeStack.addDependency(networkStack);  // Explicit dependency
 | Method | Use Case | Pros | Cons |
 |--------|----------|------|------|
 | **Props passing** (preferred) | Inter-Stack dependencies within the same App | Type-safe, refactor-friendly | Same App only |
-| **SSM Parameter** | Cross-App/cross-team shared configuration | Decoupled deployment, runtime lookup | Synthesis-time delay, requires naming management |
-| **CfnOutput** | Legacy system integration | CloudFormation native | Create/delete order coupling, difficult to modify export values |
+| **SSM Parameter** | Cross-App/cross-team config sharing | Decoupled deployment, runtime lookup | Synthesis-time delay, naming management needed |
+| **CfnOutput** | Legacy system integration | CloudFormation native | Create/delete order coupling, hard to modify exported values |
 
 > **Rule**: Prefer Props passing → Use SSM for cross-App → Use CfnOutput only for legacy integration
 
@@ -134,7 +134,7 @@ const vpcId = ssm.StringParameter.valueFromLookup(this, '/infra/vpc-id');
 
 ### Method 3: CfnOutput + Fn.importValue (Not recommended for new code)
 
-> `Fn.importValue` creates hard coupling between Stacks: the exporting Stack cannot modify or delete the export value unless all importing Stacks remove their references first.
+> `Fn.importValue` creates hard coupling between Stacks: the exporting Stack cannot modify or delete exported values unless all importing Stacks remove their references first.
 
 ```typescript
 // Export
@@ -148,7 +148,7 @@ const vpcId = cdk.Fn.importValue('NetworkVpcId');
 
 ## 4. Environment Configuration
 
-> **Responsibility boundary**: This section focuses on the **architectural design** of environment configuration (how to organize configuration structure). For actual deployment processes, environment matrices, and CI/CD configuration, see [deployment.md](deployment.md)
+> **Responsibility boundary**: This section focuses on the **architectural design** of environment configuration (how to organize the configuration structure). For actual deployment processes, environment matrices, and CI/CD configuration, see [deployment.md](deployment.md)
 
 ### CDK Context Pattern
 

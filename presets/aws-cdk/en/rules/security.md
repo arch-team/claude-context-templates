@@ -4,7 +4,7 @@
 
 > Consult this document first when Claude generates CDK code
 
-CDK security standards based on the AWS Well-Architected Framework Security Pillar.
+Based on the AWS Well-Architected Framework Security Pillar CDK security standards.
 
 > **Responsibility boundary**: This document focuses on security **rationale and compliance requirements** (why to write it this way). For security configuration **code templates**, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
 
@@ -12,17 +12,17 @@ CDK security standards based on the AWS Well-Architected Framework Security Pill
 
 ## 0. Quick Reference Card
 
-### Security Rules Cheat Sheet
+### Security Rules Quick Reference
 
 | Rule | Prohibited | Correct |
 |------|-----------|---------|
 | IAM permissions | `PolicyStatement({ actions: ['*'] })` | `bucket.grantRead(role)` |
-| Secrets management | Hardcoded in code | Secrets Manager |
+| Secrets management | Hardcoded in source code | Secrets Manager |
 | S3 access | Public access | `BlockPublicAccess.BLOCK_ALL` |
 | RDS | Public subnet | `PRIVATE_ISOLATED` subnet |
-| Transit encryption | HTTP | HTTPS + TLS 1.2+ |
+| Transport encryption | HTTP | HTTPS + TLS 1.2+ |
 
-### Grant Method Quick Reference
+### Grant Methods Quick Reference
 
 | Resource | Grant Methods |
 |----------|-------------|
@@ -44,7 +44,7 @@ CDK security standards based on the AWS Well-Architected Framework Security Pill
 // ✅ Grant methods automatically create least-privilege policies
 bucket.grantRead(lambdaFn);
 
-// ❌ Prohibited - Overly broad policy
+// ❌ Prohibited - overly broad policy
 lambdaFn.addToRolePolicy(new iam.PolicyStatement({ actions: ['s3:*'], resources: ['*'] }));
 ```
 
@@ -54,7 +54,7 @@ lambdaFn.addToRolePolicy(new iam.PolicyStatement({ actions: ['s3:*'], resources:
 - ✅ Add condition constraints: `conditions: { StringEquals: { ... } }`
 - ❌ Prohibited Admin permissions: `AdministratorAccess`
 
-> For detailed code templates, see [construct-design.md §2](construct-design.md#2-construct-implementation-patterns)
+> Detailed code templates at [construct-design.md §2](construct-design.md#2-construct-implementation-patterns)
 
 ---
 
@@ -66,7 +66,7 @@ lambdaFn.addToRolePolicy(new iam.PolicyStatement({ actions: ['s3:*'], resources:
 - **Non-sensitive configuration**: SSM Parameter Store (API URLs, config items, etc.)
 - ❌ **Prohibited**: Hardcoded secrets `environment: { API_KEY: 'sk-xxx' }`
 
-### 2.2 Usage Pattern
+### 2.2 Usage Patterns
 
 ```typescript
 // ✅ Read from Secrets Manager
@@ -74,7 +74,7 @@ const secret = secretsmanager.Secret.fromSecretNameV2(this, 'ApiKey', 'prod/api-
 environment: { API_KEY_SECRET_ARN: secret.secretArn }
 secret.grantRead(fn);
 
-// ❌ Prohibited - Hardcoded
+// ❌ Prohibited - hardcoded
 environment: { API_KEY: 'sk-1234567890abcdef' }
 ```
 
@@ -86,16 +86,16 @@ environment: { API_KEY: 'sk-1234567890abcdef' }
 
 | Subnet Type | Purpose | Example Resources |
 |-------------|---------|-------------------|
-| `PUBLIC` | Public entry | ALB, NAT Gateway |
+| `PUBLIC` | Public entry point | ALB, NAT Gateway |
 | `PRIVATE_WITH_EGRESS` | Application layer | ECS, Lambda |
 | `PRIVATE_ISOLATED` | Data layer | RDS, ElastiCache |
 
 **Key rules**:
-- ✅ Databases must be in `PRIVATE_ISOLATED`
-- ❌ RDS in `PUBLIC` subnet is prohibited
+- ✅ Databases must be placed in `PRIVATE_ISOLATED`
+- ❌ RDS in `PUBLIC` subnets is prohibited
 
 ```typescript
-// Database in isolated subnet
+// Place database in isolated subnet
 const database = new rds.DatabaseCluster(this, 'Database', {
   vpc,
   vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
@@ -104,17 +104,17 @@ const database = new rds.DatabaseCluster(this, 'Database', {
 
 ### 3.2 Security Groups
 
-- ✅ Minimum open ports + `allowAllOutbound: false`
+- ✅ Minimal open ports + `allowAllOutbound: false`
 - ✅ Allow only necessary inbound sources and ports
-- ❌ Prohibited: `allowAllOutbound: true` (default) for data layer
+- ❌ Prohibit `allowAllOutbound: true` (default) for data layer
 
 ### 3.3 VPC Endpoints
 
-Use VPC Endpoints to reduce traffic leakage risk and avoid sensitive data traversing the public internet:
+Use VPC Endpoints to reduce data exfiltration risk and avoid sensitive data traversing the public internet:
 - Gateway Endpoints: S3, DynamoDB (free)
 - Interface Endpoints: Secrets Manager, CloudWatch, etc. (as needed)
 
-> For complete code templates and environment strategies, see [cost-optimization.md §3](cost-optimization.md#3-network-optimization)
+> Full code templates and environment strategies at [cost-optimization.md §3](cost-optimization.md#3-network-optimization)
 
 ---
 
@@ -126,16 +126,16 @@ Use VPC Endpoints to reduce traffic leakage risk and avoid sensitive data traver
 - ✅ `enforceSSL: true` + `blockPublicAccess: BLOCK_ALL`
 - Sensitive data: CMK + `enableKeyRotation: true`
 
-> For code templates, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
+> Code templates at [construct-design.md §3](construct-design.md#3-secure-default-configurations)
 
 ### 4.2 RDS Encryption
 
 - ✅ `storageEncrypted: true`
-- Use custom KMS key for sensitive data
+- Sensitive data uses custom KMS keys
 
-> For code templates, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
+> Code templates at [construct-design.md §3](construct-design.md#3-secure-default-configurations)
 
-### 4.3 Transit Encryption
+### 4.3 Transport Encryption
 
 ```typescript
 // ALB: HTTPS + TLS 1.2 + HTTP→HTTPS redirect
@@ -159,12 +159,12 @@ Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 
 ### 5.2 Suppression Rules
 
-> **Granularity principle**: Prefer `addResourceSuppressions` (resource-level precision) → Use `addStackSuppressions` (Stack-level) only when truly needed. Stack-level suppression may cause subsequently added resources to be inadvertently skipped.
+> **Granularity principle**: Prefer `addResourceSuppressions` (resource-level) → Use `addStackSuppressions` (Stack-level) only when truly necessary. Stack-level suppressions may cause newly added resources to inadvertently skip checks.
 
 ```typescript
 // ✅ Preferred - Resource-level suppression (precise, safe)
 NagSuppressions.addResourceSuppressions(bucket, [
-  { id: 'AwsSolutions-S1', reason: 'This Bucket is used for CloudTrail logs and does not require access logging' },
+  { id: 'AwsSolutions-S1', reason: 'This bucket is used for CloudTrail logs and does not require access logging' },
 ]);
 
 // ⚠️ Use with caution - Stack-level suppression (broad impact, requires additional justification)
@@ -175,18 +175,18 @@ NagSuppressions.addStackSuppressions(stack, [
 
 ### 5.3 Common Rules
 
-| Rule ID | Description | Fix Method |
-|---------|-------------|-----------|
+| Rule ID | Description | Fix |
+|---------|-------------|-----|
 | AwsSolutions-S1 | S3 Bucket should enable access logging | Add `serverAccessLogsBucket` |
 | AwsSolutions-S2 | S3 Bucket should block public access | Add `blockPublicAccess` |
 | AwsSolutions-IAM4 | Should not use AWS managed policies | Use Grant methods |
-| AwsSolutions-IAM5 | IAM policy should not use wildcards | Restrict resources |
+| AwsSolutions-IAM5 | IAM policies should not use wildcards | Restrict resources |
 | AwsSolutions-RDS10 | RDS should enable deletion protection | Add `deletionProtection: true` |
 | AwsSolutions-ELB2 | ALB should enable access logging | Add `accessLogsBucket` |
 
 ---
 
-## 6. Audit Monitoring
+## 6. Audit & Monitoring
 
 ```typescript
 // CloudTrail + Config Rules
