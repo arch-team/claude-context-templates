@@ -1,0 +1,40 @@
+name: python-fastapi
+display_name: "Python + FastAPI"
+description: "Python 后端 API 项目模板 (FastAPI, SQLAlchemy, Pydantic)"
+version: "1.0.0"
+defaults:
+  package_manager: uv
+  linter: ruff
+  test_runner: pytest
+  source_root: src
+  architecture_pattern: "DDD + Modular Monolith + Clean Architecture"
+  coverage_minimum: 85
+files:
+  required:
+    - CLAUDE.md
+    - project-config.md
+    - rules/architecture.md
+    - rules/tech-stack.md
+    - rules/code-style.md
+    - rules/testing.md
+    - rules/security.md
+    - rules/checklist.md
+    - rules/project-structure.md
+  optional:
+    - rules/api-design.md
+    - rules/logging.md
+    - rules/observability.md
+    - rules/sdk-first.md
+variables:
+  - name: PROJECT_NAME
+    prompt: "项目名称"
+    required: true
+  - name: SUBPROJECT_NAME
+    prompt: "子项目名称"
+    default: "backend"
+  - name: PACKAGE_MANAGER
+    prompt: "包管理器"
+    default: "uv"
+  - name: COVERAGE_MIN
+    prompt: "最低测试覆盖率 (%)"
+    default: "85"

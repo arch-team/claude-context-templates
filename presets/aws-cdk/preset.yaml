@@ -1,0 +1,38 @@
+name: aws-cdk
+display_name: "AWS CDK (TypeScript)"
+description: "AWS CDK 基础设施项目模板 (TypeScript, CDK v2, CDK Nag)"
+version: "1.0.0"
+defaults:
+  package_manager: pnpm
+  linter: eslint
+  test_runner: jest
+  source_root: lib
+  architecture_pattern: "L1/L2/L3 Construct 分层"
+  coverage_minimum: 85
+files:
+  required:
+    - CLAUDE.md
+    - project-config.md
+    - rules/architecture.md
+    - rules/tech-stack.md
+    - rules/testing.md
+    - rules/security.md
+    - rules/checklist.md
+    - rules/project-structure.md
+  optional:
+    - rules/construct-design.md
+    - rules/deployment.md
+    - rules/cost-optimization.md
+variables:
+  - name: PROJECT_NAME
+    prompt: "项目名称"
+    required: true
+  - name: SUBPROJECT_NAME
+    prompt: "子项目名称"
+    default: "infra"
+  - name: COVERAGE_MIN
+    prompt: "最低测试覆盖率 (%)"
+    default: "85"
+  - name: PROJECT_SLUG
+    prompt: "项目标识符 (kebab-case, 用于标签和命名)"
+    required: true
