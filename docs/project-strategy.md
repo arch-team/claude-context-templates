@@ -107,9 +107,9 @@ claude-context-templates 的目标是提供**最佳起点**，
 | 关键结果 | 指标 | 状态 |
 |----------|------|------|
 | KR1: 核心 preset 和文档体系完成 | 3 preset + 双语 + 文档 | ✅ 已完成 |
-| KR2: init.sh 在 macOS / Linux 上通过端到端测试 | CI 自动化验证 | 🔲 待执行 |
-| KR3: 成功发布到 GitHub 并启用 Template Repository | 发布完成 | 🔲 待执行 |
-| KR4: 发布公告并获得首批外部反馈 | ≥ 5 条外部反馈 | 🔲 待执行 |
+| KR2: init.sh 在 macOS / Linux 上通过端到端测试 | CI 自动化验证 | ✅ 已完成 |
+| KR3: 成功发布到 GitHub 并启用 Template Repository | 发布完成 | ✅ 已完成 |
+| KR4: 发布公告并获得首批外部反馈 | ≥ 5 条外部反馈 | ✅ 已完成 |
 
 ### 7.2 中期目标（v2.0 — 扩展生态）
 
@@ -208,20 +208,20 @@ claude-context-templates 的目标是提供**最佳起点**，
 | M1.3 | init.sh 交互式生成工具 | ✅ 完成 |
 | M1.4 | 示例项目 (monorepo + single) | ✅ 完成 |
 | M1.5 | 完整文档体系 | ✅ 完成 |
-| M1.6 | GitHub Actions CI（init.sh 烟雾测试 + preset 结构验证） | 🔲 待执行 |
-| M1.7 | 启用 GitHub Template Repository + README URL 更新 | 🔲 待执行 |
-| M1.8 | 发布公告（英文博客 + Claude Code 社区） | 🔲 待执行 |
+| M1.6 | GitHub Actions CI（init.sh 烟雾测试 + preset 结构验证） | ✅ 完成 |
+| M1.7 | 启用 GitHub Template Repository + README URL 更新 | ✅ 完成 |
+| M1.8 | 发布公告（英文博客 + Claude Code 社区） | ✅ 完成 |
 
 ### 10.5 Phase 1 完成清单
 
-- [ ] 所有 preset 通过结构验证（required files 完整、无断链）
-- [ ] init.sh 在 macOS 和 Linux (Ubuntu) 上测试通过
-- [ ] GitHub Actions CI: push 时运行 init.sh 烟雾测试
-- [ ] GitHub Actions CI: push 时运行 preset 结构验证
-- [ ] README 中的仓库 URL 更新为实际地址
-- [ ] 仓库配置为 GitHub Template Repository
-- [ ] 发布博客文章
-- [ ] 在 Claude Code 社区发布首次公告
+- [x] 所有 preset 通过结构验证（required files 完整、无断链）
+- [x] init.sh 在 macOS 和 Linux (Ubuntu) 上测试通过
+- [x] GitHub Actions CI: push 时运行 init.sh 烟雾测试
+- [x] GitHub Actions CI: push 时运行 preset 结构验证
+- [x] README 中的仓库 URL 更新为实际地址
+- [x] 仓库配置为 GitHub Template Repository
+- [x] 发布博客文章
+- [x] 在 Claude Code 社区发布首次公告
 
 ### Phase 2: Ecosystem（生态）— v2.0
 
