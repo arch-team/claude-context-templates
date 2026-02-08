@@ -14,7 +14,7 @@ Claude Code 通过读取 `CLAUDE.md` 文件和 `.claude/rules/` 目录来理解�
 
 ```bash
 # 1. 克隆模板仓库
-git clone https://github.com/YOUR_USERNAME/claude-context-templates.git
+git clone https://github.com/arch-team/claude-context-templates.git
 cd claude-context-templates
 
 # 2. 运行交互式初始化脚本

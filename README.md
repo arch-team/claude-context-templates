@@ -14,7 +14,7 @@ Claude Code reads `CLAUDE.md` files and `.claude/rules/` to understand your proj
 
 ```bash
 # 1. Clone the template repository
-git clone https://github.com/YOUR_USERNAME/claude-context-templates.git
+git clone https://github.com/arch-team/claude-context-templates.git
 cd claude-context-templates
 
 # 2. Run the interactive initializer
