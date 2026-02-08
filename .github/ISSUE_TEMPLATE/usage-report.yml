@@ -1,0 +1,97 @@
+name: Usage Report
+description: Share how you're using claude-context-templates in your project (分享您在项目中的使用情况)
+title: "[Usage] "
+labels: ["usage-report", "feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We'd love to hear how you're using claude-context-templates!
+        Usage reports help us understand real-world needs and improve the project.
+
+        我们很想了解您是如何使用 claude-context-templates 的！
+        使用报告帮助我们理解真实需求并改进项目。
+
+  - type: dropdown
+    id: preset
+    attributes:
+      label: Preset Used
+      description: Which preset(s) are you using?
+      multiple: true
+      options:
+        - python-fastapi
+        - react-typescript
+        - aws-cdk
+        - Custom / modified preset
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Project Mode
+      description: How did you set up your project?
+      options:
+        - Single project
+        - Monorepo
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language Used
+      description: Which language version?
+      options:
+        - English (en)
+        - Chinese (zh-CN)
+    validations:
+      required: true
+
+  - type: textarea
+    id: project-type
+    attributes:
+      label: Project Description
+      description: Briefly describe the project where you're using the templates (no need to share proprietary details)
+      placeholder: |
+        e.g., "A SaaS backend with 3 microservices" or "An open-source CLI tool"
+    validations:
+      required: true
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: Experience
+      description: How has the template improved your Claude Code experience?
+      placeholder: |
+        - What worked well?
+        - What was confusing or needed customization?
+        - Did Claude's responses improve noticeably?
+    validations:
+      required: true
+
+  - type: textarea
+    id: customizations
+    attributes:
+      label: Customizations Made
+      description: What did you change or add to the generated templates?
+      placeholder: |
+        e.g., "Added a custom i18n rule", "Modified the testing strategy", "Removed security.md"
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggestions for Improvement
+      description: Any ideas for making the templates better?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: public
+    attributes:
+      label: Visibility
+      options:
+        - label: I'm OK with this report being referenced in project documentation
+          required: false

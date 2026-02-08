@@ -1,0 +1,93 @@
+name: Bug Report
+description: Report a bug with templates, init.sh, or documentation (报告模板、init.sh 或文档的 Bug)
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out the form below.
+        感谢您报告 Bug！请填写以下表单。
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the project is affected?
+      options:
+        - init.sh (interactive initializer)
+        - Preset templates (rules, CLAUDE.md, etc.)
+        - Documentation (README, guides)
+        - CI/CD pipeline
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: preset
+    attributes:
+      label: Preset (if applicable)
+      description: Which preset are you using?
+      options:
+        - python-fastapi
+        - react-typescript
+        - aws-cdk
+        - N/A
+    validations:
+      required: false
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Which language version are you using?
+      options:
+        - English (en)
+        - Chinese (zh-CN)
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened? What did you expect?
+      placeholder: |
+        **What happened**: ...
+        **Expected behavior**: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this bug?
+      placeholder: |
+        1. Run `./init.sh`
+        2. Select preset '...'
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Your operating system, shell, and relevant versions
+      placeholder: |
+        - OS: macOS 15 / Ubuntu 24.04
+        - Shell: bash 5.2 / zsh 5.9
+        - Claude Code version: ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Output / Logs
+      description: Paste any relevant error messages or logs
+      render: shell
+    validations:
+      required: false

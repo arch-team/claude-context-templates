@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussion
+    url: https://github.com/arch-team/claude-context-templates/discussions
+    about: Ask questions, share ideas, or discuss claude-context-templates (提问、分享想法或讨论)
+  - name: Claude Code Documentation
+    url: https://docs.anthropic.com/en/docs/claude-code
+    about: Official Claude Code documentation from Anthropic
