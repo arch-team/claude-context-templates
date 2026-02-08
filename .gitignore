@@ -18,6 +18,9 @@ __pycache__/
 *.pyc
 .venv/
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Temporary files
 *.tmp
 *.bak
