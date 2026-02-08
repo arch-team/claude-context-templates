@@ -6,11 +6,11 @@
 
 ## 1. 愿景 (Vision)
 
-**成为 Claude Code 项目上下文管理的事实标准（de facto standard）。**
+**让每个 Claude Code 用户都能在几分钟内获得经过生产验证的上下文管理体系。**
 
 正如 `.editorconfig` 标准化了编辑器配置、ESLint shared configs 标准化了代码风格，
-claude-context-templates 的目标是让每一个使用 Claude Code 的项目，
-都能在几分钟内获得**经过生产验证的上下文管理体系**，从而显著提升 AI 辅助开发的效果。
+claude-context-templates 的目标是提供**最佳起点**，
+让"从零搭建 `.claude/` 目录"成为例外而非常态，从而显著提升 AI 辅助开发的效果。
 
 ---
 
@@ -44,56 +44,57 @@ claude-context-templates 的目标是让每一个使用 Claude Code 的项目，
 我们提供：经过生产验证的模板系统 + 交互式生成工具
 与众不同之处：
   1. 基于真实 Monorepo 项目提炼，非理论模板
-  2. 6 大设计原则确保结构化和可维护
-  3. 多技术栈 preset 生态，一键适配
-  4. 中英双语，全球开发者可用
+  2. 6 大设计原则（SSoT、双向链接、Section 0 模式等）确保结构化和可维护
+  3. 多技术栈 preset 生态，通过 init.sh 一键适配
+  4. 中英双语支持
 ```
 
 ---
 
 ## 5. 目标用户 (Target Users)
 
-### 5.1 用户画像
+### 5.1 核心用户画像
 
 | 用户类型 | 特征 | 核心需求 | 使用场景 |
 |----------|------|----------|----------|
-| **个人开发者** | 使用 Claude Code 开发个人/开源项目 | 快速搭建，即用即走 | 新项目初始化 |
-| **技术团队 Lead** | 需要统一团队的 AI 开发规范 | 标准化、可定制、可推广 | 团队规范制定 |
-| **开源项目维护者** | 希望贡献者借助 Claude Code 高效参与 | 降低贡献门槛，保持代码一致性 | 开源项目 onboarding |
-| **企业 DevOps/Platform** | 需要在组织级别推广 AI 开发最佳实践 | 企业级定制、合规、多项目管理 | 企业标准化推广 |
+| **个人开发者**（首要） | 使用 Claude Code 开发个人/开源项目 | 快速搭建，即用即走 | 新项目初始化 |
+| **技术团队 Lead**（次要） | 需要统一团队的 AI 开发规范 | 标准化、可定制、可推广 | 团队规范制定 |
 
-### 5.2 用户旅程
+> 其他潜在用户（开源项目维护者、企业 DevOps）留待有真实需求证据时再扩展。
+
+### 5.2 用户旅程（简化三步）
 
 ```
-发现 → 评估 → 初始化 → 定制 → 使用 → 贡献
- │        │        │        │       │        │
- │        │        │        │       │        └─ 提交新 preset / 改进规则
- │        │        │        │       └─ 日常开发中受益于上下文管理
- │        │        │        └─ 修改模板适配团队约定
- │        │        └─ 运行 init.sh 生成 .claude/ 目录
- │        └─ 浏览 README、examples、design-principles
- └─ 通过搜索/推荐/文章发现项目
+发现 → 初始化 → 定制
+ │        │        │
+ │        │        └─ 修改模板适配项目/团队约定，日常开发中受益
+ │        └─ 运行 init.sh 生成 .claude/ 目录
+ └─ 通过 GitHub 搜索 / 社区推荐 / 博客文章发现项目
 ```
 
 ---
 
 ## 6. 北极星指标 (North Star Metric)
 
-### 主指标
+### 主指标（直接可测）
 
-> **活跃项目采用数** — 正在使用 claude-context-templates 生成的 `.claude/` 目录的项目数量
+> **GitHub Stars + Forks 组合值** — 作为项目关注度和实际采用的代理指标
 
-**选择理由**：这个指标直接衡量项目是否真正为开发者创造了价值。一个项目持续使用模板意味着它确实改善了 AI 辅助开发的体验。
+**选择理由**：在纯 GitHub 开源项目中，"活跃项目采用数"无法准确测量。Stars 反映关注度，Forks 反映实际使用意图，两者组合是个人维护者能持续追踪的最可靠信号。
 
-### 代理指标（可衡量的近似值）
+### 验证指标（需主动收集）
 
-由于开源项目难以直接统计终端使用量，我们使用以下代理指标：
+> **确认使用报告数** — GitHub Issues / Discussions 中用户报告在真实项目中使用的数量
 
-| 代理指标 | 衡量方式 | 与北极星的关系 |
-|----------|----------|----------------|
-| **GitHub Template 使用次数** | GitHub 提供的 "generated from" 计数 | 直接体现有多少项目基于模板创建 |
-| **Fork 数** | GitHub Forks | 表示用户拉取模板用于自己的项目 |
-| **带上下文的 Issue / Discussion** | 用户在实际项目中使用后的反馈 | 表示深度使用和真实价值 |
+**选择理由**：这是唯一能证明模板真正创造价值的信号。需要通过 Issue 模板引导用户报告使用情况。
+
+### 指标局限性
+
+诚实对待开源项目的测量困境：
+- Stars 和 Forks 是虚荣指标，不等于真实使用
+- GitHub 不提供 clone 后的使用追踪
+- Template "generated from" 计数是较好的信号，但仅适用于 GitHub Template 方式
+- **核心判断标准**：是否有真实用户在 Issues/Discussions 中报告使用并提出改进建议
 
 ---
 
@@ -101,101 +102,58 @@ claude-context-templates 的目标是让每一个使用 Claude Code 的项目，
 
 ### 7.1 短期目标（v1.0 发布 — 验证价值）
 
-**目标**：完成首次公开发布，验证模板对目标用户的价值。
+**目标**：完成首次公开发布，获得真实用户反馈。
+
+| 关键结果 | 指标 | 状态 |
+|----------|------|------|
+| KR1: 核心 preset 和文档体系完成 | 3 preset + 双语 + 文档 | ✅ 已完成 |
+| KR2: init.sh 在 macOS / Linux 上通过端到端测试 | CI 自动化验证 | 🔲 待执行 |
+| KR3: 成功发布到 GitHub 并启用 Template Repository | 发布完成 | 🔲 待执行 |
+| KR4: 发布公告并获得首批外部反馈 | ≥ 5 条外部反馈 | 🔲 待执行 |
+
+### 7.2 中期目标（v2.0 — 扩展生态）
+
+**目标**：扩展 preset 覆盖和可组合性，建立社区贡献通道。
 
 | 关键结果 | 指标 |
 |----------|------|
-| KR1: 成功发布到 GitHub 并启用 Template Repository | 发布完成 ✓ |
-| KR2: init.sh 脚本在 macOS / Linux 上通过端到端测试 | 两个平台测试通过 ✓ |
-| KR3: 获得首批外部用户反馈（Issue / Discussion） | ≥ 5 条有效反馈 |
-| KR4: 至少 1 个外部开发者成功使用模板初始化项目 | ≥ 1 个已确认案例 |
+| KR1: Preset 数量达到 5+（新增 Go 和 Next.js/Vue） | ≥ 5 个 presets |
+| KR2: Preset 组合/继承机制实现（rule 级别的 _common 共享） | 技术方案落地 ✓ |
+| KR3: CI/CD 自动化 preset 结构验证 | CI 通过率 100% |
 
-### 7.2 中期目标（v2.0 — 建立生态）
+### 7.3 长期方向（v3.0+ — 探索性）
 
-**目标**：扩展 preset 生态，建立社区贡献机制。
+> 以下不是承诺的 OKR，而是在 Phase 1-2 成功的前提下可能追求的方向。
 
-| 关键结果 | 指标 |
-|----------|------|
-| KR1: preset 覆盖主流技术栈 | ≥ 6 个 presets（新增 Go, Java Spring Boot, Vue/Next.js） |
-| KR2: 收到社区贡献的 preset PR | ≥ 2 个外部贡献的 preset |
-| KR3: GitHub Stars 增长 | ≥ 200 stars |
-| KR4: Template 被使用次数 | ≥ 50 次 "generated from" |
-| KR5: 支持 preset 组合和继承 | 技术方案落地 ✓ |
-
-### 7.3 长期目标（v3.0+ — 成为标准）
-
-**目标**：成为 Claude Code 上下文管理的社区标准。
-
-| 关键结果 | 指标 |
-|----------|------|
-| KR1: 被 Anthropic 官方文档或 Claude Code 引用/推荐 | 至少 1 次官方提及 |
-| KR2: preset 生态覆盖 10+ 技术栈 | ≥ 10 个高质量 presets |
-| KR3: 形成活跃的贡献者社区 | ≥ 10 个不同贡献者 |
-| KR4: GitHub Stars | ≥ 1000 stars |
-| KR5: 企业级功能（团队共享、版本管理） | 功能可用 ✓ |
+- 覆盖更多技术栈（依赖社区贡献或维护者精力）
+- CLI 分发降低使用门槛
+- 被 Claude Code 生态中的其他项目/文章引用
 
 ---
 
 ## 8. 核心指标体系 (Metrics Framework)
 
-### 8.1 AARRR 漏斗
+> **设计原则**：只追踪有可靠数据源的指标。宁可指标少但真实，不要指标多但虚假。
 
-```
-Acquisition（获取）    → 用户如何发现项目？
-  ↓
-Activation（激活）     → 用户是否成功使用 init.sh 生成了 .claude/？
-  ↓
-Retention（留存）      → 用户是否在后续项目中继续使用？
-  ↓
-Referral（推荐）       → 用户是否推荐给他人？
-  ↓
-Revenue（收益）        → 用户是否贡献 preset 或改进？（开源语境下的"收益"）
-```
+### 8.1 可量化指标（GitHub 原生提供）
 
-### 8.2 指标看板
+| 指标 | 数据源 | 检查频率 | 说明 |
+|------|--------|----------|------|
+| Stars | GitHub | 月度 | 关注度信号 |
+| Forks | GitHub | 月度 | 使用意图信号 |
+| Open Issues | GitHub | 周度 | 社区互动健康度 |
+| 外部 PR 数 | GitHub Pull Requests | 月度 | 社区贡献活跃度 |
+| Template "generated from" 计数 | GitHub（启用 Template Repository 后） | 月度 | 最接近真实采用的指标 |
+| 贡献者数（非维护者） | GitHub Contributors | 月度 | 社区参与广度 |
 
-#### 获取指标 (Acquisition)
+### 8.2 定性信号（需人工观察）
 
-| 指标 | 数据源 | 目标 (v1.0) | 目标 (v2.0) |
-|------|--------|-------------|-------------|
-| README 页面浏览量 | GitHub Insights → Traffic → Views | ≥ 500 | ≥ 5,000 |
-| GitHub Stars | GitHub | ≥ 30 | ≥ 200 |
-| Referral 来源分布 | GitHub Insights → Traffic → Referring sites | 有 ≥ 3 个来源 | 有 ≥ 10 个来源 |
-| 搜索排名 | "Claude Code templates" 关键词 | 出现在结果中 | 首页 |
-
-#### 激活指标 (Activation)
-
-| 指标 | 数据源 | 目标 (v1.0) | 目标 (v2.0) |
-|------|--------|-------------|-------------|
-| Template 使用次数 | GitHub "generated from" 计数 | ≥ 5 | ≥ 50 |
-| Fork 数量 | GitHub | ≥ 10 | ≥ 50 |
-| Clone 数量 | GitHub Insights → Traffic → Clones | ≥ 30 | ≥ 200 |
-| Issue：初始化成功报告 | GitHub Issues / Discussions | ≥ 1 | ≥ 10 |
-
-#### 留存指标 (Retention)
-
-| 指标 | 数据源 | 目标 (v1.0) | 目标 (v2.0) |
-|------|--------|-------------|-------------|
-| 重复 Clone 用户 | GitHub Insights（唯一 cloner 比率） | 有回访信号 | ≥ 20% 回访率 |
-| 同一用户多次使用 Template | GitHub "generated from" | — | ≥ 5 个多次用户 |
-| Issue / Discussion 活跃度 | GitHub | 月均 ≥ 2 条 | 月均 ≥ 10 条 |
-
-#### 推荐指标 (Referral)
-
-| 指标 | 数据源 | 目标 (v1.0) | 目标 (v2.0) |
-|------|--------|-------------|-------------|
-| 外部博客/文章提及 | 搜索监控 | ≥ 1 篇 | ≥ 5 篇 |
-| Twitter/社交媒体分享 | 社交监控 | ≥ 3 次 | ≥ 20 次 |
-| 其他项目 README 引用 | GitHub 搜索 | — | ≥ 5 个项目 |
-
-#### 贡献指标 (Revenue → Contribution)
-
-| 指标 | 数据源 | 目标 (v1.0) | 目标 (v2.0) |
-|------|--------|-------------|-------------|
-| 外部 PR 数量 | GitHub PRs | ≥ 1 | ≥ 10 |
-| 社区贡献的 preset | GitHub PRs (preset 类) | — | ≥ 2 个 |
-| 贡献者数量（非维护者） | GitHub Contributors | ≥ 2 | ≥ 10 |
-| 新语言翻译贡献 | GitHub PRs (翻译类) | — | ≥ 1 种新语言 |
+| 信号 | 在哪里看 | 说明 |
+|------|----------|------|
+| 用户成功案例 | Issues, Discussions | 最有价值的反馈 |
+| 功能请求 | Issues | 需求信号 |
+| 社区 preset PR | Pull Requests | 生态扩展信号 |
+| 外部提及 | GitHub 搜索, Google Alerts | 传播范围信号 |
 
 ### 8.3 质量指标
 
@@ -219,18 +177,20 @@ Revenue（收益）        → 用户是否贡献 preset 或改进？（开源�
 | **复制他人的 .claude/ 目录** | 快速 | 技术栈不匹配，缺乏系统性 | 多 preset + 变量替换，精准适配 |
 | **Claude Code 内置模板** | 官方支持 | 目前不存在此功能 | 先发优势 + 社区驱动 |
 | **AI 生成 CLAUDE.md** | 零成本 | 缺乏结构化，无法保证一致性 | 设计原则 + 双向链接 + SSoT |
+| **Claude Code 自身能力演进** | 官方集成 | 可能废弃 .claude/ 当前模式 | 紧跟官方变更，快速适配 |
 
 ### 9.2 护城河策略
 
 ```
-短期：先发优势 + 模板质量
+短期：模板质量 + 先发优势 + 双语支持
   → 第一个提供系统化 Claude Code 上下文模板的项目
 
-中期：社区网络效应 + preset 生态
-  → 越多人贡献 preset，项目价值越大，更多人使用
+中期：可组合 preset 架构 + 社区 preset 贡献
+  → 越多人贡献 preset，项目价值越大
 
-长期：标准制定者地位 + 官方认可
-  → 成为 Claude Code 生态不可或缺的一环
+长期：承认不确定性
+  → 如果 Anthropic 原生实现类似功能，项目可能转为社区扩展层
+  → 保持架构灵活性，以便快速适配官方变更
 ```
 
 ---
@@ -248,49 +208,41 @@ Revenue（收益）        → 用户是否贡献 preset 或改进？（开源�
 | M1.3 | init.sh 交互式生成工具 | ✅ 完成 |
 | M1.4 | 示例项目 (monorepo + single) | ✅ 完成 |
 | M1.5 | 完整文档体系 | ✅ 完成 |
-| M1.6 | 推送到 GitHub + 启用 Template Repository | 🔲 待执行 |
-| M1.7 | 端到端测试 + CI 自动化 | 🔲 待执行 |
-| M1.8 | 首次社区推广（博客/社交媒体） | 🔲 待执行 |
+| M1.6 | GitHub Actions CI（init.sh 烟雾测试 + preset 结构验证） | 🔲 待执行 |
+| M1.7 | 启用 GitHub Template Repository + README URL 更新 | 🔲 待执行 |
+| M1.8 | 发布公告（英文博客 + Claude Code 社区） | 🔲 待执行 |
+
+### 10.5 Phase 1 完成清单
+
+- [ ] 所有 preset 通过结构验证（required files 完整、无断链）
+- [ ] init.sh 在 macOS 和 Linux (Ubuntu) 上测试通过
+- [ ] GitHub Actions CI: push 时运行 init.sh 烟雾测试
+- [ ] GitHub Actions CI: push 时运行 preset 结构验证
+- [ ] README 中的仓库 URL 更新为实际地址
+- [ ] 仓库配置为 GitHub Template Repository
+- [ ] 发布博客文章
+- [ ] 在 Claude Code 社区发布首次公告
 
 ### Phase 2: Ecosystem（生态）— v2.0
 
-**主题**：扩展技术栈覆盖，建立社区贡献文化
+**主题**：扩展 preset 覆盖，建立可组合架构
 
 | 里程碑 | 内容 |
 |--------|------|
-| M2.1 | 新增 preset: Go + Gin/Echo |
-| M2.2 | 新增 preset: Java + Spring Boot |
-| M2.3 | 新增 preset: Vue/Nuxt + TypeScript |
-| M2.4 | preset 验证工具（lint preset 结构和变量） |
-| M2.5 | CI/CD 管道（自动测试 init.sh + preset 验证） |
-| M2.6 | GitHub Issue/PR 模板优化 |
-| M2.7 | 社区贡献者指南增强 |
-| M2.8 | 新增语言支持（日语/韩语 — 依社区需求） |
+| M2.1 | Preset 组合机制（rule 级别继承，_common 共享） |
+| M2.2 | 新增 2 个 preset（Go + Next.js/Vue，总计 ≥ 5 个） |
+| M2.3 | Preset 验证工具（CI 自动化 preset 结构检查） |
+| M2.4 | 社区贡献工作流（Issue/PR 模板、preset 审核标准） |
+| M2.5 | Preset 版本追踪机制 |
 
-### Phase 3: Platform（平台化）— v3.0
+### Phase 3+: 未来可能方向（探索性）
 
-**主题**：工具链升级，降低使用门槛
+> 以下方向不是承诺的路线图，而是基于当前认知的探索性选项。是否执行取决于 Phase 1-2 的反馈和维护者资源。
 
-| 里程碑 | 内容 |
-|--------|------|
-| M3.1 | Web 配置器（在线生成 .claude/ 目录） |
-| M3.2 | npx/pip 一键初始化（`npx create-claude-context`） |
-| M3.3 | Preset 组合与继承（如 Python base + FastAPI extension） |
-| M3.4 | 上下文质量评分工具（评估现有 .claude/ 目录的完整度） |
-| M3.5 | VS Code / JetBrains 插件集成 |
-| M3.6 | 多项目 preset 版本管理（类似 npm 版本升级） |
-
-### Phase 4: Standard（标准化）— v4.0+
-
-**主题**：成为社区标准，影响生态
-
-| 里程碑 | 内容 |
-|--------|------|
-| M4.1 | 向 Anthropic 提交集成提案 |
-| M4.2 | 企业级功能（团队 preset 共享、审计） |
-| M4.3 | Claude Code Plugin/Extension 集成 |
-| M4.4 | 上下文管理最佳实践白皮书 |
-| M4.5 | 行业特定 preset 包（金融、医疗、电商等） |
+- CLI 分发（`npx create-claude-context`）
+- 上下文质量评分工具（评估现有 .claude/ 目录的完整度）
+- 社区驱动更多 preset（依赖外部贡献者出现）
+- 更多语言支持（依社区需求）
 
 ---
 
@@ -300,45 +252,42 @@ Revenue（收益）        → 用户是否贡献 preset 或改进？（开源�
 
 | 阶段 | 成功标准 | 失败信号 |
 |------|----------|----------|
-| Phase 1 | 有外部用户成功使用并给出正反馈 | 无人使用或大量初始化失败 |
-| Phase 2 | 收到社区贡献的 preset PR | 仅维护者活跃，无社区参与 |
-| Phase 3 | 项目被其他工具/文章引用推荐 | 增长停滞，无新用户 |
-| Phase 4 | 被 Anthropic 官方生态认可 | 被官方方案替代 |
+| Phase 1 | ≥ 1 个确认的外部用户；init.sh 无关键 bug；CI 通过 | 公开 3 个月后零外部互动 |
+| Phase 2 | 收到社区贡献的 preset PR；preset 组合机制可用 | 仅维护者活跃，无社区参与；架构无法扩展 |
 
 ### 11.2 风险矩阵
 
 | 风险 | 概率 | 影响 | 应对策略 |
 |------|------|------|----------|
-| Anthropic 推出官方模板方案 | 中 | 高 | 保持社区驱动优势，争取成为官方推荐方案 |
+| Anthropic 推出官方模板方案 | 中 | 高 | 快速适配，转为社区扩展层 |
 | Claude Code 架构大幅变更 | 低 | 高 | 关注官方 changelog，快速适配 |
 | 社区参与度低 | 中 | 中 | 主动推广，降低贡献门槛，维护者持续输出高质量内容 |
 | preset 质量不一致 | 中 | 中 | 建立 preset 审核标准和自动化验证 |
-| 维护负担过重 | 低 | 中 | 自动化 CI/CD + 社区维护者培养 |
+| **维护者倦怠** | 中 | 高 | 保持最小范围，自动化重复任务，避免过度承诺 |
+| **模板过时** | 中 | 中 | 定期更新节奏（跟随 Claude Code 官方变更），CI 验证断链 |
 
 ---
 
 ## 12. 推广策略 (Go-to-Market)
 
-### 12.1 推广渠道
+> 推广活动绑定到具体 Phase，而非独立浮动的策略。个人维护者的精力有限，聚焦高 ROI 渠道。
 
-| 渠道 | 策略 | 优先级 |
-|------|------|--------|
-| **GitHub** | Template Repo、话题标签、awesome-list 提交 | P0 |
-| **技术博客** | 发布设计原则解读、使用教程 | P0 |
-| **社交媒体** | Twitter/X 发布、开发者社区分享 | P1 |
-| **Claude Code 社区** | Anthropic Discord/Forum、Claude Code GitHub Issues | P0 |
-| **中文社区** | 掘金、知乎、V2EX | P1 |
-| **技术演讲** | Meetup、线上分享 | P2 |
+### 12.1 Phase 1 推广
 
-### 12.2 内容策略
+| 渠道 | 具体行动 |
+|------|----------|
+| **GitHub** | 启用 Template Repo、添加话题标签、提交 awesome-list |
+| **英文博客** | 发布 1 篇发布公告 + 设计原则解读 |
+| **Claude Code 社区** | Anthropic Discord/Forum 发布公告 |
+| **Hacker News** | Show HN 帖子 |
 
-| 内容类型 | 主题 | 目标受众 |
-|----------|------|----------|
-| 教程文章 | "如何用模板为 Claude Code 搭建项目上下文" | 入门开发者 |
-| 原理解读 | "Claude Code 上下文管理的 6 大设计原则" | 技术 Lead |
-| 对比分析 | "有/无结构化上下文管理的 Claude Code 效果对比" | 决策者 |
-| 贡献指南 | "如何为你的技术栈创建 Claude Code preset" | 贡献者 |
-| 案例分享 | "真实项目中的 Claude Code 上下文管理实践" | 所有开发者 |
+### 12.2 Phase 2 推广
+
+| 渠道 | 具体行动 |
+|------|----------|
+| **中文社区** | 掘金、知乎发布中文使用教程 |
+| **贡献教程** | 发布"如何为你的技术栈创建 preset"指南 |
+| **案例收集** | 在 Discussions 中收集用户成功案例 |
 
 ---
 
@@ -351,7 +300,7 @@ Revenue（收益）        → 用户是否贡献 preset 或改进？（开源�
 | 维度 | 权重 | 评分标准 (1-5) |
 |------|------|----------------|
 | **用户影响** | 35% | 影响多少用户？解决多大痛点？ |
-| **北极星贡献** | 25% | 是否直接推动活跃项目采用数增长？ |
+| **北极星贡献** | 25% | 是否直接推动真实用户采用？ |
 | **实现成本** | 20% | 需要多少开发和维护投入？(反向：成本低得分高) |
 | **生态价值** | 20% | 是否增强社区贡献或 preset 生态？ |
 
@@ -391,9 +340,8 @@ PATCH: Bug 修复、文案改进、小优化
 |------|----------|----------|
 | v1.0 | Phase 1 | 首次稳定发布 |
 | v1.x | Phase 1 | 修复和小改进 |
-| v2.0 | Phase 2 | 新 presets + 社区贡献机制 |
-| v3.0 | Phase 3 | 平台化工具链 |
-| v4.0 | Phase 4 | 企业级特性 + 标准化 |
+| v2.0 | Phase 2 | 新 presets + 组合机制 + 社区贡献通道 |
+| v3.0+ | Phase 3+ | 视社区反馈和维护者资源决定 |
 
 ---
 
@@ -408,3 +356,4 @@ PATCH: Bug 修复、文案改进、小优化
 | 社区有为不同技术栈贡献 preset 的动力 | PR 和 Issue 数据 | 维护者主动覆盖主流栈 |
 | 结构化上下文管理确实能提升 Claude Code 效果 | A/B 对比实验 | 调整模板策略 |
 | 中英双语能覆盖目标用户的主要需求 | 用户反馈 | 增加更多语言 |
+| 个人维护者能长期持续维护此项目 | 每季度诚实自评 | 简化范围、寻找联合维护者、或标记为 stable/unmaintained |
