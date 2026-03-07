@@ -30,7 +30,8 @@
 
 - Plugin 是面向 Claude Code 用户的**主要交付方式**
 - init.sh 保留作为 CI/CD、非 Claude Code 环境的**备用方式**
-- 两者共享同一套 preset 模板文件（`presets/` 为 Single Source of Truth）
+- 两者共享同一套 preset 模板文件（`plugin/presets/` 为唯一 Single Source of Truth）
+- init.sh 直接从 `plugin/presets/` 读取模板，无需同步
 
 ---
 
@@ -48,7 +49,8 @@ plugin/                              # Plugin 根目录（自包含）
 ├── skills/
 │   └── context-setup/
 │       └── SKILL.md                 # 自动检测 Skill（模型触发）
-├── presets/                         # Preset 模板（从 presets/ 同步）
+├── presets/                         # Preset 模板（唯一 SSoT）
+│   ├── manifest.json                # 版本清单（轻量版本检查）
 │   ├── _common/{en,zh-CN}/          # 公共模板（root-CLAUDE.md, common-rules.md）
 │   ├── python-fastapi/              # Python + FastAPI 预设（27 文件）
 │   ├── react-typescript/            # React + TypeScript 预设（27 文件）
@@ -64,40 +66,40 @@ plugin/                              # Plugin 根目录（自包含）
 | **内置 Marketplace** | `.claude-plugin/marketplace.json` | `local-dev` marketplace，简化本地测试 |
 | **命令** | `commands/init-context.md` | `/init-context` 用户主动触发入口 |
 | **Skill** | `skills/context-setup/SKILL.md` | 模型自动检测，项目缺少 `.claude/` 时建议 |
-| **Preset 模板** | `presets/` | 83 个模板文件，构建时从主仓库同步 |
+| **Preset 模板** | `presets/` | 83 个模板文件 + manifest.json 版本清单 |
 
 ### 2.3 工具链
 
 | 脚本 | 说明 |
 |------|------|
-| `scripts/build-plugin.sh` | 将 `presets/` 同步到 `plugin/presets/` + 结构验证 |
-| `scripts/check-plugin-sync.sh` | CI 检查 plugin/presets/ 与 presets/ 的一致性 |
+| `scripts/build-plugin.sh` | 生成 manifest.json + Plugin 结构验证 |
+| `scripts/generate-manifest.sh` | 自动生成 `plugin/presets/manifest.json` 版本清单 |
 | `scripts/release-plugin.sh` | 版本发布流程（version bump → build → verify → 指引 commit/tag） |
 
 ### 2.4 CI 集成
 
-`check-plugin-sync` job 已集成到 `.github/workflows/ci.yml`，每次 push/PR 自动检查 preset 同步状态。
+`validate-presets` 和 `test-init` job 集成在 `.github/workflows/ci.yml`，每次 push/PR 自动验证 preset 结构完整性。
 
 ---
 
-## 3. Preset 同步策略（已实现）
+## 3. Preset 存储策略（统一存储）
 
 ```
-presets/                    ← Single Source of Truth
+plugin/presets/             ← 唯一 Single Source of Truth
     │
-    ├── init.sh 直接读取
+    ├── init.sh 直接读取（PRESETS_DIR 指向此处）
     │
-    └── scripts/build-plugin.sh
-            │
-            ▼
-        plugin/presets/     ← 构建时复制
-            │
-            └── CI: check-plugin-sync.sh 验证一致性
+    ├── Plugin 安装后自包含
+    │
+    └── manifest.json       ← 版本清单（轻量版本检查）
+        │
+        └── /init-context Step 0: 对比远程 manifest 提示更新
 ```
 
-- `build-plugin.sh`：使用 `rsync --delete` 确保完全一致
-- `check-plugin-sync.sh`：使用 `diff -rq` 检测漂移，CI 中自动运行
-- `release-plugin.sh`：发布前自动调用两者
+- `plugin/presets/` 是预设模板的唯一存储位置
+- `init.sh` 和 Plugin 都从同一位置读取模板
+- `generate-manifest.sh` 自动生成版本清单，供版本检查使用
+- `build-plugin.sh` 集成 manifest 生成 + 结构验证
 
 ---
 
@@ -200,7 +202,7 @@ Plugin 内置了 `local-dev` marketplace，开发者可直接测试：
 | Claude 生成文件与 init.sh 不一致 | 中 | 命令明确指示"原样复制模板内容，只替换占位符" |
 | Plugin 机制未来变化 | 低 | 关注 Claude Code changelog，结构已相对稳定 |
 | 用户 Claude Code 版本不支持 plugin | 低 | README 标注最低版本要求，保留 init.sh |
-| preset 同步遗忘 | 低 | CI `check-plugin-sync` 自动拦截 |
+| preset 版本未更新 | 低 | `manifest.json` 版本检查 + CI 验证 |
 
 ---
 

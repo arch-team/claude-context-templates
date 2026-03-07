@@ -68,7 +68,7 @@ feat/{module-name} → main
 
 | 模块 | 路径 | 说明 |
 |------|------|------|
-| 预设模板 | `presets/` | python-fastapi, react-typescript, aws-cdk |
+| 预设模板 | `plugin/presets/` | python-fastapi, react-typescript, aws-cdk |
 | 完整示例 | `examples/` | monorepo-taskmanager, single-project-python |
 | 脚本工具 | `scripts/` | CI/CD 和验证脚本 |
 | 项目文档 | `docs/` | 设计原则、定制指南、模板变量 |

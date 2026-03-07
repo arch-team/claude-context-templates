@@ -19,7 +19,7 @@ New presets for additional tech stacks are highly welcome! Here's how:
 Create a new preset directory following this structure:
 
 ```
-presets/your-preset-name/
+plugin/presets/your-preset-name/
 ├── preset.yaml           # Preset metadata and configuration
 ├── zh-CN/                # Chinese version
 │   ├── CLAUDE.md         # Sub-project entry point

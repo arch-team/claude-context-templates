@@ -11,9 +11,9 @@ set -euo pipefail
 # --- Constants & Script Directory ---
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PRESETS_DIR="${SCRIPT_DIR}/presets"
+PRESETS_DIR="${SCRIPT_DIR}/plugin/presets"
 
-# Available presets (directory names under presets/)
+# Available presets (directory names under plugin/presets/)
 PRESET_IDS=("python-fastapi" "react-typescript" "aws-cdk")
 PRESET_DISPLAY_NAMES=("Python + FastAPI" "React + TypeScript" "AWS CDK (TypeScript)")
 

@@ -60,8 +60,8 @@ Simply delete any rules file you don't need and remove its link from `CLAUDE.md`
 ### Step 1: Create Directory Structure
 
 ```bash
-mkdir -p presets/your-preset/zh-CN/rules
-mkdir -p presets/your-preset/en/rules
+mkdir -p plugin/presets/your-preset/zh-CN/rules
+mkdir -p plugin/presets/your-preset/en/rules
 ```
 
 ### Step 2: Create preset.yaml

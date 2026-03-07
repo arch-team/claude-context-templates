@@ -62,8 +62,8 @@
 ### 步骤 1: 创建目录结构
 
 ```bash
-mkdir -p presets/your-preset/zh-CN/rules
-mkdir -p presets/your-preset/en/rules
+mkdir -p plugin/presets/your-preset/zh-CN/rules
+mkdir -p plugin/presets/your-preset/en/rules
 ```
 
 ### 步骤 2: 创建 preset.yaml

@@ -115,7 +115,7 @@ main() {
 
   # 查找所有 .md 文件
   # 排除：.git、node_modules、.venv、examples/（示例只含入口文件，引用的 rules 未创建）、
-  #       presets/（模板中的相对链接只在生成后才有效）
+  #       plugin/presets/（模板中的相对链接只在生成后才有效）
   local md_files
   md_files=$(find "$PROJECT_ROOT" \
     -name "*.md" \
@@ -123,7 +123,7 @@ main() {
     -not -path "*/node_modules/*" \
     -not -path "*/.venv/*" \
     -not -path "*/examples/*" \
-    -not -path "*/presets/*" \
+    -not -path "*/plugin/presets/*" \
     -type f | sort)
 
   if [[ -z "$md_files" ]]; then

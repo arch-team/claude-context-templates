@@ -2,16 +2,15 @@
 set -euo pipefail
 
 # ============================================================================
-# build-plugin.sh — 将 presets/ 同步到 plugin/presets/
+# build-plugin.sh — Plugin 构建脚本
 #
-# 确保 Plugin 内的 preset 模板与主仓库的 presets/ 保持一致。
+# 生成 preset manifest 并验证 Plugin 结构完整性。
 # 在发布 Plugin 前运行此脚本。
 # ============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-SOURCE_DIR="${ROOT_DIR}/presets"
-TARGET_DIR="${ROOT_DIR}/plugin/presets"
+PRESETS_DIR="${ROOT_DIR}/plugin/presets"
 
 # 颜色定义
 if [[ -t 1 ]]; then
@@ -36,9 +35,9 @@ echo -e "${BOLD}  Claude Context Templates — Plugin Build${RESET}"
 echo -e "${DIM}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
 
-# 检查源目录
-if [[ ! -d "$SOURCE_DIR" ]]; then
-    error "Presets 源目录不存在: ${SOURCE_DIR}"
+# 检查 presets 目录
+if [[ ! -d "$PRESETS_DIR" ]]; then
+    error "Presets 目录不存在: ${PRESETS_DIR}"
     exit 1
 fi
 
@@ -48,20 +47,15 @@ if [[ ! -d "${ROOT_DIR}/plugin/.claude-plugin" ]]; then
     exit 1
 fi
 
-# 同步 presets
-info "同步 presets/ → plugin/presets/ ..."
-rsync -av --delete \
-    --exclude='.DS_Store' \
-    "${SOURCE_DIR}/" "${TARGET_DIR}/"
-
+# 生成 manifest.json
+info "生成 preset manifest ..."
+"${SCRIPT_DIR}/generate-manifest.sh"
 echo ""
 
 # 统计
-file_count=$(find "$TARGET_DIR" -type f -name "*.md" -o -name "*.yaml" | wc -l | tr -d ' ')
-dir_count=$(find "$TARGET_DIR" -mindepth 1 -type d | wc -l | tr -d ' ')
+file_count=$(find "$PRESETS_DIR" -type f -name "*.md" -o -name "*.yaml" | wc -l | tr -d ' ')
+dir_count=$(find "$PRESETS_DIR" -mindepth 1 -type d | wc -l | tr -d ' ')
 
-success "同步完成!"
-echo ""
 echo -e "  ${DIM}文件数: ${file_count}${RESET}"
 echo -e "  ${DIM}目录数: ${dir_count}${RESET}"
 echo ""
@@ -97,10 +91,11 @@ check_file "${ROOT_DIR}/plugin/.claude-plugin/plugin.json" "plugin.json"
 check_file "${ROOT_DIR}/plugin/.claude-plugin/marketplace.json" "marketplace.json"
 check_file "${ROOT_DIR}/plugin/commands/init-context.md" "commands/init-context.md"
 check_file "${ROOT_DIR}/plugin/skills/context-setup/SKILL.md" "skills/context-setup/SKILL.md"
-check_dir  "${TARGET_DIR}/_common" "presets/_common/"
-check_dir  "${TARGET_DIR}/python-fastapi" "presets/python-fastapi/"
-check_dir  "${TARGET_DIR}/react-typescript" "presets/react-typescript/"
-check_dir  "${TARGET_DIR}/aws-cdk" "presets/aws-cdk/"
+check_file "${PRESETS_DIR}/manifest.json" "presets/manifest.json"
+check_dir  "${PRESETS_DIR}/_common" "presets/_common/"
+check_dir  "${PRESETS_DIR}/python-fastapi" "presets/python-fastapi/"
+check_dir  "${PRESETS_DIR}/react-typescript" "presets/react-typescript/"
+check_dir  "${PRESETS_DIR}/aws-cdk" "presets/aws-cdk/"
 
 echo ""
 

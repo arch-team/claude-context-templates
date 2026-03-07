@@ -32,7 +32,7 @@ WARNINGS=0
 # 定位项目根目录（脚本所在目录的上级）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PRESETS_DIR="${PROJECT_ROOT}/presets"
+PRESETS_DIR="${PROJECT_ROOT}/plugin/presets"
 
 # ============================================================
 # 工具函数

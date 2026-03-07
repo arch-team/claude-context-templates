@@ -22,6 +22,28 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 
 严格按照以下步骤执行，不要跳过或合并步骤。
 
+### Step 0: 版本检查（轻量）
+
+在开始之前，尝试检查本 Plugin 的 preset 是否为最新版本：
+
+1. 读取本 Plugin 内的 `presets/manifest.json`，获取 `plugin_version`
+2. 尝试从远程获取最新 manifest（静默失败，不阻塞流程）：
+   ```
+   https://raw.githubusercontent.com/arch-team/claude-context-templates/main/plugin/presets/manifest.json
+   ```
+3. 对比版本号：
+   - 如果远程版本 > 本地版本，**提示用户**（但不强制）：
+     ```
+     ⚠️ 检测到新版本 preset 模板可用（本地 v1.0.0 → 远程 v1.1.0）。
+     建议运行以下命令更新 Plugin：
+       /plugin install claude-context-templates@claude-context-templates
+     是否继续使用当前版本？(y/n)
+     ```
+   - 如果版本一致或无法获取远程 manifest，**静默继续**
+4. 用户确认继续后，进入 Step 1
+
+> **注意**：版本检查失败（网络问题等）不应阻止正常流程。
+
 ### Step 1: 探测当前项目
 
 在开始交互之前，先静默探测当前工作目录的项目状态：

@@ -18,7 +18,7 @@
 ## 项目约定
 
 - **双语支持**: 所有预设模板必须包含 zh-CN 和 en 两个语言版本
-- **目录结构**: 预设模板按技术栈分类（presets/），示例项目独立存放（examples/）
+- **目录结构**: 预设模板按技术栈分类（plugin/presets/），示例项目独立存放（examples/）
 - **模板变量**: 使用 `{{VARIABLE_NAME}}` 格式的占位符，详见 docs/template-variables.md
 
 ## 开发流程

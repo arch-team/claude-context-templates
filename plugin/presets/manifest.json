@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "plugin_version": "1.0.0",
+  "generated_at": "2026-03-07T14:23:26Z",
+  "presets": {
+    "aws-cdk": {
+      "version": "1.0.0",
+      "files_hash": "f62aa2e18ba17df39d8d41f0e39c87bf8fb2838b2eff3153a53659119e890a54",
+      "file_count": 25
+    },
+    "python-fastapi": {
+      "version": "1.0.0",
+      "files_hash": "754e3a24b3b6db417cf3f87fdb1342e1f6a51cc1bc266e1f72ee05ffe0310ea9",
+      "file_count": 27
+    },
+    "react-typescript": {
+      "version": "1.0.0",
+      "files_hash": "0a71a20bdc054211bf7c982e7e034cf87aa7e86cbb52fa3845ef69f04096b1e4",
+      "file_count": 27
+    }
+  },
+  "_common": {
+    "files_hash": "869fe859e5cfc4a8901a1d7e8c02fce7621a208013ce6f76e921855fa7226911",
+    "file_count": 4
+  }
+}

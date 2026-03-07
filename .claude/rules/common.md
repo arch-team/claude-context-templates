@@ -91,10 +91,16 @@ claude-context-templates/        # 仓库根目录
 │   ├── CLAUDE.md                # 全局入口（语言、项目概述、会话协议）
 │   └── rules/
 │       └── common.md            # 跨项目通用规则（本文件）
-├── presets/                     # 预设模板（按技术栈分类）
-│   ├── python-fastapi/          # Python + FastAPI 预设
-│   ├── react-typescript/        # React + TypeScript 预设
-│   └── aws-cdk/                 # AWS CDK 预设
+├── plugin/                      # Claude Code Plugin（含预设模板）
+│   ├── .claude-plugin/          # Plugin 元数据
+│   ├── commands/                # 命令定义
+│   ├── skills/                  # Skill 定义
+│   └── presets/                 # 预设模板（唯一 SSoT）
+│       ├── manifest.json        # 版本清单
+│       ├── _common/             # 公共模板
+│       ├── python-fastapi/      # Python + FastAPI 预设
+│       ├── react-typescript/    # React + TypeScript 预设
+│       └── aws-cdk/             # AWS CDK 预设
 ├── examples/                    # 完整示例项目
 │   ├── monorepo-taskmanager/    # Monorepo 示例
 │   └── single-project-python/   # 单项目示例
