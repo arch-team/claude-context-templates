@@ -1,6 +1,6 @@
 # Claude Context Templates
 
-**TL;DR** Run `./init.sh` → answer a few questions → get a production-ready `.claude/` directory with architecture, testing, and security rules for your tech stack. Supports Python/FastAPI, React/TypeScript, and AWS CDK.
+**TL;DR** Install the Plugin in Claude Code → run `/init-context` → get a production-ready `.claude/` directory with architecture, testing, and security rules for your tech stack. Supports Python/FastAPI, React/TypeScript, and AWS CDK.
 
 > Structured, reusable context management templates for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Generate a well-organized `.claude/` directory for your project in seconds.
 
@@ -13,6 +13,27 @@ Claude Code reads `CLAUDE.md` files and `.claude/rules/` to understand your proj
 **This project provides production-ready templates** based on proven patterns from real-world monorepo projects, so you don't have to build your context management from scratch.
 
 ## Quick Start
+
+### Option 1: Claude Code Plugin (Recommended)
+
+Install the plugin directly in Claude Code — no cloning required:
+
+```bash
+# 1. Add the marketplace (one-time setup)
+/plugin marketplace add arch-team/claude-context-templates
+
+# 2. Install the plugin
+/plugin install claude-context-templates@claude-context-templates
+
+# 3. Generate .claude/ directory interactively
+/init-context
+```
+
+The plugin offers conversational interaction, auto-detects your project's tech stack, and supports all platforms.
+
+### Option 2: Shell Script
+
+For CI/CD environments or if you prefer command-line tools:
 
 ```bash
 # 1. Clone the template repository

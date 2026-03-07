@@ -1,6 +1,6 @@
 # Claude Context Templates
 
-**TL;DR** 运行 `./init.sh` → 回答几个问题 → 获得一个生产级 `.claude/` 目录，包含架构、测试和安全规范。支持 Python/FastAPI、React/TypeScript 和 AWS CDK。
+**TL;DR** 在 Claude Code 中安装 Plugin → 运行 `/init-context` → 获得一个生产级 `.claude/` 目录，包含架构、测试和安全规范。支持 Python/FastAPI、React/TypeScript 和 AWS CDK。
 
 > 为 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 提供结构化、可复用的上下文管理模板。几秒钟内为你的项目生成完善的 `.claude/` 目录。
 
@@ -13,6 +13,27 @@ Claude Code 通过读取 `CLAUDE.md` 文件和 `.claude/rules/` 目录来理解�
 **本项目提供生产级模板**，基于真实 Monorepo 项目中经过验证的模式，让你无需从零构建上下文管理体系。
 
 ## 快速开始
+
+### 方式一：Claude Code Plugin（推荐）
+
+直接在 Claude Code 中安装 Plugin，无需克隆仓库：
+
+```bash
+# 1. 添加 marketplace（一次性）
+/plugin marketplace add arch-team/claude-context-templates
+
+# 2. 安装 Plugin
+/plugin install claude-context-templates@claude-context-templates
+
+# 3. 交互式生成 .claude/ 目录
+/init-context
+```
+
+Plugin 提供对话式交互、自动检测项目技术栈，支持所有平台。
+
+### 方式二：Shell 脚本
+
+适用于 CI/CD 环境或偏好命令行工具的用户：
 
 ```bash
 # 1. 克隆模板仓库

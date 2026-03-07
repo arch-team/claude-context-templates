@@ -182,8 +182,9 @@ claude-context-templates 的目标是提供**最佳起点**，
 ### 9.2 护城河策略
 
 ```
-短期：模板质量 + 先发优势 + 双语支持
+短期：模板质量 + 先发优势 + 双语支持 + Plugin 原生集成
   → 第一个提供系统化 Claude Code 上下文模板的项目
+  → 第一个通过 Plugin 直接在 Claude Code 内交付的模板工具
 
 中期：可组合 preset 架构 + 社区 preset 贡献
   → 越多人贡献 preset，项目价值越大
@@ -223,6 +224,17 @@ claude-context-templates 的目标是提供**最佳起点**，
 - [x] 发布博客文章
 - [x] 在 Claude Code 社区发布首次公告
 
+### Phase 1.5: Plugin 交付 — v1.1
+
+**主题**：通过 Claude Code Plugin 降低使用门槛
+
+| 里程碑 | 内容 | 状态 |
+|--------|------|------|
+| M1.5.1 | Plugin MVP（/init-context 命令 + context-setup Skill） | ✅ 完成 |
+| M1.5.2 | Plugin 工具链（build/sync-check/release 脚本 + CI 集成） | ✅ 完成 |
+| M1.5.3 | GitHub marketplace 分发配置 + README 更新 | ✅ 完成 |
+| M1.5.4 | 端到端外部用户安装测试 | 进行中 |
+
 ### Phase 2: Ecosystem（生态）— v2.0
 
 **主题**：扩展 preset 覆盖，建立可组合架构
@@ -231,16 +243,15 @@ claude-context-templates 的目标是提供**最佳起点**，
 |--------|------|
 | M2.1 | Preset 组合机制（rule 级别继承，_common 共享） |
 | M2.2 | 新增 2 个 preset（Go + Next.js/Vue，总计 ≥ 5 个） |
-| M2.3 | Preset 验证工具（CI 自动化 preset 结构检查） |
-| M2.4 | 社区贡献工作流（Issue/PR 模板、preset 审核标准） |
-| M2.5 | Preset 版本追踪机制 |
+| M2.3 | 社区贡献工作流（Issue/PR 模板、preset 审核标准） |
+| M2.4 | Preset 版本追踪机制 |
 
 ### Phase 3+: 未来可能方向（探索性）
 
 > 以下方向不是承诺的路线图，而是基于当前认知的探索性选项。是否执行取决于 Phase 1-2 的反馈和维护者资源。
 
-- CLI 分发（`npx create-claude-context`）
-- 上下文质量评分工具（评估现有 .claude/ 目录的完整度）
+- `/audit-context` 命令（评估现有 .claude/ 目录的完整度并给出改进建议）
+- Plugin preset 远程热更新（无需重新安装即可获取最新模板）
 - 社区驱动更多 preset（依赖外部贡献者出现）
 - 更多语言支持（依社区需求）
 
@@ -338,7 +349,8 @@ PATCH: Bug 修复、文案改进、小优化
 
 | 版本 | 对应阶段 | 核心变更 |
 |------|----------|----------|
-| v1.0 | Phase 1 | 首次稳定发布 |
+| v1.0 | Phase 1 | 首次稳定发布（init.sh + preset 模板） |
+| v1.1 | Phase 1.5 | Claude Code Plugin 交付方式 |
 | v1.x | Phase 1 | 修复和小改进 |
 | v2.0 | Phase 2 | 新 presets + 组合机制 + 社区贡献通道 |
 | v3.0+ | Phase 3+ | 视社区反馈和维护者资源决定 |
