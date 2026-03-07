@@ -17,6 +17,54 @@ PRESETS_DIR="${SCRIPT_DIR}/presets"
 PRESET_IDS=("python-fastapi" "react-typescript" "aws-cdk")
 PRESET_DISPLAY_NAMES=("Python + FastAPI" "React + TypeScript" "AWS CDK (TypeScript)")
 
+# --- CLI Flags ---
+
+DRY_RUN=0
+
+show_help() {
+    cat <<'HELP'
+Usage: ./init.sh [OPTIONS]
+
+Generate a .claude/ context directory for your project.
+
+Options:
+  --help       Show this help message and exit
+  --dry-run    Run the interactive prompts but do not create any files
+
+Available Presets:
+  python-fastapi       Python + FastAPI + SQLAlchemy (DDD, TDD, API Design)
+  react-typescript     React + TypeScript + Vite (FSD, State Management)
+  aws-cdk              AWS CDK + TypeScript (Construct Patterns, Security)
+
+Examples:
+  ./init.sh                  # Interactive initialization
+  ./init.sh --dry-run        # Preview what would be generated
+  ./init.sh --help           # Show this help
+
+Documentation: https://github.com/arch-team/claude-context-templates
+HELP
+    exit 0
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                show_help
+                ;;
+            --dry-run)
+                DRY_RUN=1
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1" >&2
+                echo "Run './init.sh --help' for usage information." >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
 # --- Color Definitions ---
 
 if [[ -t 1 ]]; then
@@ -31,6 +79,14 @@ if [[ -t 1 ]]; then
 else
     RED='' GREEN='' YELLOW='' BLUE='' CYAN='' BOLD='' DIM='' RESET=''
 fi
+
+# --- Cleanup & Signal Handling ---
+
+cleanup_on_interrupt() {
+    echo ""
+    echo -e "${YELLOW}[WARN]${RESET} Operation cancelled by user."
+    exit 130
+}
 
 # --- Utility Functions ---
 
@@ -117,6 +173,35 @@ prompt_yn() {
     esac
 }
 
+# Skip-aware file copy: respects SKIP_EXISTING and DRY_RUN global flags
+# Usage: safe_copy <src> <dest>
+# Returns 0 if copied, 1 if skipped
+SKIP_EXISTING=0
+
+safe_copy() {
+    local src="$1"
+    local dest="$2"
+    if [[ "$SKIP_EXISTING" -eq 1 ]] && [[ -f "$dest" ]]; then
+        info "Skipped (exists): ${dest##*/}"
+        return 1
+    fi
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        echo -e "  ${DIM}[DRY-RUN] Would create: ${dest}${RESET}"
+        return 0
+    fi
+    cp "$src" "$dest"
+    return 0
+}
+
+# Dry-run-aware mkdir
+safe_mkdir() {
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        echo -e "  ${DIM}[DRY-RUN] Would create dir: $1${RESET}"
+    else
+        mkdir -p "$1"
+    fi
+}
+
 # Cross-platform sed in-place
 sed_inplace() {
     if [[ "$(uname)" == "Darwin" ]]; then
@@ -193,9 +278,9 @@ copy_common_templates() {
         exit 1
     fi
 
-    mkdir -p "${target_dir}/.claude/rules"
-    cp "${src}/root-CLAUDE.md" "${target_dir}/.claude/CLAUDE.md"
-    cp "${src}/common-rules.md" "${target_dir}/.claude/rules/common.md"
+    safe_mkdir "${target_dir}/.claude/rules"
+    safe_copy "${src}/root-CLAUDE.md" "${target_dir}/.claude/CLAUDE.md"
+    safe_copy "${src}/common-rules.md" "${target_dir}/.claude/rules/common.md"
 }
 
 copy_preset_templates() {
@@ -214,23 +299,23 @@ copy_preset_templates() {
         warn "Language '${lang}' not available for ${preset_id}, using zh-CN"
     fi
 
-    mkdir -p "${subproject_dir}/.claude/rules"
+    safe_mkdir "${subproject_dir}/.claude/rules"
 
     # Copy CLAUDE.md
     if [[ -f "${src}/CLAUDE.md" ]]; then
-        cp "${src}/CLAUDE.md" "${subproject_dir}/.claude/CLAUDE.md"
+        safe_copy "${src}/CLAUDE.md" "${subproject_dir}/.claude/CLAUDE.md"
     fi
 
     # Copy project-config.md
     if [[ -f "${src}/project-config.md" ]]; then
-        cp "${src}/project-config.md" "${subproject_dir}/.claude/project-config.md"
+        safe_copy "${src}/project-config.md" "${subproject_dir}/.claude/project-config.md"
     fi
 
     # Copy required rules
     if [[ -d "${src}/rules" ]]; then
         for rule_file in "${src}/rules"/*.md; do
             [[ -f "$rule_file" ]] || continue
-            cp "$rule_file" "${subproject_dir}/.claude/rules/"
+            safe_copy "$rule_file" "${subproject_dir}/.claude/rules/$(basename "$rule_file")"
         done
     fi
 }
@@ -461,7 +546,16 @@ select_optional_rules() {
             continue
         fi
 
-        if prompt_yn "  Include ${basename}?" "y"; then
+        # Extract description from first heading line (# Title)
+        local rule_desc=""
+        rule_desc=$(head -5 "$src_file" | grep -m1 '^# ' | sed 's/^# //' || true)
+
+        local prompt_label="${basename}"
+        if [[ -n "$rule_desc" ]]; then
+            prompt_label="${basename} ${DIM}(${rule_desc})${RESET}"
+        fi
+
+        if prompt_yn "  Include ${prompt_label}?" "y"; then
             selected_optionals+=("$basename")
         else
             # Remove the file if it was already copied
@@ -473,6 +567,7 @@ select_optional_rules() {
 # --- Main Flow ---
 
 main() {
+    trap 'cleanup_on_interrupt' INT TERM
     print_header
 
     # ---- Step 1: Language Selection ----
@@ -513,7 +608,16 @@ main() {
 
         local default_slug
         default_slug=$(to_kebab_case "$project_name")
-        project_slug=$(prompt_text "项目标识符 (kebab-case)" "$default_slug")
+        if [[ -z "$default_slug" ]]; then
+            warn "无法从项目名称自动生成标识符，请手动输入"
+            project_slug=$(prompt_text "项目标识符 (kebab-case, 仅限英文字母/数字/连字符)" "")
+            while [[ -z "$project_slug" ]]; do
+                error "项目标识符不能为空"
+                project_slug=$(prompt_text "项目标识符 (kebab-case, 仅限英文字母/数字/连字符)" "")
+            done
+        else
+            project_slug=$(prompt_text "项目标识符 (kebab-case)" "$default_slug")
+        fi
         project_description=$(prompt_text "项目描述" "")
     else
         project_name=$(prompt_text "Project name" "")
@@ -524,8 +628,25 @@ main() {
 
         local default_slug
         default_slug=$(to_kebab_case "$project_name")
-        project_slug=$(prompt_text "Project slug (kebab-case)" "$default_slug")
+        if [[ -z "$default_slug" ]]; then
+            warn "Cannot auto-generate slug from project name, please enter manually"
+            project_slug=$(prompt_text "Project slug (kebab-case, letters/digits/hyphens only)" "")
+            while [[ -z "$project_slug" ]]; do
+                error "Project slug is required"
+                project_slug=$(prompt_text "Project slug (kebab-case, letters/digits/hyphens only)" "")
+            done
+        else
+            project_slug=$(prompt_text "Project slug (kebab-case)" "$default_slug")
+        fi
         project_description=$(prompt_text "Project description" "")
+    fi
+
+    if [[ -z "$project_description" ]]; then
+        if [[ "$lang" == "zh-CN" ]]; then
+            warn "项目描述为空，建议后续在 CLAUDE.md 中补充"
+        else
+            warn "Project description is empty. Consider adding one later in CLAUDE.md"
+        fi
     fi
     echo ""
 
@@ -547,23 +668,33 @@ main() {
     else
         # Monorepo: loop to add sub-projects
         local add_more=true
+        local existing_names=""
         while $add_more; do
             local sub_name sub_stack_idx
             if [[ "$lang" == "zh-CN" ]]; then
                 sub_name=$(prompt_text "子项目名称 (目录名)" "")
-                while [[ -z "$sub_name" ]]; do
-                    error "子项目名称不能为空"
+                while [[ -z "$sub_name" ]] || [[ " ${existing_names} " == *" ${sub_name} "* ]]; do
+                    if [[ -z "$sub_name" ]]; then
+                        error "子项目名称不能为空"
+                    else
+                        error "子项目名称 '${sub_name}' 已存在，请使用不同的名称"
+                    fi
                     sub_name=$(prompt_text "子项目名称 (目录名)" "")
                 done
                 sub_stack_idx=$(prompt_choice "选择技术栈:" "${PRESET_DISPLAY_NAMES[@]}")
             else
                 sub_name=$(prompt_text "Sub-project name (directory name)" "")
-                while [[ -z "$sub_name" ]]; do
-                    error "Sub-project name is required"
+                while [[ -z "$sub_name" ]] || [[ " ${existing_names} " == *" ${sub_name} "* ]]; do
+                    if [[ -z "$sub_name" ]]; then
+                        error "Sub-project name is required"
+                    else
+                        error "Sub-project name '${sub_name}' already exists. Please use a different name"
+                    fi
                     sub_name=$(prompt_text "Sub-project name (directory name)" "")
                 done
                 sub_stack_idx=$(prompt_choice "Select tech stack:" "${PRESET_DISPLAY_NAMES[@]}")
             fi
+            existing_names="${existing_names} ${sub_name}"
 
             subprojects+=("${sub_name}:${PRESET_IDS[$sub_stack_idx]}:${PRESET_DISPLAY_NAMES[$sub_stack_idx]}")
             echo ""
@@ -611,9 +742,11 @@ main() {
         case "$overwrite_idx" in
             0)
                 info "Overwriting existing files..."
+                SKIP_EXISTING=0
                 ;;
             1)
                 info "Will skip existing files..."
+                SKIP_EXISTING=1
                 ;;
             2)
                 info "Cancelled."
@@ -625,11 +758,65 @@ main() {
         local overwrite_idx=0
     fi
 
+    # ---- Confirmation Summary ----
+
+    echo -e "${BOLD}  ── Generation Summary ──${RESET}"
+    if [[ "$lang" == "zh-CN" ]]; then
+        echo -e "    项目名称:  ${CYAN}${project_name}${RESET}"
+        echo -e "    项目标识:  ${CYAN}${project_slug}${RESET}"
+        echo -e "    项目模式:  ${CYAN}$(if [[ "$project_mode" == "single" ]]; then echo "单项目"; else echo "Monorepo"; fi)${RESET}"
+        if [[ "$project_mode" == "monorepo" ]]; then
+            echo -e "    子项目:"
+            for entry in "${subprojects[@]}"; do
+                IFS=':' read -r sub_name _ display_name <<< "$entry"
+                echo -e "      - ${CYAN}${sub_name}${RESET} (${display_name})"
+            done
+        else
+            IFS=':' read -r _ _ display_name <<< "${subprojects[0]}"
+            echo -e "    技术栈:    ${CYAN}${display_name}${RESET}"
+        fi
+        echo -e "    目标目录:  ${CYAN}${target_dir}${RESET}"
+        echo -e "    语言:      ${CYAN}中文${RESET}"
+    else
+        echo -e "    Project:   ${CYAN}${project_name}${RESET}"
+        echo -e "    Slug:      ${CYAN}${project_slug}${RESET}"
+        echo -e "    Mode:      ${CYAN}$(if [[ "$project_mode" == "single" ]]; then echo "Single project"; else echo "Monorepo"; fi)${RESET}"
+        if [[ "$project_mode" == "monorepo" ]]; then
+            echo -e "    Sub-projects:"
+            for entry in "${subprojects[@]}"; do
+                IFS=':' read -r sub_name _ display_name <<< "$entry"
+                echo -e "      - ${CYAN}${sub_name}${RESET} (${display_name})"
+            done
+        else
+            IFS=':' read -r _ _ display_name <<< "${subprojects[0]}"
+            echo -e "    Stack:     ${CYAN}${display_name}${RESET}"
+        fi
+        echo -e "    Target:    ${CYAN}${target_dir}${RESET}"
+        echo -e "    Language:  ${CYAN}English${RESET}"
+    fi
+    echo ""
+
+    if [[ "$lang" == "zh-CN" ]]; then
+        if ! prompt_yn "确认生成?" "y"; then
+            info "已取消。"
+            exit 0
+        fi
+    else
+        if ! prompt_yn "Proceed with generation?" "y"; then
+            info "Cancelled."
+            exit 0
+        fi
+    fi
+    echo ""
+
     # ---- Step 7: Generate Files ----
 
     local generated_files=()
 
-    if [[ "$lang" == "zh-CN" ]]; then
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        info "[DRY-RUN] Preview of files that would be generated:"
+        echo ""
+    elif [[ "$lang" == "zh-CN" ]]; then
         info "正在生成文件..."
     else
         info "Generating files..."
@@ -643,68 +830,66 @@ main() {
         copy_common_templates "$lang" "$target_dir"
         generated_files+=(".claude/CLAUDE.md" ".claude/rules/common.md")
 
-        # Generate sub-project table and monorepo structure
-        local subproject_table monorepo_structure
-        if [[ "$lang" == "zh-CN" ]]; then
-            subproject_table=$(generate_subproject_table_zhcn "${subprojects[@]}")
-            monorepo_structure=$(generate_monorepo_structure_zhcn "$project_slug" "${subprojects[@]}")
-        else
-            subproject_table=$(generate_subproject_table "${subprojects[@]}")
-            monorepo_structure=$(generate_monorepo_structure "$project_slug" "${subprojects[@]}")
+        if [[ "$DRY_RUN" -eq 0 ]]; then
+            # Generate sub-project table and monorepo structure
+            local subproject_table monorepo_structure
+            if [[ "$lang" == "zh-CN" ]]; then
+                subproject_table=$(generate_subproject_table_zhcn "${subprojects[@]}")
+                monorepo_structure=$(generate_monorepo_structure_zhcn "$project_slug" "${subprojects[@]}")
+            else
+                subproject_table=$(generate_subproject_table "${subprojects[@]}")
+                monorepo_structure=$(generate_monorepo_structure "$project_slug" "${subprojects[@]}")
+            fi
+
+            # Replace placeholders in root CLAUDE.md
+            replace_placeholders "${target_dir}/.claude/CLAUDE.md" \
+                "PROJECT_NAME=${project_name}" \
+                "PROJECT_SLUG=${project_slug}" \
+                "PROJECT_DESCRIPTION=${project_description}"
+
+            replace_placeholder_multiline "${target_dir}/.claude/CLAUDE.md" \
+                "SUBPROJECT_TABLE" "$subproject_table"
+
+            # Replace placeholders in common-rules.md
+            replace_placeholder_multiline "${target_dir}/.claude/rules/common.md" \
+                "MONOREPO_STRUCTURE" "$monorepo_structure"
         fi
-
-        # Replace placeholders in root CLAUDE.md
-        replace_placeholders "${target_dir}/.claude/CLAUDE.md" \
-            "PROJECT_NAME=${project_name}" \
-            "PROJECT_SLUG=${project_slug}" \
-            "PROJECT_DESCRIPTION=${project_description}"
-
-        replace_placeholder_multiline "${target_dir}/.claude/CLAUDE.md" \
-            "SUBPROJECT_TABLE" "$subproject_table"
-
-        # Replace placeholders in common-rules.md
-        replace_placeholder_multiline "${target_dir}/.claude/rules/common.md" \
-            "MONOREPO_STRUCTURE" "$monorepo_structure"
 
         # Process each sub-project
         for entry in "${subprojects[@]}"; do
             IFS=':' read -r sub_name preset_id display_name <<< "$entry"
             local sub_dir="${target_dir}/${sub_name}"
 
-            mkdir -p "$sub_dir"
+            safe_mkdir "$sub_dir"
             copy_preset_templates "$preset_id" "$lang" "$sub_dir"
 
-            # Get preset defaults
-            local pkg_mgr coverage_min
-            pkg_mgr=$(get_preset_default "$preset_id" "package_manager")
-            coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
+            if [[ "$DRY_RUN" -eq 0 ]]; then
+                # Get preset defaults
+                local pkg_mgr coverage_min
+                pkg_mgr=$(get_preset_default "$preset_id" "package_manager")
+                coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
 
-            # Replace placeholders in all generated .md files
-            while IFS= read -r -d '' md_file; do
-                if [[ "$overwrite_idx" -eq 1 ]] && [[ -f "$md_file" ]]; then
-                    # Skip mode: skip if file existed before (we can't easily detect this,
-                    # so skip mode only applies to root .claude/ check above)
-                    :
-                fi
+                # Replace placeholders in all generated .md files
+                while IFS= read -r -d '' md_file; do
+                    replace_placeholders "$md_file" \
+                        "PROJECT_NAME=${project_name}" \
+                        "PROJECT_SLUG=${project_slug}" \
+                        "PROJECT_DESCRIPTION=${project_description}" \
+                        "SUBPROJECT_NAME=${sub_name}" \
+                        "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
+                        "COVERAGE_MIN=${coverage_min:-85}" \
+                        "DATE=$(date +%Y-%m-%d)"
+                done < <(find "${sub_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
-                replace_placeholders "$md_file" \
-                    "PROJECT_NAME=${project_name}" \
-                    "PROJECT_SLUG=${project_slug}" \
-                    "PROJECT_DESCRIPTION=${project_description}" \
-                    "SUBPROJECT_NAME=${sub_name}" \
-                    "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
-                    "COVERAGE_MIN=${coverage_min:-85}" \
-                    "DATE=$(date +%Y-%m-%d)"
-            done < <(find "${sub_dir}/.claude" -name "*.md" -print0 2>/dev/null)
+                # Track generated files
+                while IFS= read -r -d '' f; do
+                    local rel_path="${f#${target_dir}/}"
+                    generated_files+=("$rel_path")
+                done < <(find "${sub_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
-            # Track generated files
-            while IFS= read -r -d '' f; do
-                local rel_path="${f#${target_dir}/}"
-                generated_files+=("$rel_path")
-            done < <(find "${sub_dir}/.claude" -name "*.md" -print0 2>/dev/null)
-
-            # Optional rules selection
-            select_optional_rules "$preset_id" "$lang" "$sub_dir"
+                # Optional rules selection
+                select_optional_rules "$preset_id" "$lang" "$sub_dir"
+            fi
         done
 
     else
@@ -715,39 +900,51 @@ main() {
         # Copy preset templates directly to target (the root IS the project)
         copy_preset_templates "$preset_id" "$lang" "$target_dir"
 
-        # Get preset defaults
-        local pkg_mgr coverage_min
-        pkg_mgr=$(get_preset_default "$preset_id" "package_manager")
-        coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
+        if [[ "$DRY_RUN" -eq 0 ]]; then
+            # Get preset defaults
+            local pkg_mgr coverage_min
+            pkg_mgr=$(get_preset_default "$preset_id" "package_manager")
+            coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
 
-        # Replace placeholders
-        while IFS= read -r -d '' md_file; do
-            replace_placeholders "$md_file" \
-                "PROJECT_NAME=${project_name}" \
-                "PROJECT_SLUG=${project_slug}" \
-                "PROJECT_DESCRIPTION=${project_description}" \
-                "SUBPROJECT_NAME=${project_slug}" \
-                "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
-                "COVERAGE_MIN=${coverage_min:-85}" \
-                "DATE=$(date +%Y-%m-%d)"
-        done < <(find "${target_dir}/.claude" -name "*.md" -print0 2>/dev/null)
+            # Replace placeholders
+            while IFS= read -r -d '' md_file; do
+                replace_placeholders "$md_file" \
+                    "PROJECT_NAME=${project_name}" \
+                    "PROJECT_SLUG=${project_slug}" \
+                    "PROJECT_DESCRIPTION=${project_description}" \
+                    "SUBPROJECT_NAME=${project_slug}" \
+                    "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
+                    "COVERAGE_MIN=${coverage_min:-85}" \
+                    "DATE=$(date +%Y-%m-%d)"
+            done < <(find "${target_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
-        # Track generated files
-        while IFS= read -r -d '' f; do
-            local rel_path="${f#${target_dir}/}"
-            generated_files+=("$rel_path")
-        done < <(find "${target_dir}/.claude" -name "*.md" -print0 2>/dev/null)
+            # Track generated files
+            while IFS= read -r -d '' f; do
+                local rel_path="${f#${target_dir}/}"
+                generated_files+=("$rel_path")
+            done < <(find "${target_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
-        # Optional rules selection
-        select_optional_rules "$preset_id" "$lang" "$target_dir"
+            # Optional rules selection
+            select_optional_rules "$preset_id" "$lang" "$target_dir"
+        fi
     fi
 
     # ---- Step 8: Summary ----
 
     echo ""
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        echo -e "${YELLOW}${BOLD}  ============================================${RESET}"
+        echo -e "${YELLOW}${BOLD}  [DRY-RUN] No files were created.${RESET}"
+        echo -e "${YELLOW}${BOLD}  ============================================${RESET}"
+        echo ""
+        echo -e "${BOLD}  Run without --dry-run to generate files.${RESET}"
+        echo ""
+        return 0
+    fi
+
     echo -e "${GREEN}${BOLD}  ============================================${RESET}"
     if [[ "$lang" == "zh-CN" ]]; then
-        echo -e "${GREEN}${BOLD}  Successfully generated .claude/ context!${RESET}"
+        echo -e "${GREEN}${BOLD}  .claude/ 上下文目录生成成功！${RESET}"
     else
         echo -e "${GREEN}${BOLD}  Successfully generated .claude/ context!${RESET}"
     fi
@@ -794,4 +991,5 @@ main() {
     echo ""
 }
 
-main "$@"
+parse_args "$@"
+main

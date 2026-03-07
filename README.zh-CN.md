@@ -1,5 +1,7 @@
 # Claude Context Templates
 
+**TL;DR** 运行 `./init.sh` → 回答几个问题 → 获得一个生产级 `.claude/` 目录，包含架构、测试和安全规范。支持 Python/FastAPI、React/TypeScript 和 AWS CDK。
+
 > 为 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 提供结构化、可复用的上下文管理模板。几秒钟内为你的项目生成完善的 `.claude/` 目录。
 
 [English](README.md)

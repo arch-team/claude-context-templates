@@ -1,5 +1,7 @@
 # Claude Context Templates
 
+**TL;DR** Run `./init.sh` → answer a few questions → get a production-ready `.claude/` directory with architecture, testing, and security rules for your tech stack. Supports Python/FastAPI, React/TypeScript, and AWS CDK.
+
 > Structured, reusable context management templates for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Generate a well-organized `.claude/` directory for your project in seconds.
 
 [中文文档](README.zh-CN.md)

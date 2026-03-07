@@ -73,10 +73,10 @@ my-awesome-app/                  # Monorepo root
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `{{PACKAGE_MANAGER}}` | `npm` | Node.js package manager |
+| `{{PACKAGE_MANAGER}}` | `pnpm` | Node.js package manager |
 | `{{LINTER}}` | `eslint` | Linting tool |
 | `{{TEST_RUNNER}}` | `jest` | Test framework |
-| `{{COVERAGE_MIN}}` | `80` | Minimum test coverage % |
+| `{{COVERAGE_MIN}}` | `85` | Minimum test coverage % |
 
 ## Variable Syntax
 

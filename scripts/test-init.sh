@@ -165,6 +165,7 @@ test_single_python_zhcn() {
     input+="测试项目描述\n"               # 项目描述
     input+="1\n"                        # 技术栈: Python + FastAPI
     input+="${tmpdir}\n"                # 目标目录
+    input+="y\n"                        # 确认生成
     input+="y\n"                        # 可选: api-design
     input+="y\n"                        # 可选: logging
     input+="y\n"                        # 可选: observability
@@ -234,6 +235,7 @@ test_monorepo_english() {
     input+="2\n"                        # 子项目 2 技术栈: React + TypeScript
     input+="\n"                         # 继续添加子项目? n (默认)
     input+="${tmpdir}\n"                # 目标目录
+    input+="y\n"                        # 确认生成
     # 子项目 1 (backend / python-fastapi) 可选规范
     input+="y\n"                        # api-design
     input+="y\n"                        # logging
@@ -304,6 +306,7 @@ test_single_react_english() {
     input+="A React TypeScript application\n"   # 项目描述
     input+="2\n"                                # 技术栈: React + TypeScript
     input+="${tmpdir}\n"                         # 目标目录
+    input+="y\n"                                # 确认生成
     input+="y\n"                                # 可选: component-design
     input+="y\n"                                # 可选: state-management
     input+="y\n"                                # 可选: performance

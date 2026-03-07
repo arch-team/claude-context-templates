@@ -18,6 +18,7 @@ files:
     - rules/testing.md
     - rules/security.md
     - rules/checklist.md
+    - rules/code-style.md
     - rules/project-structure.md
   optional:
     - rules/construct-design.md
