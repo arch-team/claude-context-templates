@@ -94,6 +94,7 @@ check_dir() {
 }
 
 check_file "${ROOT_DIR}/plugin/.claude-plugin/plugin.json" "plugin.json"
+check_file "${ROOT_DIR}/plugin/.claude-plugin/marketplace.json" "marketplace.json"
 check_file "${ROOT_DIR}/plugin/commands/init-context.md" "commands/init-context.md"
 check_file "${ROOT_DIR}/plugin/skills/context-setup/SKILL.md" "skills/context-setup/SKILL.md"
 check_dir  "${TARGET_DIR}/_common" "presets/_common/"

@@ -37,6 +37,18 @@ jobs:
       - name: Run init.sh smoke tests
         run: scripts/test-init.sh
 
+  check-plugin-sync:
+    name: Check Plugin Preset Sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Check plugin presets are in sync
+        run: scripts/check-plugin-sync.sh
+
   check-links:
     name: Check Markdown Links
     runs-on: ubuntu-latest

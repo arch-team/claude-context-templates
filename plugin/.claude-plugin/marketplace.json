@@ -1,0 +1,14 @@
+{
+  "name": "local-dev",
+  "owner": {
+    "name": "arch-team"
+  },
+  "plugins": [
+    {
+      "name": "claude-context-templates",
+      "source": "./",
+      "version": "1.0.0",
+      "description": "Generate production-ready .claude/ context directories for your projects."
+    }
+  ]
+}

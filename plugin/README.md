@@ -50,10 +50,21 @@ Plugin 会在检测到项目缺少 `.claude/` 目录时自动建议生成。
 # 构建 Plugin（同步 presets）
 ./scripts/build-plugin.sh
 
-# 本地测试
+# 本地测试（使用内置的 local-dev marketplace）
 /plugin marketplace add ./plugin
-/plugin install claude-context-templates@local-test
+/plugin install claude-context-templates@local-dev
 ```
+
+> Plugin 内置了 `marketplace.json`（marketplace 名称为 `local-dev`），简化本地开发测试流程。
+
+## 版本发布
+
+```bash
+# 发布新版本（自动 version bump + 构建 + 验证）
+./scripts/release-plugin.sh 1.1.0
+```
+
+脚本会自动更新版本号、同步 presets、运行验证，并提示后续手动 commit/tag 步骤。
 
 ## 许可证
 
