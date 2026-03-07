@@ -37,6 +37,18 @@ jobs:
       - name: Run init.sh smoke tests
         run: scripts/test-init.sh
 
+  build-plugin:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Build and validate plugin structure
+        run: scripts/build-plugin.sh
+
   check-links:
     name: Check Markdown Links
     runs-on: ubuntu-latest

@@ -65,19 +65,28 @@ header() {
 
 # 从 YAML 中提取 files.required 列表（纯 bash 实现，无需 yq）
 # 解析 preset.yaml 中 required: 下的 "- xxx" 行，直到遇到非列表项
+# 容错: 支持行内注释 (required: # comment) 和行尾注释 (- file.md # desc)
 parse_required_files() {
   local yaml_file="$1"
   local in_required=0
   while IFS= read -r line; do
-    # 检测 required: 标记
-    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*$ ]]; then
+    # 跳过纯注释行和空行
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line// /}" ]] && continue
+
+    # 检测 required: 标记（支持行内注释: "required:" 或 "required: # comment"）
+    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*(#.*)?$ ]]; then
       in_required=1
       continue
     fi
     if [[ $in_required -eq 1 ]]; then
-      # 匹配列表项 "    - xxx"
+      # 匹配列表项 "    - xxx"（去除行尾注释）
       if [[ "$line" =~ ^[[:space:]]+-[[:space:]]+(.*) ]]; then
-        echo "${BASH_REMATCH[1]}"
+        local value="${BASH_REMATCH[1]}"
+        # 去除行尾注释（# 之后的内容）和尾部空格
+        value="${value%%#*}"
+        value="${value%"${value##*[![:space:]]}"}"
+        [[ -n "$value" ]] && echo "$value"
       else
         # 遇到非列表项，退出 required 区域
         break

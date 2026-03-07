@@ -329,16 +329,24 @@ get_optional_rules() {
         return
     fi
 
-    # Parse optional files from preset.yaml (simple line-based parsing)
+    # Parse optional files from preset.yaml (line-based parsing with comment tolerance)
     local in_optional=0
     while IFS= read -r line; do
-        if [[ "$line" =~ ^[[:space:]]*optional: ]]; then
+        # 跳过纯注释行和空行
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line// /}" ]] && continue
+
+        if [[ "$line" =~ ^[[:space:]]*optional:[[:space:]]*(#.*)?$ ]]; then
             in_optional=1
             continue
         fi
         if [[ $in_optional -eq 1 ]]; then
             if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*(rules/.+\.md) ]]; then
-                optionals+=("${BASH_REMATCH[1]}")
+                local value="${BASH_REMATCH[1]}"
+                # 去除行尾注释和尾部空格
+                value="${value%%#*}"
+                value="${value%"${value##*[![:space:]]}"}"
+                [[ -n "$value" ]] && optionals+=("$value")
             elif [[ "$line" =~ ^[[:space:]]*[a-z] && ! "$line" =~ ^[[:space:]]*- ]]; then
                 # New top-level key, stop
                 break
@@ -360,13 +368,21 @@ get_required_rules() {
 
     local in_required=0
     while IFS= read -r line; do
-        if [[ "$line" =~ ^[[:space:]]*required: ]]; then
+        # 跳过纯注释行和空行
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line// /}" ]] && continue
+
+        if [[ "$line" =~ ^[[:space:]]*required:[[:space:]]*(#.*)?$ ]]; then
             in_required=1
             continue
         fi
         if [[ $in_required -eq 1 ]]; then
             if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*(.+\.md) ]]; then
-                requireds+=("${BASH_REMATCH[1]}")
+                local value="${BASH_REMATCH[1]}"
+                # 去除行尾注释和尾部空格
+                value="${value%%#*}"
+                value="${value%"${value##*[![:space:]]}"}"
+                [[ -n "$value" ]] && requireds+=("$value")
             elif [[ "$line" =~ ^[[:space:]]*[a-z] && ! "$line" =~ ^[[:space:]]*- ]]; then
                 break
             fi

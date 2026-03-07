@@ -329,6 +329,105 @@ test_single_react_english() {
 }
 
 # ============================================================================
+# 场景 4: 单项目 AWS CDK 中文
+# ============================================================================
+
+test_single_awscdk_zhcn() {
+    log_scenario "4: 单项目 AWS CDK 中文"
+
+    local tmpdir
+    tmpdir=$(create_temp_dir)
+    log_info "临时目录: ${tmpdir}"
+
+    # init.sh 交互流程 (stdin 输入顺序):
+    # 1. 语言选择: 2 (中文)
+    # 2. 项目模式: 1 (单项目)
+    # 3. 项目名称: "TestCDK"
+    # 4. 项目标识符: 按回车接受默认值
+    # 5. 项目描述: "AWS CDK 测试项目"
+    # 6. 技术栈选择: 3 (AWS CDK)
+    # 7. 目标目录: tmpdir 的绝对路径
+    # 8. 可选规范 (aws-cdk 有 3 个可选):
+    #    - construct-design: y
+    #    - deployment: y
+    #    - cost-optimization: y
+    local input=""
+    input+="2\n"                        # 语言: 中文
+    input+="1\n"                        # 模式: 单项目
+    input+="TestCDK\n"                  # 项目名称
+    input+="\n"                         # 项目标识符: 接受默认
+    input+="AWS CDK 测试项目\n"          # 项目描述
+    input+="3\n"                        # 技术栈: AWS CDK
+    input+="${tmpdir}\n"                # 目标目录
+    input+="y\n"                        # 确认生成
+    input+="y\n"                        # 可选: construct-design
+    input+="y\n"                        # 可选: deployment
+    input+="y\n"                        # 可选: cost-optimization
+
+    local exit_code=0
+    echo -e "$input" | bash "$INIT_SH" > /dev/null 2>&1 || exit_code=$?
+
+    assert_exit_code "$exit_code"
+    assert_claude_dir_exists "$tmpdir"
+    assert_file_exists "${tmpdir}/.claude/CLAUDE.md" ".claude/CLAUDE.md"
+    assert_file_exists "${tmpdir}/.claude/project-config.md" ".claude/project-config.md"
+    assert_file_exists "${tmpdir}/.claude/rules/architecture.md" ".claude/rules/architecture.md"
+    assert_file_exists "${tmpdir}/.claude/rules/security.md" ".claude/rules/security.md"
+    assert_file_exists "${tmpdir}/.claude/rules/construct-design.md" ".claude/rules/construct-design.md (可选)"
+    assert_no_placeholders "$tmpdir"
+    assert_md_file_count "$tmpdir"
+
+    cleanup_temp_dir "$tmpdir"
+    log_info "临时目录已清理"
+}
+
+# ============================================================================
+# 场景 5: --dry-run 模式 (不生成文件)
+# ============================================================================
+
+test_dry_run_mode() {
+    log_scenario "5: --dry-run 模式"
+
+    local tmpdir
+    tmpdir=$(create_temp_dir)
+    log_info "临时目录: ${tmpdir}"
+
+    # init.sh --dry-run 交互流程:
+    # 与场景 1 相同的输入，但使用 --dry-run 参数
+    local input=""
+    input+="1\n"                        # 语言: English
+    input+="1\n"                        # 模式: Single project
+    input+="DryRunTest\n"              # 项目名称
+    input+="\n"                         # 项目标识符: 接受默认
+    input+="Dry run test project\n"    # 项目描述
+    input+="1\n"                        # 技术栈: Python + FastAPI
+    input+="${tmpdir}\n"                # 目标目录
+    input+="y\n"                        # 确认生成
+
+    local exit_code=0
+    echo -e "$input" | bash "$INIT_SH" --dry-run > /dev/null 2>&1 || exit_code=$?
+
+    assert_exit_code "$exit_code"
+
+    # --dry-run 模式下不应生成任何文件
+    if [[ ! -d "${tmpdir}/.claude" ]]; then
+        log_pass "--dry-run: .claude/ 目录未创建 (符合预期)"
+    else
+        # .claude 目录存在，检查是否有实际文件
+        local file_count
+        file_count=$(find "${tmpdir}/.claude" -type f 2>/dev/null | wc -l | tr -d ' ')
+        if [[ "$file_count" -eq 0 ]]; then
+            log_pass "--dry-run: .claude/ 目录为空 (符合预期)"
+        else
+            log_fail "--dry-run: .claude/ 目录下存在 ${file_count} 个文件 (不应生成文件)"
+        fi
+    fi
+
+    cleanup_temp_dir "$tmpdir"
+    log_info "临时目录已清理"
+}
+
+# ============================================================================
 # 主流程
 # ============================================================================
 
@@ -346,6 +445,8 @@ main() {
     test_single_python_zhcn
     test_monorepo_english
     test_single_react_english
+    test_single_awscdk_zhcn
+    test_dry_run_mode
 
     # --- 汇总 ---
     echo ""

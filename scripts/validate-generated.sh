@@ -39,7 +39,7 @@ TODO_COUNT=0
 # 定位项目根目录（脚本所在目录的上级）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-PRESETS_DIR="${PROJECT_ROOT}/presets"
+PRESETS_DIR="${PROJECT_ROOT}/plugin/presets"
 
 # ============================================================
 # 工具函数
@@ -88,17 +88,26 @@ EOF
 
 # 从 preset.yaml 中提取 files.required 列表（纯 bash 实现）
 # 复用 validate-presets.sh 的解析逻辑
+# 容错: 支持行内注释 (required: # comment) 和行尾注释 (- file.md # desc)
 parse_required_files() {
   local yaml_file="$1"
   local in_required=0
   while IFS= read -r line; do
-    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*$ ]]; then
+    # 跳过纯注释行和空行
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line// /}" ]] && continue
+
+    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*(#.*)?$ ]]; then
       in_required=1
       continue
     fi
     if [[ $in_required -eq 1 ]]; then
       if [[ "$line" =~ ^[[:space:]]+-[[:space:]]+(.*) ]]; then
-        echo "${BASH_REMATCH[1]}"
+        local value="${BASH_REMATCH[1]}"
+        # 去除行尾注释和尾部空格
+        value="${value%%#*}"
+        value="${value%"${value##*[![:space:]]}"}"
+        [[ -n "$value" ]] && echo "$value"
       else
         break
       fi
