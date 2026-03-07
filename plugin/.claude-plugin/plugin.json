@@ -1,0 +1,8 @@
+{
+  "name": "claude-context-templates",
+  "description": "Generate production-ready .claude/ context directories for your projects. Supports Python/FastAPI, React/TypeScript, and AWS CDK presets with bilingual (en/zh-CN) templates.",
+  "version": "1.0.0",
+  "author": {
+    "name": "arch-team"
+  }
+}
