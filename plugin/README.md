@@ -1,28 +1,42 @@
 # Claude Context Templates Plugin
 
-Claude Code Plugin — 在 Claude Code 中一键生成生产级 `.claude/` 上下文目录。
+Claude Code Plugin — 生成和审计 `.claude/` 上下文目录，提升 Claude Code 对项目的理解能力。
 
 ## 安装
 
 ```bash
 # 添加 marketplace（一次性）
-/plugin marketplace add arch-team/claude-plugins
+/plugin marketplace add arch-team/claude-context-templates
 
 # 安装 Plugin
-/plugin install claude-context-templates@arch-team
+/plugin install claude-context-templates@claude-context-templates
 ```
 
-## 使用
+## 命令
 
-### 命令方式
-
-在 Claude Code 中输入：
+### /init-context — 生成上下文目录
 
 ```
 /init-context
 ```
 
-按提示选择语言、项目模式、技术栈，即可生成完整的 `.claude/` 目录。
+对话式交互生成 `.claude/` 目录。自动探测项目技术栈，支持单项目和 Monorepo 模式。
+
+### /audit-context — 审计上下文目录
+
+```
+/audit-context
+```
+
+审计现有 `.claude/` 目录的质量，从 5 个维度评估并给出改进建议：
+
+| 维度 | 检查内容 |
+|------|----------|
+| 结构完整性 | 关键文件是否齐全 |
+| 内容质量 | 是否有实质内容、未填写的占位符 |
+| 最佳实践 | Section 0 速查卡片、双向链接、SSoT |
+| 规范覆盖度 | 架构、测试、安全、代码风格、CI/CD |
+| 可维护性 | 文件数量、长度、断链、冗余 |
 
 ### 自动检测
 
