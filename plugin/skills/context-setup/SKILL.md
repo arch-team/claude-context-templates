@@ -1,48 +1,107 @@
 ---
 name: Claude Context Setup
 description: >
-  Detect projects missing .claude/ context directories and suggest generating one.
-  Triggers when a project lacks .claude/, or when users mention "initialize context",
-  "setup CLAUDE.md", "configure Claude Code rules", or "improve Claude understanding".
-  Supports Python/FastAPI, React/TypeScript, and AWS CDK presets.
+  Help developers set up or improve .claude/ context directories so Claude Code
+  deeply understands their project's architecture, conventions, and standards —
+  resulting in dramatically better code suggestions, reviews, and generation.
+
+  Activate when: the project has no .claude/ directory, the existing .claude/ seems
+  incomplete or low-quality, or the user expresses that Claude Code "doesn't understand"
+  their project, produces incorrect suggestions, or asks about context setup,
+  CLAUDE.md, project rules, coding standards for AI, or how to make Claude work better.
+
+  Also activate for Chinese-speaking users who mention: 初始化上下文, 配置 Claude,
+  Claude 不理解项目, 提升 AI 代码质量, 项目规范, 上下文管理, CLAUDE.md 配置,
+  让 Claude 更懂我的项目, Claude 老是写错代码.
 ---
 
 # Claude Context Setup
 
-## When to Activate
+## Core Logic
 
-This skill activates when you detect any of the following:
+When activated, follow this decision flow:
 
-- The current project directory does not have a `.claude/` directory
-- The user mentions wanting better Claude Code understanding of their project
-- The user asks about "CLAUDE.md", "context setup", "Claude Code configuration"
-- The user asks "how to make Claude Code work better with my project"
+1. Check if `.claude/` directory exists in the current project
+2. Check for project type indicators: `package.json`, `pyproject.toml`, `setup.py`, `cdk.json`, `go.mod`, `Cargo.toml`, `pom.xml`, etc.
+3. Route to the appropriate path:
+   - **No `.claude/`** → Path A
+   - **`.claude/` exists** → Path B
+   - **User asks about optimization** → Path C
 
-## Behavior
+## Path A: No .claude/ Directory
 
-**Do NOT auto-generate files.** Instead:
+The project lacks a `.claude/` directory. Guide the user to create one.
 
-1. **Inform the user** that their project could benefit from a `.claude/` context directory
-2. **Briefly explain** what `.claude/` directories do:
-   - Claude Code reads `CLAUDE.md` and `rules/*.md` to understand project architecture, conventions, and standards
-   - A well-structured context directory leads to better code generation, more consistent reviews, and smarter suggestions
-3. **Suggest using the `/init-context` command** to interactively generate a production-ready `.claude/` directory
-4. **Mention available presets**: Python/FastAPI, React/TypeScript, AWS CDK
+1. **Explain the value**: `.claude/` contains `CLAUDE.md` and `rules/*.md` files that teach Claude Code your project's architecture, conventions, and standards — leading to dramatically better code generation and reviews
+2. **Recommend a matching preset** based on detected project files:
+   - `package.json` with React/Next.js dependencies → React + TypeScript preset
+   - `pyproject.toml` or `setup.py` with FastAPI → Python + FastAPI preset
+   - `cdk.json` → AWS CDK preset
+   - Multiple sub-directories with their own config files → suggest Monorepo mode
+   - No clear match for built-in presets → mention that `/init-context` supports **any tech stack** via the `generic` preset (AI-powered generation)
+3. **Suggest `/init-context`** to interactively generate the directory
+   - `/init-context` performs deep project analysis and automatically routes to the best path: preset fast-track (for matching projects) or generic AI generation (for any other tech stack)
 
-## Example Response
+## Path B: .claude/ Already Exists
 
-> I noticed your project doesn't have a `.claude/` directory yet. This directory helps Claude Code understand your project's architecture, coding standards, and conventions — leading to much better code suggestions.
+The project already has a `.claude/` directory. Instead of doing nothing, help the user improve it.
+
+1. **Acknowledge** the existing configuration
+2. **Suggest `/audit-context`** to check quality across 5 dimensions:
+   - Structure completeness (required and recommended files)
+   - Content quality (placeholder fill rate, substance)
+   - Best practices compliance (SSoT, linking, naming)
+   - Coverage (architecture, testing, security, code style, CI/CD)
+   - Maintainability (file count, length, broken links)
+3. Mention that `/audit-context` produces an actionable report with A/B/C/D ratings and prioritized improvement suggestions
+
+## Path C: User Asks About Optimization
+
+The user proactively asks how to improve Claude Code's understanding or their `.claude/` quality.
+
+- If `.claude/` exists → follow Path B (audit first, then improve)
+- If `.claude/` does not exist → follow Path A (create it)
+- If the project is a Monorepo, mention that `/init-context` supports Monorepo mode with per-subproject presets and a shared root configuration
+
+## Available Presets
+
+| Preset | Tech Stack | Focus Areas |
+|--------|-----------|-------------|
+| `python-fastapi` | Python + FastAPI + SQLAlchemy | DDD, TDD, API Design |
+| `react-typescript` | React + TypeScript + Vite | FSD, State Management, Accessibility |
+| `aws-cdk` | AWS CDK + TypeScript | Construct Patterns, Security, Cost Optimization |
+| `generic` | Any tech stack (AI-powered) | Deep analysis + AI-generated rules for any project |
+
+## Example Responses
+
+**Scenario 1 — No .claude/, Python project detected:**
+
+> I noticed your project doesn't have a `.claude/` directory yet. Based on `pyproject.toml` and FastAPI in your dependencies, this looks like a Python + FastAPI project.
 >
-> You can run `/init-context` to interactively generate a production-ready `.claude/` directory. It supports:
-> - **Python + FastAPI** (DDD, TDD, API Design)
-> - **React + TypeScript** (FSD, State Management, Accessibility)
-> - **AWS CDK** (Construct Patterns, Security, Cost Optimization)
+> A `.claude/` directory teaches Claude Code your architecture, conventions, and standards — resulting in much better code suggestions and reviews.
+>
+> You can run `/init-context` to generate one. The **Python + FastAPI** preset includes rules for DDD architecture, TDD testing, API design, and more.
 >
 > Want me to set it up now?
 
+**Scenario 3 — No .claude/, unrecognized tech stack (e.g., Go + Gin):**
+
+> I noticed your project doesn't have a `.claude/` directory yet. Based on `go.mod` and Gin in your dependencies, this looks like a Go + Gin project.
+>
+> While there's no built-in preset for this stack, `/init-context` can perform a deep analysis of your project and **generate tailored rules using AI**. It will create architecture, testing, code style, and security standards specific to your Go + Gin setup.
+>
+> Want me to set it up now?
+
+**Scenario 2 — .claude/ exists, user says "Claude keeps making mistakes":**
+
+> Your project already has a `.claude/` directory — that's a great start. The issues you're experiencing might come from incomplete or outdated context rules.
+>
+> I recommend running `/audit-context` to check your `.claude/` quality. It evaluates 5 dimensions (structure, content, best practices, coverage, maintainability) and gives you a prioritized list of improvements.
+>
+> Want me to run the audit now?
+
 ## Important
 
-- **Never generate `.claude/` files without explicit user consent**
-- Keep the suggestion concise — don't overwhelm the user
-- If the user says yes, invoke the `/init-context` command flow
-- If the project already has `.claude/`, do not activate this skill
+- **Never generate `.claude/` files without explicit user consent** — always suggest the command, let the user decide
+- **Match the user's language** — respond in Chinese if the user writes in Chinese, English if in English
+- **Route to the right command**: no `.claude/` → `/init-context`; has `.claude/` → `/audit-context`

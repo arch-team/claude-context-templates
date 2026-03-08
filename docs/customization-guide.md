@@ -146,6 +146,46 @@ Add your preset to the selection menu in `init.sh`:
 # Add a sub-project with your preset and verify
 ```
 
+## Using the Generic Preset
+
+The `generic` preset supports **any tech stack** through AI-powered content generation. It's automatically selected when `/init-context` detects a project that doesn't match any built-in preset.
+
+### When Generic is Used
+
+| Scenario | Path |
+|----------|------|
+| Existing project with FastAPI → matches `python-fastapi` | Built-in preset (fast track) |
+| Existing project with Django → no match | Generic (AI generation) |
+| Existing project with Go + Gin → no match | Generic (AI generation) |
+| Empty project, user picks Python + FastAPI | Built-in preset (fast track) |
+| Empty project, user picks Rust + Axum | Generic (AI generation) |
+
+### How It Works
+
+1. `/init-context` performs deep project analysis (language, framework, toolchain, architecture)
+2. Skeleton template files are copied from `presets/generic/{lang}/`
+3. `{{AI_GENERATED:xxx}}` placeholders are replaced with AI-generated content based on analysis
+4. Quality self-check ensures generated content meets `context-schema.yaml` criteria
+
+### Customizing After Generation
+
+AI-generated content is a **starting point**. After generation:
+
+1. **Review `rules/architecture.md`** — Verify the architecture description matches your actual design
+2. **Review `rules/tech-stack.md`** — Confirm version numbers and constraints
+3. **Fill in `project-config.md`** — Add business modules, import paths, etc.
+4. **Run `/audit-context`** — Get a quality report and improvement suggestions
+5. **Add optional rules** — Use `context-schema.yaml` as reference for what rules to add
+
+### Template Structure
+
+Generic templates use two types of placeholders:
+
+- `{{VARIABLE}}` — Simple text replacement (project name, slug, etc.)
+- `{{AI_GENERATED:xxx}}` — AI fills these based on project analysis results
+
+See [template-variables.md](template-variables.md) for the complete placeholder reference.
+
 ## Preset Design Tips
 
 ### Use Real-World Patterns

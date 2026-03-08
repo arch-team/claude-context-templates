@@ -15,8 +15,9 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 | `python-fastapi` | Python + FastAPI + SQLAlchemy | 11 | DDD + Clean Architecture, TDD, API Design |
 | `react-typescript` | React + TypeScript + Vite | 11 | Feature-Sliced Design, State Management, Accessibility |
 | `aws-cdk` | AWS CDK + TypeScript | 9 | Construct Patterns, Security Defaults, Cost Optimization |
+| `generic` | 任意技术栈 (AI 智能生成) | 7+ | 基于项目分析动态生成，适配任意技术栈 |
 
-预设模板文件存放在本 Plugin 的 `presets/` 目录中。
+预设模板文件存放在本 Plugin 的 `presets/` 目录中。规范类型体系定义见 `presets/context-schema.yaml`。
 
 ## 执行步骤
 
@@ -34,7 +35,7 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 3. 对比版本号：
    - 如果远程版本 > 本地版本，**提示用户**（但不强制）：
      ```
-     ⚠️ 检测到新版本 preset 模板可用（本地 v1.0.0 → 远程 v1.1.0）。
+     ⚠️ 检测到新版本 preset 模板可用（本地 v1.2.0 → 远程 vX.Y.Z）。
      建议运行以下命令更新 Plugin：
        /plugin install claude-context-templates@claude-context-templates
      是否继续使用当前版本？(y/n)
@@ -44,122 +45,389 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 
 > **注意**：版本检查失败（网络问题等）不应阻止正常流程。
 
-### Step 1: 探测当前项目
+### Step 1: 深度项目探测
 
-在开始交互之前，先静默探测当前工作目录的项目状态：
+在开始交互之前，对当前工作目录进行全面分析。
+
+#### 1a. 基础探测（保持兼容）
 
 1. 检查是否已存在 `.claude/` 目录
-2. 检查以下文件以推断项目类型：
-   - `package.json` → 可能是 React/TypeScript 或 Node.js 项目
-   - `pyproject.toml` 或 `setup.py` → 可能是 Python 项目
-   - `cdk.json` → 可能是 AWS CDK 项目
+2. 检查基本配置文件以推断项目类型：
+   - `package.json` → JavaScript/TypeScript 项目
+   - `pyproject.toml` / `setup.py` → Python 项目
+   - `cdk.json` → AWS CDK 项目
+   - `go.mod` → Go 项目
+   - `Cargo.toml` → Rust 项目
+   - `pom.xml` / `build.gradle` → Java 项目
    - 多个子目录各有上述文件 → 可能是 Monorepo
 3. 从配置文件中提取项目名称、描述等信息作为默认值
 
-### Step 2: 交互确认
+#### 1b. 深度分析（新增）
 
-与用户依次确认以下信息。如果 Step 1 已推断出合理的默认值，展示推断结果让用户确认或修改。
+按照 `presets/context-schema.yaml` 的 `analysis_probes` 执行深度扫描：
 
-#### 2a. 语言偏好
+**语言检测**：
+- 扫描配置文件（pyproject.toml, package.json, go.mod, Cargo.toml 等）
+- 根据 `language_detection.indicators` 列表匹配，取权重最高者
+
+**框架检测**：
+- 读取依赖列表（pip/npm/go 依赖）
+- 根据 `framework_detection.indicators` 匹配框架名称
+- 如果匹配到 `preset_hint`，记录对应的 preset ID
+
+**工具链检测**：
+- 检查 `toolchain_detection.categories` 中每个类别的指标文件：
+  - 包管理器：uv.lock, pnpm-lock.yaml, yarn.lock 等
+  - Linter：ruff.toml, .eslintrc*, biome.json 等
+  - Formatter：.prettierrc*, biome.json 等
+  - 测试框架：pytest.ini, vitest.config.*, jest.config.* 等
+  - CI 工具：.github/workflows/, .gitlab-ci.yml 等
+
+**架构推断**：
+- 扫描源码根目录的子目录模式
+- 根据 `architecture_detection.patterns` 匹配已知架构风格
+- 例如：发现 domain/, application/, infrastructure/ → "DDD + Clean Architecture"
+
+**已有规范检测**：
+- 扫描 `existing_config_detection.files` 列表中的文件
+- 记录已有配置（.editorconfig, README.md, Dockerfile 等）
+
+#### 1c. 输出结构化分析结果
+
+将探测结果整理为内部数据结构（不展示给用户，用于后续步骤）：
+
 ```
-请选择模板语言：
-1) English
-2) 中文 (zh-CN)
+analysis_result = {
+  language: "Python",              # 主要语言
+  framework: "FastAPI",            # 检测到的框架
+  toolchain: {
+    package_manager: "uv",
+    linter: "ruff",
+    formatter: null,
+    test_runner: "pytest",
+    ci: "GitHub Actions"
+  },
+  architecture: "DDD + Clean Architecture",
+  existing_configs: [".editorconfig", "README.md"],
+  project_name: "my-project",      # 从配置文件推断
+  project_description: "..."       # 如果可用
+}
 ```
 
-#### 2b. 项目模式
-```
-请选择项目模式：
-1) 单项目 (Single project)
-2) Monorepo (多个子项目)
-```
+#### 1d. 计算 preset 匹配度
 
-#### 2c. 项目基本信息
-- **项目名称** (PROJECT_NAME) — 如果从配置文件推断出，作为默认值
-- **项目标识** (PROJECT_SLUG) — 自动从项目名称生成 kebab-case，用户可修改
-- **项目描述** (PROJECT_DESCRIPTION) — 可选
+根据 `context-schema.yaml` 的 `preset_matching.scoring_rules` 计算匹配置信度（0-1）：
 
-#### 2d. 技术栈选择
+- framework_detection 中匹配到 preset_hint → +0.5
+- language_detection 匹配对应语言 → +0.2
+- toolchain_detection 匹配 preset defaults → +0.1（每项）
+- architecture_detection 匹配 preset 架构模式 → +0.2
 
-**单项目模式**：选择一个预设。
+**示例**：
+- 检测到 FastAPI + Python + uv + pytest → python-fastapi confidence = 0.5 + 0.2 + 0.1 + 0.1 = 0.9
+- 检测到 Django + Python + poetry → 无 preset_hint → confidence = 0（走 generic）
+- 检测到 React + TypeScript + pnpm → react-typescript confidence = 0.5 + 0.2 + 0.1 = 0.8
+
+### Step 2: 路由决策
+
+根据分析结果选择执行路径：
+
 ```
-请选择技术栈预设：
-1) Python + FastAPI (DDD, TDD, API Design)
-2) React + TypeScript (FSD, State Management, Accessibility)
-3) AWS CDK (Construct Patterns, Security, Cost Optimization)
-```
-
-**Monorepo 模式**：循环添加子项目，每个子项目指定目录名和预设。
-```
-子项目 1:
-  - 目录名: backend
-  - 技术栈: Python + FastAPI
-
-添加更多子项目？(y/n)
+┌─ 已有项目 + 最高 confidence >= 0.8  → 路径 A: preset 快车道
+├─ 已有项目 + 最高 confidence < 0.8   → 路径 B: generic 路径
+├─ 空项目（无配置文件）               → 路径 C: 结构化问卷
+└─ 路径 C 问卷结果匹配 preset          → 切换到路径 A
 ```
 
-#### 2e. 可选规则确认
+**判定"空项目"**：工作目录下不存在任何 `analysis_probes.language_detection.indicators` 中的配置文件。
 
-读取所选预设的 `preset.yaml` 文件，展示可选规则列表，让用户逐一确认：
+将选择的路径告知用户（简要说明原因），然后进入 Step 3。
+
+### Step 3: 信息收集
+
+根据路由决策的路径执行不同的信息收集流程。
+
+#### 路径 A: preset 快车道（已有项目 + 匹配 preset）
+
+交互精简，大部分信息已自动获取：
+
+1. **展示分析结果**（简洁）：
+   ```
+   ✅ 项目分析完成
+   检测到: Python + FastAPI 项目
+   推荐 preset: python-fastapi (匹配度 0.9)
+   ```
+
+2. **确认语言偏好**：
+   ```
+   请选择模板语言：
+   1) 中文 (zh-CN)
+   2) English
+   ```
+
+3. **确认/修改项目基本信息**（预填检测值）：
+   ```
+   以下信息已从项目配置中自动检测，请确认或修改：
+   - 项目名称: My Project  [Enter 确认 / 输入新值修改]
+   - 项目标识: my-project  [Enter 确认 / 输入新值修改]
+   - 项目描述: (可选)
+   ```
+
+4. **确认可选规范**：
+   读取所选 preset 的 `preset.yaml`，展示可选规则列表：
+   ```
+   以下可选规范可以包含（根据项目特征推荐）：
+   ✓ api-design.md (API 设计规范) — 推荐，检测到 Web 框架
+   ✓ logging.md (日志规范) — 推荐，后端服务项目
+   ○ observability.md (可观测性) — 可选
+   包含推荐项？(y/n) 或逐一确认？(l)
+   ```
+
+#### 路径 B: generic 路径（已有项目 + 不匹配 preset）
+
+1. **展示分析结果**（详细）：
+   ```
+   ✅ 项目分析完成
+   主要语言: Go
+   框架: Gin
+   包管理器: go modules
+   Linter: golangci-lint
+   测试: go test
+   架构: Go Standard Layout
+
+   ℹ️ 未找到完全匹配的内置 preset，将使用通用模板 + AI 智能生成。
+   ```
+
+2. **确认语言偏好**
+
+3. **确认/修改分析结果**：
+   ```
+   以上分析结果是否准确？(y/n)
+   如需修改，请指出错误项。
+   ```
+
+4. **智能追问**（补充缺失信息）：
+
+   | 触发条件 | 追问内容 |
+   |----------|----------|
+   | 未检测到明确框架 | 确认项目类型（Web API / CLI / 库 / 桌面应用 / 其他） |
+   | 多种可能的架构模式 | 确认架构风格偏好 |
+   | confidence 在 0.5-0.8 之间 | 是否使用最接近的 preset（展示选项） |
+   | 未检测到测试框架 | 选择测试框架（或跳过） |
+   | 检测到 Monorepo 特征 | 确认 Monorepo 模式并列出子项目 |
+
+5. **确认规范范围**：
+   基于 `context-schema.yaml` 的 rule_types，展示推荐列表：
+   ```
+   将生成以下规范文件：
+   [核心 - 必选]
+   ✓ architecture.md, tech-stack.md, code-style.md, testing.md,
+     security.md, checklist.md, project-structure.md
+
+   [可选 - 根据项目特征推荐]
+   ✓ api-design.md — 推荐（检测到 Web 框架）
+   ○ deployment.md — 可选（检测到 Dockerfile）
+
+   包含推荐项？(y/n) 或逐一确认？(l)
+   ```
+
+#### 路径 C: 结构化问卷（空项目）
+
+分阶段收集信息，每阶段 2-5 个问题：
+
+**阶段 1: 项目基础**（4 问）
+
 ```
-以下可选规则可以包含：
-- api-design.md (API 设计规范) — 包含？(y/n)
-- logging.md (日志规范) — 包含？(y/n)
+1. 请选择模板语言：
+   1) 中文 (zh-CN)
+   2) English
+
+2. 项目模式：
+   1) 单项目 (Single project)
+   2) Monorepo (多个子项目)
+
+3. 项目名称: ___
+4. 项目标识 (kebab-case): ___ [自动从名称生成]
+5. 项目描述 (可选): ___
 ```
 
-### Step 3: 确认摘要
+**阶段 2: 技术栈**（3-5 问，动态调整）
+
+```
+1. 主要编程语言：
+   1) Python      2) TypeScript/JavaScript
+   3) Go          4) Rust
+   5) Java/Kotlin 6) C#
+   7) Ruby        8) 其他: ___
+
+2. 框架（选项根据语言动态生成）：
+   [Python]  → 1) FastAPI  2) Django  3) Flask  4) 其他  5) 无
+   [TS/JS]   → 1) React    2) Vue     3) Next.js  4) Express  5) 其他  6) 无
+   [Go]      → 1) Gin      2) Fiber   3) Echo   4) 其他  5) 无
+   ...
+
+   >>> 如果选择了匹配内置 preset 的组合（如 Python + FastAPI）：
+       提示："检测到匹配的内置 preset: python-fastapi，是否使用？(y/n)"
+       - y → 切换到路径 A
+       - n → 继续 generic 路径
+
+3. 架构模式（根据语言/框架推荐）：
+   1) MVC           2) DDD + Clean Architecture
+   3) 分层架构      4) 微服务
+   5) Serverless    6) 其他: ___
+
+4. 包管理器（根据语言自动推荐）：
+   [Python] → uv / poetry / pip
+   [TS/JS]  → pnpm / yarn / npm / bun
+   [Go]     → go modules (默认)
+
+5. 测试框架（根据语言自动推荐）：
+   [Python] → pytest / unittest
+   [TS/JS]  → vitest / jest / playwright
+   [Go]     → go test (默认)
+```
+
+**阶段 3: 规范范围**（2 问）
+
+```
+1. 测试覆盖率最低要求: ___% (默认: 80)
+
+2. 可选规范确认（根据技术栈动态推荐，同路径 B 的格式）
+```
+
+**阶段 4: 高级配置（可跳过）**
+
+```
+跳过高级配置使用默认值？(y/n)
+
+如果 n：
+1. 源码根路径: ___ (默认: src)
+2. Linter: ___
+3. CI/CD 工具: ___
+```
+
+### Step 4: 确认摘要
 
 生成文件前，展示完整摘要供用户确认：
 
 ```
 ========== 生成摘要 ==========
+路径:      {A: preset 快车道 / B: generic 智能生成 / C: 结构化问卷}
 项目名称:  My Project
 项目标识:  my-project
 项目模式:  单项目
-技术栈:    Python + FastAPI
+技术栈:    {分析结果或用户输入}
 语言:      中文
 目标目录:  .claude/
 
 将生成以下文件：
+  [核心]
   .claude/CLAUDE.md
   .claude/project-config.md
   .claude/rules/architecture.md
+  .claude/rules/tech-stack.md
   .claude/rules/code-style.md
   .claude/rules/testing.md
-  ... (共 N 个文件)
+  .claude/rules/security.md
+  .claude/rules/checklist.md
+  .claude/rules/project-structure.md
+
+  [可选]
+  .claude/rules/api-design.md
+  .claude/rules/logging.md
+
+  [通用原则]
+  .claude/rules/principles/architecture.md
+  .claude/rules/principles/code-quality.md
+  .claude/rules/principles/testing.md
+  .claude/rules/principles/security.md
+
+  共 N 个文件
+
+{路径 B/C-generic 特有提示}
+ℹ️ AI 将根据项目分析结果智能生成规范内容，生成后建议人工审查。
 
 确认生成？(y/n)
 ==============================
 ```
 
-用户确认后，进入 Step 4。
+用户确认后，进入 Step 5。
 
-### Step 4: 读取模板并生成文件
+### Step 5: 读取模板并生成文件
+
+根据路径选择不同的文件生成策略。
+
+#### 路径 A / 路径 C-preset: preset 模板复制
+
+与现有逻辑一致，原样复制模板内容，只做占位符替换。
 
 **重要约束**：
 - **原样复制模板内容**，不要根据自己的知识修改、增删或重写模板内容
 - **只替换 `{{VARIABLE}}` 格式的占位符**，其余内容保持不变
 - 使用 Read 工具读取 preset 文件，使用 Write 工具创建目标文件
 
-#### 4a. 单项目模式
-
+**单项目模式**：
 1. 读取 `presets/{preset-id}/{lang}/CLAUDE.md` → 写入 `.claude/CLAUDE.md`
 2. 读取 `presets/{preset-id}/{lang}/project-config.md` → 写入 `.claude/project-config.md`
 3. 读取 `presets/{preset-id}/{lang}/rules/*.md` → 写入 `.claude/rules/*.md`
 4. 在每个文件中替换占位符变量
 
-#### 4b. Monorepo 模式
-
+**Monorepo 模式**：
 1. 读取 `presets/_common/{lang}/root-CLAUDE.md` → 写入 `.claude/CLAUDE.md`
 2. 读取 `presets/_common/{lang}/common-rules.md` → 写入 `.claude/rules/common.md`
 3. 对每个子项目：
-   - 读取 `presets/{preset-id}/{lang}/CLAUDE.md` → 写入 `{subproject}/.claude/CLAUDE.md`
-   - 读取 `presets/{preset-id}/{lang}/project-config.md` → 写入 `{subproject}/.claude/project-config.md`
-   - 读取 `presets/{preset-id}/{lang}/rules/*.md` → 写入 `{subproject}/.claude/rules/*.md`
+   - 读取对应 preset 模板 → 写入 `{subproject}/.claude/` 下
 4. 在所有文件中替换占位符变量
 5. 在根 `CLAUDE.md` 中生成子项目表格和目录结构
 
-### Step 5: 占位符替换
+#### 路径 B / 路径 C-generic: generic 智能生成
+
+分三个阶段生成文件：
+
+**阶段 1: 骨架复制 + 简单占位符替换**
+
+1. 读取 `presets/generic/{lang}/CLAUDE.md` → 写入 `.claude/CLAUDE.md`
+2. 读取 `presets/generic/{lang}/project-config.md` → 写入 `.claude/project-config.md`
+3. 读取 `presets/generic/{lang}/rules/*.md` → 写入 `.claude/rules/*.md`
+4. 替换 `{{VARIABLE}}` 占位符（PROJECT_NAME, PROJECT_SLUG 等）
+
+**阶段 2: AI 动态填充 `{{AI_GENERATED:xxx}}` 区域**
+
+对每个包含 `{{AI_GENERATED:xxx}}` 的文件：
+
+1. 读取 `context-schema.yaml` 中对应 rule_type 的 `ai_generation_hints`
+2. 将收集到的信息（language, framework, toolchain, architecture 等）注入提示模板
+3. AI 生成内容替换 `{{AI_GENERATED:xxx}}` 区域
+4. 生成要求：
+   - 遵循现有 preset 的格式风格（表格、代码块、速查卡片）
+   - 内容基于检测到的实际技术栈
+   - 每个规范文件 100-300 行
+   - 包含 Section 0 速查卡片（表格或决策树开头）
+   - 包含双向链接（引用相关 rules 文件）
+
+**阶段 3: 可选规范文件生成**
+
+对用户确认的可选规范（context-schema.yaml 中 `category: optional` 的类型）：
+
+1. 读取 `ai_generation_hints` 获取生成提示
+2. AI 直接生成完整文件内容（无骨架模板）
+3. 格式要求同阶段 2
+
+**阶段 4: 通用原则文件复制**
+
+1. 读取 `presets/_common/{lang}/rules/principles/*.md`
+2. 写入 `.claude/rules/principles/*.md`
+3. 这些文件原样复制，不做 AI 生成
+
+**质量自检**（生成后、写入前）：
+
+1. 检查 `context-schema.yaml` 中对应类型的 `quality_criteria` 列表
+2. 验证所有 `{{AI_GENERATED:xxx}}` 已被替换（无残留占位符）
+3. 检查文件间 Markdown 链接对称性（A 链接到 B，B 应能找到）
+4. 确认每个文件长度在 100-300 行之间
+5. 确认包含 Section 0 速查卡片
+
+### Step 6: 占位符替换
 
 在写入文件时，将以下占位符替换为用户提供的实际值：
 
@@ -169,9 +437,15 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 | `{{PROJECT_SLUG}}` | 自动生成/用户修改 | 项目标识符 (kebab-case) |
 | `{{PROJECT_DESCRIPTION}}` | 用户输入 | 项目描述 |
 | `{{SUBPROJECT_NAME}}` | 用户输入/默认 preset-id | 子项目名称 |
-| `{{PACKAGE_MANAGER}}` | preset.yaml defaults | 包管理器 |
-| `{{COVERAGE_MIN}}` | preset.yaml defaults | 最低测试覆盖率 |
+| `{{PACKAGE_MANAGER}}` | preset.yaml defaults / 分析结果 | 包管理器 |
+| `{{COVERAGE_MIN}}` | preset.yaml defaults / 用户输入 | 最低测试覆盖率 |
 | `{{DATE}}` | 当前日期 | 生成日期 (YYYY-MM-DD) |
+
+**Generic 路径专用占位符**：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:xxx}}` | AI 根据收集信息动态生成内容替换的区域。详见 Step 5 阶段 2 |
 
 **Monorepo 专用占位符**（需要生成内容替换）：
 
@@ -194,12 +468,13 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 ├── .claude/                    # 根级：通用规范
 │   ├── CLAUDE.md               # 全局入口
 │   └── rules/
-│       └── common.md           # 跨项目通用规则
+│       ├── common.md           # 跨项目通用规则
+│       └── principles/         # 跨 preset 工程原则
 ├── backend/                    # Python + FastAPI
 └── frontend/                   # React + TypeScript
 ```
 
-### Step 6: 冲突处理
+### Step 7: 冲突处理
 
 如果 `.claude/` 目录已存在：
 
@@ -210,7 +485,7 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
    - **取消**：中止操作
 3. 按用户选择执行
 
-### Step 7: 完成提示
+### Step 8: 完成提示
 
 生成完成后，输出以下信息：
 
@@ -218,12 +493,23 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 2. 下一步建议：
    - 编辑 `project-config.md` 填写项目特定信息
    - 检查生成的规范文件，按需自定义
+   - 推荐运行 `/audit-context` 检查生成质量
    - 开始使用 Claude Code 进行开发
+
+3. **路径 B/C-generic 特有提示**：
+   ```
+   ℹ️ 提示：本次使用了 AI 智能生成模式。建议：
+   1. 审查 AI 生成的规范内容是否符合项目实际情况
+   2. 特别检查 rules/architecture.md 和 rules/tech-stack.md
+   3. 运行 /audit-context 获取详细质量报告
+   ```
 
 ## 重要约束
 
 1. **不修改项目已有文件** — 只在 `.claude/` 目录（和 Monorepo 子项目的 `.claude/`）下操作
-2. **保持模板完整性** — 原样复制模板内容，只做占位符替换
-3. **每步确认** — 关键决策点需要用户明确确认
-4. **错误处理** — 如果 preset 文件读取失败，告知用户并建议检查 Plugin 安装
-5. **回退能力** — 用户在任何步骤都可以说"返回上一步"修改之前的选择
+2. **Preset 路径保持模板完整性** — 原样复制模板内容，只做占位符替换
+3. **Generic 路径保证生成质量** — AI 生成内容必须通过质量自检
+4. **每步确认** — 关键决策点需要用户明确确认
+5. **错误处理** — 如果 preset 文件读取失败，告知用户并建议检查 Plugin 安装
+6. **回退能力** — 用户在任何步骤都可以说"返回上一步"修改之前的选择
+7. **向后兼容** — 所有现有 preset 的流程不受影响

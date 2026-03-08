@@ -22,7 +22,7 @@ description: 审计当前项目的 .claude/ 上下文目录，评估质量并给
 - `CLAUDE.md` — 项目入口文件
 - `rules/` 目录 — 至少包含 1 个规则文件
 
-**推荐文件**（缺失则建议但不严重扣分）：
+**推荐文件**（对应 `context-schema.yaml` 中 `category: core` 的规范类型，缺失则建议但不严重扣分）：
 - `project-config.md` — 项目特定配置
 - `rules/architecture.md` — 架构规范
 - `rules/testing.md` — 测试规范
@@ -31,6 +31,12 @@ description: 审计当前项目的 .claude/ 上下文目录，评估质量并给
 - `rules/tech-stack.md` — 技术栈定义（版本 SSoT）
 - `rules/checklist.md` — PR 审查清单
 - `rules/project-structure.md` — 目录结构说明
+
+> **参考**: 完整规范类型定义见本 Plugin 的 `presets/context-schema.yaml`。core 类型为必选，optional 类型根据项目特征推荐。
+
+**通用原则文件检查**：
+- `rules/principles/` 目录是否存在（`_common` 跨 preset 工程原则）
+- 原则文件是否与 `context-schema.yaml` 中 `common_principle` 映射一致
 
 **Monorepo 额外检查**：
 - 根级 `.claude/CLAUDE.md` 是否存在
@@ -169,7 +175,7 @@ description: 审计当前项目的 .claude/ 上下文目录，评估质量并给
 1. **具体可操作**：每条建议必须告诉用户具体要做什么（创建什么文件、修改什么内容）
 2. **优先级排序**：[高] = 影响 Claude Code 理解能力；[中] = 提升规范质量；[低] = 锦上添花
 3. **数量控制**：最多 10 条建议，避免信息过载
-4. **关联 /init-context**：如果缺失的文件可通过 `/init-context` 生成，建议用户使用该命令
+4. **关联 /init-context**：如果缺失的文件可通过 `/init-context` 生成，建议用户使用该命令（支持任意技术栈，不匹配内置 preset 时使用 generic 路径 AI 智能生成）
 
 ## 重要约束
 
