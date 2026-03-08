@@ -5,7 +5,7 @@
   "presets": {
     "aws-cdk": {
       "version": "1.0.0",
-      "files_hash": "f62aa2e18ba17df39d8d41f0e39c87bf8fb2838b2eff3153a53659119e890a54",
+      "files_hash": "c4bbf4dfd6bd0061dc4836e29c282e6c39b5af466594a360b5919b32bddcc221",
       "file_count": 25
     },
     "python-fastapi": {
@@ -15,7 +15,7 @@
     },
     "react-typescript": {
       "version": "1.0.0",
-      "files_hash": "0a71a20bdc054211bf7c982e7e034cf87aa7e86cbb52fa3845ef69f04096b1e4",
+      "files_hash": "5b5529b3142905430539acbe73271588036e036657514d5925df093a7e7b8687",
       "file_count": 27
     }
   },

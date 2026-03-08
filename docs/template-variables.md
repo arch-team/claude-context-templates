@@ -73,10 +73,10 @@ my-awesome-app/                  # Monorepo root
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `{{PACKAGE_MANAGER}}` | `pnpm` | Node.js package manager |
-| `{{LINTER}}` | `eslint` | Linting tool |
-| `{{TEST_RUNNER}}` | `jest` | Test framework |
 | `{{COVERAGE_MIN}}` | `85` | Minimum test coverage % |
+| `{{PROJECT_SLUG}}` | (required) | Project identifier (kebab-case, used for tags and naming) |
+
+> **Note**: aws-cdk preset hardcodes `pnpm` in templates. Unlike react-typescript, the CDK ecosystem's toolchain commands (`pnpm cdk synth`, `pnpm exec`, GitHub Actions `pnpm/action-setup`) are tightly coupled to the specific package manager, making simple text substitution unreliable.
 
 ## Variable Syntax
 

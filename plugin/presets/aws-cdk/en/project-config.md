@@ -13,7 +13,7 @@
 | Configuration | Value |
 |---------------|-------|
 | **Project name** | {{PROJECT_SLUG}}-infra |
-| **Project description** | TODO: Fill in project description |
+| **Project description** | <!-- TODO: Fill in project description --> |
 | **Architecture pattern** | CDK Construct layering (L1 → L2 → L3) |
 | **Tech stack versions** | See [tech-stack.md](rules/tech-stack.md) |
 | **Source root path** | `lib` |
@@ -35,7 +35,7 @@ Stack design standards at [architecture.md §2.1](rules/architecture.md#21-stack
 | `ApiStack` | ComputeStack |
 | `MonitoringStack` | All Stacks |
 
-> TODO: Adjust Stack list based on actual project requirements
+> <!-- TODO: Adjust Stack list based on actual project requirements -->
 
 ---
 
@@ -47,9 +47,9 @@ Stack design standards at [architecture.md §2.1](rules/architecture.md#21-stack
 
 | Environment | AWS Account | Region | Purpose |
 |-------------|------------|--------|---------|
-| `dev` | TODO | TODO | Development testing |
-| `staging` | TODO | TODO | Pre-release validation |
-| `prod` | TODO | TODO | Production |
+| `dev` | <!-- TODO --> | <!-- TODO --> | Development testing |
+| `staging` | <!-- TODO --> | <!-- TODO --> | Pre-release validation |
+| `prod` | <!-- TODO --> | <!-- TODO --> | Production |
 
 ### CDK Context Configuration
 
@@ -65,9 +65,9 @@ Detailed configuration structure at [deployment.md §1.1](rules/deployment.md#11
 
 | Construct | Responsibility | Composed Resources |
 |-----------|---------------|-------------------|
-| TODO | TODO | TODO |
+| <!-- TODO: Construct name --> | <!-- TODO: Responsibility --> | <!-- TODO: Composed resources --> |
 
-> TODO: Fill in Construct list based on actual project requirements
+> <!-- TODO: Fill in Construct list based on actual project requirements -->
 
 ---
 

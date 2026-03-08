@@ -1,6 +1,6 @@
-> **Purpose**: Frontend project entry document - Tech stack overview, development commands, standards navigation
-
 # CLAUDE.md - React Frontend Project Standards
+
+> **Purpose**: Frontend project entry document - Tech stack overview, development commands, standards navigation
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 

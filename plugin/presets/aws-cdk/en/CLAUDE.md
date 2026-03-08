@@ -1,9 +1,3 @@
----
-version: 1.0.0
-last_updated: {{DATE}}
-tech_stack_ref: rules/tech-stack.md
----
-
 # CLAUDE.md - AWS CDK Infrastructure Project Standards
 
 > **Purpose**: Claude Code entry standards for AWS CDK infrastructure projects, providing tech stack overview, development commands, and standards navigation.

@@ -25,8 +25,8 @@ This project fully adopts Test-Driven Development (TDD).
 | Level | Minimum Coverage | Target Coverage |
 |-------|-----------------|-----------------|
 | Constructs | 90% | 95% |
-| Stacks | 85% | 90% |
-| **Overall** | **85%** | **90%** |
+| Stacks | {{COVERAGE_MIN}}% | 90% |
+| **Overall** | **{{COVERAGE_MIN}}%** | **90%** |
 
 ### Commands
 

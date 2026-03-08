@@ -1,9 +1,3 @@
----
-version: 1.0.0
-last_updated: {{DATE}}
-tech_stack_ref: rules/tech-stack.md
----
-
 # CLAUDE.md - AWS CDK 基础设施项目规范
 
 > **职责**: AWS CDK 基础设施项目的 Claude Code 入口规范，提供技术栈概览、开发命令和规范导航。

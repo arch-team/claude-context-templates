@@ -13,7 +13,7 @@
 | 配置项 | 值 |
 |--------|-----|
 | **项目名称** | {{PROJECT_SLUG}}-infra |
-| **项目描述** | TODO: 填写项目描述 |
+| **项目描述** | <!-- TODO: 填写项目描述 --> |
 | **架构模式** | CDK Construct 分层 (L1 → L2 → L3) |
 | **技术栈版本** | 见 [tech-stack.md](rules/tech-stack.md) |
 | **源码根路径** | `lib` |
@@ -35,7 +35,7 @@ Stack 设计规范见 [architecture.md §2.1](rules/architecture.md#21-stack-职
 | `ApiStack` | ComputeStack |
 | `MonitoringStack` | All Stacks |
 
-> TODO: 根据实际项目需求调整 Stack 列表
+> <!-- TODO: 根据实际项目需求调整 Stack 列表 -->
 
 ---
 
@@ -47,9 +47,9 @@ Stack 设计规范见 [architecture.md §2.1](rules/architecture.md#21-stack-职
 
 | 环境 | AWS 账户 | Region | 用途 |
 |------|---------|--------|------|
-| `dev` | TODO | TODO | 开发测试 |
-| `staging` | TODO | TODO | 预发布验证 |
-| `prod` | TODO | TODO | 生产环境 |
+| `dev` | <!-- TODO --> | <!-- TODO --> | 开发测试 |
+| `staging` | <!-- TODO --> | <!-- TODO --> | 预发布验证 |
+| `prod` | <!-- TODO --> | <!-- TODO --> | 生产环境 |
 
 ### CDK Context 配置
 
@@ -65,9 +65,9 @@ Stack 设计规范见 [architecture.md §2.1](rules/architecture.md#21-stack-职
 
 | Construct | 职责 | 组合资源 |
 |-----------|------|---------|
-| TODO | TODO | TODO |
+| <!-- TODO: Construct 名 --> | <!-- TODO: 职责 --> | <!-- TODO: 组合资源 --> |
 
-> TODO: 根据实际项目需求填写 Construct 列表
+> <!-- TODO: 根据实际项目需求填写 Construct 列表 -->
 
 ---
 

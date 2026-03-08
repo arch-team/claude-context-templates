@@ -45,7 +45,7 @@ See [security.md](security.md)
 - [ ] Each Construct has corresponding tests
 - [ ] Critical properties have fine-grained assertions
 - [ ] Snapshot tests detect unexpected changes
-- [ ] Coverage meets requirements (>=85%)
+- [ ] Coverage meets requirements (>={{COVERAGE_MIN}}%)
 
 See [testing.md](testing.md)
 

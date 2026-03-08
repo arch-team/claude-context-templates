@@ -188,7 +188,34 @@ validate_preset() {
     fail "en/CLAUDE.md 缺失"
   fi
 
-  # --- 5. zh-CN/ 和 en/ 文件结构对称 ---
+  # --- 5. CLAUDE.md 结构检查（无 YAML frontmatter） ---
+  for lang in zh-CN en; do
+    local claude_file="${preset_dir}/${lang}/CLAUDE.md"
+    if [[ -f "$claude_file" ]]; then
+      if head -1 "$claude_file" | grep -q '^---$'; then
+        fail "${lang}/CLAUDE.md 包含 YAML frontmatter（应以 # 标题开头）"
+      else
+        pass "${lang}/CLAUDE.md 无 YAML frontmatter"
+      fi
+    fi
+  done
+
+  # --- 6. project-config.md 无裸 TODO（应使用 <!-- TODO: --> 格式） ---
+  for lang in zh-CN en; do
+    local pc_file="${preset_dir}/${lang}/project-config.md"
+    if [[ -f "$pc_file" ]]; then
+      # 排除代码块内的 TODO（用 grep -v 过滤掉引号包裹的 TODO）
+      local bare_todos
+      bare_todos=$(grep -n 'TODO' "$pc_file" | grep -v '<!--' | grep -v "'" | grep -v '"' || true)
+      if [[ -z "$bare_todos" ]]; then
+        pass "${lang}/project-config.md TODO 格式正确"
+      else
+        fail "${lang}/project-config.md 存在裸 TODO（应使用 <!-- TODO: --> 格式）"
+      fi
+    fi
+  done
+
+  # --- 7. zh-CN/ 和 en/ 文件结构对称 ---
   validate_bilingual_symmetry "$preset_dir"
 }
 

@@ -45,7 +45,7 @@
 - [ ] 每个 Construct 有对应测试
 - [ ] 关键属性有 Fine-grained 断言
 - [ ] Snapshot 测试检测意外变更
-- [ ] 覆盖率达标 (>=85%)
+- [ ] 覆盖率达标 (>={{COVERAGE_MIN}}%)
 
 详见 [testing.md](testing.md)
 

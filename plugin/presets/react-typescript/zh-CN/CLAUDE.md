@@ -1,6 +1,6 @@
-> **职责**: 前端项目入口文档 - 技术栈概览、开发命令、规范导航
-
 # CLAUDE.md - React 前端项目规范
+
+> **职责**: 前端项目入口文档 - 技术栈概览、开发命令、规范导航
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
