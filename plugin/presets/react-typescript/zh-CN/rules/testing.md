@@ -1,16 +1,50 @@
-> **职责**: 测试规范 - TDD 工作流、测试分层、覆盖率要求
+# 测试规范
 
-# 测试规范 (Testing Standards)
+> **职责**: 测试规范 - 测试策略、标准、模板、MSW 配置、E2E 模式
 
 ---
 
-## 0. 速查卡片
+## React 测试策略
 
-### 命令
+### 测试优先级
 
-> 测试命令详见 [CLAUDE.md](../CLAUDE.md) §测试
+1. **Component Tests** — 用户交互和渲染验证（首选）
+2. **Hook Tests** — 自定义 Hook 逻辑测试
+3. **Integration Tests** — 页面级集成测试（MSW 模拟 API）
+4. **E2E Tests** — 关键用户流程（Playwright）
 
-### 命名
+### 测试分层
+
+| 层级 | 覆盖范围 | Mock 策略 | 工具 |
+|------|---------|----------|------|
+| Unit | Hook/组件/工具 | 外部依赖 | Vitest + Testing Library |
+| Integration | 页面/API 集成 | 外部服务 | Vitest + MSW |
+| E2E | 用户流程 | 无 | Playwright |
+
+---
+
+## React 测试哲学
+
+- 测试用户可见的行为和交互，不测试实现细节（state、内部方法）
+- 使用 Testing Library 的 `screen` 和 `userEvent`，不使用 enzyme 的 shallow rendering
+- 查询优先级：`getByRole` > `getByLabelText` > `getByPlaceholderText` > `getByText` > `getByTestId`
+- 使用 MSW (Mock Service Worker) Mock API 边界，不 Mock 内部模块
+- 异步测试使用 `waitFor` / `findBy`，不使用同步断言
+
+---
+
+## 覆盖率标准
+
+| 层级 | 最低覆盖率 | 目标覆盖率 |
+|------|-----------|-----------|
+| 组件 | {{COVERAGE_MIN}}% | 85% |
+| Hook/工具 | 90% | 95% |
+| Utils | 95% | 100% |
+| **整体** | **{{COVERAGE_MIN}}%** | **85%** |
+
+---
+
+## 测试命名规范
 
 | 元素 | 模式 | 示例 |
 |------|------|------|
@@ -18,21 +52,6 @@
 | 测试描述 | `describe('{Component}')` | `describe('Button')` |
 | 测试用例 | `it('should {behavior}')` | `it('should render children')` |
 | E2E 文件 | `{feature}.spec.ts` | `auth.spec.ts` |
-
-### 分层
-
-| 层级 | 覆盖 | Mock | 工具 |
-|------|------|------|------|
-| Unit | Hook/组件/工具 | 外部依赖 | Vitest + Testing Library |
-| Integration | 页面/API 集成 | 外部服务 | Vitest + MSW |
-| E2E | 用户流程 | 无 | Playwright |
-
-### 陷阱 ⚠️
-
-- ❌ 测试实现细节 → ✅ 测试行为
-- ❌ `getByTestId` 优先 → ✅ 可访问性查询优先
-- ❌ 同步期望异步 → ✅ `waitFor` / `findBy`
-
 
 ---
 
@@ -219,14 +238,3 @@ export class LoginPage {
 ## 6. 测试配置
 
 > Vitest 和 Playwright 配置文件位于项目根目录 (`vitest.config.ts`, `playwright.config.ts`)，具体配置项参考官方文档。
-
----
-
-## 7. 覆盖率要求
-
-| 层级 | 最低 | 目标 |
-|------|-----|------|
-| Hooks | 90% | 95% |
-| Components | {{COVERAGE_MIN}}% | 85% |
-| Utils | 95% | 100% |
-| **整体** | **{{COVERAGE_MIN}}%** | **85%** |

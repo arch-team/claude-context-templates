@@ -1,10 +1,14 @@
-# SDK-First
+# SDK-First Development Strategy
 
-> **Purpose**: SDK-first principle defining the SDK decision process and exception handling patterns.
+> **Purpose**: SDK decision process, priority levels, and concrete code templates.
 
 > Claude should consult this when generating code
 
-**Core Principle**: Use SDKs whenever possible to simplify implementation and avoid reinventing the wheel.
+---
+
+## Core Principle
+
+Use SDKs whenever possible to simplify implementation and avoid reinventing the wheel.
 
 ---
 
@@ -12,31 +16,31 @@
 
 ```
 Need to implement a feature?
-    ↓
-Official SDK available? ──Yes──► 🟢 Use SDK directly
-    │
+    |
+Official SDK available? --Yes--> Use SDK directly
+    |
    No
-    ↓
-Community library passes evaluation? ──Yes──► 🟡 Use community library
-    │
+    |
+Community library passes evaluation? --Yes--> Use community library
+    |
    No
-    ↓
-🔴 Custom implementation (requires Tech Lead approval)
+    |
+Custom implementation (requires Tech Lead approval)
 ```
 
 ---
 
 ## Priority Levels
 
-### 🟢 Priority 1: Use Official SDK Directly
+### Priority 1: Use Official SDK Directly
 
 No wrapping needed; call directly.
 
-### 🟡 Priority 2: SDK + Thin Wrapper Layer
+### Priority 2: SDK + Thin Wrapper Layer
 
 **Wrapper Principles**: < 100 lines | Does not alter SDK behavior | Exposes native types
 
-### 🟡 Priority 3: Community Libraries
+### Priority 3: Community Libraries
 
 | Metric | Minimum Requirement |
 |--------|-------------------|
@@ -44,9 +48,9 @@ No wrapping needed; call directly.
 | Latest Commit | < 3 months |
 | License | MIT / Apache 2.0 |
 
-### 🔴 Priority 4: Custom Implementation
+### Priority 4: Custom Implementation
 
-**Required Process**: Document in research.md → Provide justification → Tech Lead approval
+**Required Process**: Document in research.md -> Provide justification -> Tech Lead approval
 
 ---
 
@@ -59,7 +63,7 @@ See [tech-stack.md](tech-stack.md) for all SDK version requirements (Single Sour
 ## SDK Exception Handling
 
 ```python
-# Pattern: SDK exception → Domain exception
+# Pattern: SDK exception -> Domain exception
 try:
     self._client.operation(...)
 except ClientError as e:

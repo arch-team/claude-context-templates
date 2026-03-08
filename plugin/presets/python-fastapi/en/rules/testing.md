@@ -1,12 +1,51 @@
 # Testing Standards
 
-> **Purpose**: Testing standards defining TDD workflow, test layering, and fixture patterns.
+> **Purpose**: Python backend testing design principles, standards, and concrete implementation patterns.
 
 > See CLAUDE.md for the TDD workflow
 
 ---
 
-## 0. Quick Reference Card
+## Python Testing Strategy
+
+- **pytest First**: pytest is the only test framework; unittest-style is prohibited
+- **Fixture-Driven**: Use `conftest.py` for layered fixture management, not setUp/tearDown
+- **Parameterize First**: Use `@pytest.mark.parametrize` for multi-scenario testing, not duplicate test methods
+
+---
+
+## Testing Layer Standards
+
+| Layer | Test Target | Mock Strategy | Speed |
+|-------|-----------|---------------|-------|
+| **Unit** | Entity, Value Object, Domain Service | External dependencies (Repo, API) | ms |
+| **Integration** | API endpoints, Repository implementations | External services (S3, SES) | s |
+| **E2E** | Complete business flows | No mocks | min |
+
+---
+
+## Coverage Standards
+
+| Layer | Minimum Coverage | Target Coverage |
+|-------|-----------------|-----------------|
+| Domain | 95% | 100% |
+| Application | 90% | 95% |
+| Infrastructure | 80% | 85% |
+| Presentation | 80% | 85% |
+| **Overall** | **{{COVERAGE_MIN}}%** | **90%** |
+
+---
+
+## Python Testing Philosophy
+
+- **conftest.py Sharing**: Session-scoped fixtures in `tests/conftest.py`, module-scoped in `tests/modules/{m}/conftest.py`
+- **Factory Pattern**: Use `factory_boy` for test data generation, avoid manual construction
+- **Async Testing**: Use `pytest-asyncio` + `AsyncMock` for async code testing
+- **Test Markers**: All tests must be marked with `@pytest.mark.unit`/`integration`/`e2e`
+
+---
+
+## Quick Reference Card
 
 ### Commands (Supplement to CLAUDE.md)
 
@@ -25,14 +64,6 @@ uv run pytest tests/modules/ -m unit  # All module unit tests
 | File | `test_{component}.py` | `test_task_service.py` |
 | Class | `Test{Class}` | `TestTaskService` |
 | Method | `test_{method}_{scenario}_{expected}` | `test_create_with_invalid_email_raises` |
-
-### Layering
-
-| Layer | Coverage | Mock | Speed |
-|-------|----------|------|-------|
-| Unit | Entity/Service | External dependencies | ms |
-| Integration | API/Repo | External services | s |
-| E2E | Full flow | None | min |
 
 ### Pitfalls
 
@@ -171,4 +202,4 @@ class TaskFactory(factory.Factory):
 
 ## 7. Coverage
 
-See [CLAUDE.md](../CLAUDE.md) Section: Coverage Requirements for per-layer targets. See `pyproject.toml` `[tool.coverage]` for configuration details.
+See [CLAUDE.md](../../CLAUDE.md) Section: Coverage Requirements for per-layer targets. See `pyproject.toml` `[tool.coverage]` for configuration details.

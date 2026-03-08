@@ -121,7 +121,7 @@ This project fully adopts Test-Driven Development (TDD). See [rules/testing.md](
 
 ## Code Style
 
-Code style standards are detailed in [construct-design.md](rules/construct-design.md) and [project-structure.md](rules/project-structure.md)
+Code style standards are detailed in [rules/construct-design.md](rules/construct-design.md) and [rules/project-structure.md](rules/project-structure.md)
 
 ---
 

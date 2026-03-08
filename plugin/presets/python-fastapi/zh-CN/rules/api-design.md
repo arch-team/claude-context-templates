@@ -1,29 +1,20 @@
-# API 设计规范 (API Design Standards)
+# API 设计规范
 
-> **职责**: API 设计规范，定义 RESTful 路由、HTTP 状态码和错误响应格式。
+> **职责**: RESTful API 设计标准、契约规范和具体 FastAPI 路由代码示例。
 
 > Claude 生成 API 代码时优先查阅此文档
 
 ---
 
-## RESTful 路由命名
+## RESTful 命名规范
 
-```python
-# ✅ 正确 - 使用复数名词
-GET    /api/v1/users          # 获取用户列表
-GET    /api/v1/users/{id}     # 获取单个用户
-POST   /api/v1/users          # 创建用户
-PUT    /api/v1/users/{id}     # 更新用户
-DELETE /api/v1/users/{id}     # 删除用户
-
-# ❌ 错误 - 使用动词
-POST   /api/v1/createUser
-GET    /api/v1/getUserById
-```
+- 路由使用**复数名词**，禁止使用动词
+- 路由路径使用 `kebab-case`
+- 查询参数和请求/响应字段使用 `snake_case`
 
 ---
 
-## HTTP 状态码
+## HTTP 状态码标准
 
 | 状态码 | 场景 |
 |--------|------|
@@ -51,7 +42,7 @@ class ErrorResponse(BaseModel):
 
 ---
 
-## 分页规范
+## 分页契约
 
 | 参数/字段 | 类型 | 说明 |
 |-----------|------|------|
@@ -73,10 +64,27 @@ class ErrorResponse(BaseModel):
 
 ---
 
-## 版本控制
+## 版本策略
 
 - URL 路径版本: `/api/v1/`, `/api/v2/`
 - 至少维护 2 个主版本
+
+---
+
+## RESTful 路由代码示例
+
+```python
+# ✅ 正确 - 使用复数名词
+GET    /api/v1/users          # 获取用户列表
+GET    /api/v1/users/{id}     # 获取单个用户
+POST   /api/v1/users          # 创建用户
+PUT    /api/v1/users/{id}     # 更新用户
+DELETE /api/v1/users/{id}     # 删除用户
+
+# ❌ 错误 - 使用动词
+POST   /api/v1/createUser
+GET    /api/v1/getUserById
+```
 
 ---
 

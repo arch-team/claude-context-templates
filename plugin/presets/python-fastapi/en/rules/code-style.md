@@ -1,10 +1,49 @@
 # Code Style Standards
 
-> **Purpose**: Python code style standards defining type hints, naming conventions, and docstring principles.
+> **Purpose**: Python code style design principles and concrete code examples.
 
 ---
 
-## 0. Quick Reference Card
+## Python / PEP 8 Style Principles
+
+- **Type Hints Required**: All public interfaces must have type hints
+- **Modern Syntax**: Use `X | None` instead of `Optional[X]`, use built-in generics `list[str]`
+- **No Any**: Use `TypeVar` or concrete types instead
+- **Types as Documentation**: Type hints + good naming = self-documenting code
+
+---
+
+## Naming Principles
+
+| Element | Style | Principle |
+|---------|-------|-----------|
+| Functions/Variables | `snake_case` | Clarity over brevity |
+| Classes | `PascalCase` | Methods start with verbs |
+| Constants | `UPPER_SNAKE` | Booleans use is/has/can prefix |
+| Modules/Packages | `snake_case` | Collections use plurals |
+
+---
+
+## Docstring Principles
+
+```
+Types are self-explanatory -> Omit Docstring
+Has side effects/exceptions -> Describe behavior
+Class/Module -> One-sentence responsibility description
+Private methods -> Omit
+```
+
+---
+
+## Ruff Configuration Principles
+
+- **Sole Linter**: Use Ruff only; flake8/black/isort are prohibited
+- **Line Length**: 120 characters
+- **Auto-Handled**: Import sorting and formatting handled by Ruff automatically, no manual review needed
+
+---
+
+## Quick Reference Card
 
 ### Type Hints Quick Reference
 

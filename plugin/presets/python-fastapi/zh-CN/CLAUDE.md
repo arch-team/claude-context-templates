@@ -121,7 +121,7 @@ uv run uvicorn src.presentation.api.main:app --host 0.0.0.0 --port 8000 --worker
 
 ## 安全规范快速参考
 
-速查表和检测命令详见 [rules/security.md](rules/security.md) Section 0 速查卡片。
+速查表和检测命令详见 [rules/security.md](rules/security.md)。
 
 ---
 

@@ -1,10 +1,40 @@
-# 安全规范 (Security Standards)
+# 安全规范
 
-> **职责**: 安全规范，定义禁止事项、必须事项和安全检测命令。
+> **职责**: Python 后端安全设计原则、标准和具体安全检测命令。
 
 ---
 
-## 0. 速查卡片
+## 应用安全模型
+
+### 输入验证
+
+- 所有外部输入通过 **Pydantic** 验证，在系统边界拦截无效数据
+- Pydantic `Field` + `field_validator` 实现精确约束
+- 白名单策略优先：只接受明确允许的值
+
+### 认证与授权
+
+- OAuth2 + RBAC 模型
+- 依赖链: `get_current_user` -> `require_role`
+- 密码存储: `passlib` bcrypt (`bcrypt__rounds=12`)
+- 登录限制: 5 次失败 -> 锁定 30 分钟
+
+---
+
+## API 安全原则
+
+| 原则 | 说明 |
+|------|------|
+| **环境变量** | 敏感配置使用 `pydantic_settings.BaseSettings` + `SecretStr` |
+| **错误响应** | 禁止返回 `str(e)` 或 traceback，使用通用错误信息 |
+| **SQL 防护** | 禁止 SQL 拼接，使用参数化查询 (SQLAlchemy ORM / `text()`) |
+| **路径防护** | 禁止直接拼接用户输入到文件路径，使用 `Path.name` 验证 |
+| **危险函数** | 禁止 `eval()`/`exec()`/`pickle.loads()`，使用安全替代方案 |
+| **敏感日志** | 禁止日志输出密码/Token/密钥，详见 logging 脱敏规则 |
+
+---
+
+## 速查卡片
 
 > Claude 生成代码时优先查阅此章节
 

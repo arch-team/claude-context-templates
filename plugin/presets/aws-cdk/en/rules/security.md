@@ -1,26 +1,49 @@
 # Security Standards
 
-> **Purpose**: Define IAM least privilege, secrets management, network security, data encryption, and CDK Nag compliance standards.
+> **Purpose**: Concrete CDK security practices — code templates, Grant method reference, and configuration examples.
 
-> Consult this document first when Claude generates CDK code
-
-Based on the AWS Well-Architected Framework Security Pillar CDK security standards.
-
-> **Responsibility boundary**: This document focuses on security **rationale and compliance requirements** (why to write it this way). For security configuration **code templates**, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
+> For security configuration **code templates**, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
 
 ---
 
 ## 0. Quick Reference Card
 
-### Security Rules Quick Reference
+### IAM Least Privilege Principle
 
-| Rule | Prohibited | Correct |
-|------|-----------|---------|
-| IAM permissions | `PolicyStatement({ actions: ['*'] })` | `bucket.grantRead(role)` |
-| Secrets management | Hardcoded in source code | Secrets Manager |
-| S3 access | Public access | `BlockPublicAccess.BLOCK_ALL` |
-| RDS | Public subnet | `PRIVATE_ISOLATED` subnet |
-| Transport encryption | HTTP | HTTPS + TLS 1.2+ |
+- **Grant methods first**: Use CDK L2 Construct Grant methods to automatically create least-privilege policies
+- **No wildcards**: `actions: ['*']` or `resources: ['*']` are prohibited
+- **No Admin permissions**: Do not use `AdministratorAccess`
+- **Fine-grained resource scope**: Restrict to specific resource paths (e.g., `bucket.grantRead(fn, 'data/*')`)
+
+### Secrets Management Principle
+
+| Type | Storage Method |
+|------|---------------|
+| Sensitive credentials (passwords, API keys) | Secrets Manager |
+| Non-sensitive configuration (URLs, config items) | SSM Parameter Store |
+| **Prohibited** | Hardcoded in source code |
+
+### Network Security Layering Principle
+
+| Subnet Type | Purpose | Example Resources |
+|-------------|---------|-------------------|
+| `PUBLIC` | Public entry point | ALB, NAT Gateway |
+| `PRIVATE_WITH_EGRESS` | Application layer | ECS, Lambda |
+| `PRIVATE_ISOLATED` | Data layer | RDS, ElastiCache |
+
+**Key rule**: Databases must be placed in `PRIVATE_ISOLATED`; RDS in `PUBLIC` subnets is prohibited.
+
+### Data Encryption Principle
+
+- **At-rest encryption**: S3 uses `S3_MANAGED` or `KMS`, RDS enables `storageEncrypted`
+- **In-transit encryption**: HTTPS + TLS 1.2+, HTTP auto-redirects to HTTPS
+- **Sensitive data**: Use CMK + `enableKeyRotation: true`
+
+### CDK Nag Compliance Principle
+
+- **Must enable**: All Stacks should apply `AwsSolutionsChecks`
+- **Suppression granularity**: Prefer resource-level `addResourceSuppressions` → Use Stack-level only when truly necessary
+- **Suppressions must include reason**: Every suppression rule must provide a `reason` field
 
 ### Grant Methods Quick Reference
 

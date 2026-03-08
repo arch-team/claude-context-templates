@@ -59,19 +59,29 @@ Need new module?
 
 ## 3. Layered Architecture
 
-**Principle**: Context is organized in 3 layers with clear separation.
+**Principle**: Context is organized in multiple layers with clear separation and one-way dependencies.
 
+### Project Layers
 ```
-Layer 1: Root .claude/           -> Global settings (language, project overview)
-Layer 2: Root .claude/rules/     -> Cross-project rules (Git, docs, structure)
-Layer 3: {subproject}/.claude/   -> Sub-project specific (tech stack, architecture)
+Layer 1: Root .claude/                    -> Global settings (language, project overview)
+Layer 2: Root .claude/rules/              -> Cross-project rules (Git, docs, structure)
+Layer 2b: Root .claude/rules/principles/  -> Cross-preset engineering principles (from _common)
+Layer 3: {subproject}/.claude/            -> Sub-project specific (tech stack, architecture)
 ```
 
-**Why**: Claude Code automatically loads the appropriate layer based on the current directory. This prevents rule conflicts and keeps context focused.
+### Cross-Preset Principles (_common)
+
+`_common/rules/principles/` provides shared engineering principles (testing, security, architecture, code-quality) that apply across all presets. Each preset's rules files can reference these common principles.
+
+**Dependency direction** (strictly one-way):
+- `_common/` must NOT reference any specific preset
+- Preset rules may reference `_common/` principles
+
+**Why**: Claude Code automatically loads the appropriate layer based on the current directory. The _common principles layer ensures SSoT for universal engineering standards.
 
 **How it works**:
-- Working in project root -> Loads Layer 1 + 2
-- Working in `backend/` -> Loads Layer 1 + 2 + backend Layer 3
+- Working in project root -> Loads Layer 1 + 2 + 2b
+- Working in `backend/` -> Loads Layer 1 + 2 + 2b + backend Layer 3
 - Each layer can reference other layers via relative links
 
 ## 4. Dependency Matrix
@@ -122,9 +132,11 @@ Architecture patterns: see [architecture.md](architecture.md) Section 1
 CLAUDE.md              # Exception: Claude Code convention
 README.md              # Exception: GitHub convention
 rules/
-  api-design.md        # kebab-case
-  code-style.md        # kebab-case
-  project-structure.md # kebab-case
-  tech-stack.md        # kebab-case
+  principles/
+    testing.md         # kebab-case
+    architecture.md    # kebab-case
+  practices/
+    tech-stack.md      # kebab-case
+    code-style.md      # kebab-case
 project-config.md      # kebab-case
 ```

@@ -1,14 +1,28 @@
 # Testing Standards
 
-> **Purpose**: Define TDD workflow, coverage requirements, fine-grained assertions, and CDK Nag compliance testing standards.
+> **Purpose**: Concrete CDK testing practices — code templates, API usage, and command reference.
 
 > Consult this document first when Claude generates CDK test code
-
-This project fully adopts Test-Driven Development (TDD).
 
 ---
 
 ## 0. Quick Reference Card
+
+### CDK Testing Strategy
+
+#### Test Priority
+
+1. **Fine-grained Assertions** — Verify specific resource properties (preferred)
+2. **Snapshot Tests** — Detect unexpected changes (supplementary)
+3. **CDK Nag Compliance** — Security compliance checks (mandatory)
+
+#### Coverage Standards
+
+| Level | Minimum Coverage | Target Coverage |
+|-------|-----------------|-----------------|
+| Constructs | 90% | 95% |
+| Stacks | {{COVERAGE_MIN}}% | 90% |
+| **Overall** | **{{COVERAGE_MIN}}%** | **90%** |
 
 ### TDD Core Cycle
 
@@ -20,13 +34,21 @@ This project fully adopts Test-Driven Development (TDD).
 
 **Test integrity principle**: Never fake results to make tests pass. Test failure = code has a problem; the code must be fixed.
 
-### Coverage Requirements
+### CDK Testing Philosophy
 
-| Level | Minimum Coverage | Target Coverage |
-|-------|-----------------|-----------------|
-| Constructs | 90% | 95% |
-| Stacks | {{COVERAGE_MIN}}% | 90% |
-| **Overall** | **{{COVERAGE_MIN}}%** | **90%** |
+| ✅ Do | ❌ Avoid |
+|-------|---------|
+| Test business configuration and security properties | Test CDK internal implementation |
+| Create stack independently in beforeEach | Share global stack state |
+| Verify critical security properties | Only verify resource existence |
+
+### Test Types
+
+| Type | Purpose | Tool |
+|------|---------|------|
+| **Fine-grained** | Verify specific resource properties | CDK Assertions |
+| **Snapshot** | Detect unexpected changes | Jest Snapshot |
+| **Compliance** | Security compliance checks | CDK Nag |
 
 ### Commands
 
@@ -36,14 +58,6 @@ pnpm test:coverage                     # Tests + coverage
 pnpm test -- -u                        # Update snapshots
 pnpm test test/snapshot/main.test.ts   # Run specific test
 ```
-
-### Test Types
-
-| Type | Purpose | Tool |
-|------|---------|------|
-| **Fine-grained** | Verify specific resource properties | CDK Assertions |
-| **Snapshot** | Detect unexpected changes | Jest Snapshot |
-| **Compliance** | Security compliance checks | CDK Nag |
 
 ### CDK Assertions API
 
@@ -60,14 +74,6 @@ Match.anyValue()             // Any value
 Match.absent()               // Property does not exist
 Match.arrayWith([...])       // Array contains
 ```
-
-### Best Practices
-
-| ✅ Do | ❌ Avoid |
-|-------|---------|
-| Test business configuration and security properties | Test CDK internal implementation |
-| Create stack independently in beforeEach | Share global stack state |
-| Verify critical security properties | Only verify resource existence |
 
 ---
 

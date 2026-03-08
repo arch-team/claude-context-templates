@@ -1,12 +1,51 @@
-# 测试规范 (Testing Standards)
+# 测试规范
 
-> **职责**: 测试规范，定义 TDD 工作流、测试分层和 Fixture 模式。
+> **职责**: Python 后端测试的设计原则、标准和具体实现模式。
 
 > TDD 工作流见 CLAUDE.md
 
 ---
 
-## 0. 速查卡片
+## Python 测试策略
+
+- **pytest 优先**: pytest 是唯一测试框架，禁止使用 unittest 风格
+- **Fixture 驱动**: 使用 `conftest.py` 分层管理 fixture，而非 setUp/tearDown
+- **参数化优先**: 多场景用 `@pytest.mark.parametrize`，而非重复测试方法
+
+---
+
+## 测试分层标准
+
+| 层级 | 测试对象 | Mock 策略 | 速度 |
+|------|---------|----------|------|
+| **Unit** | Entity, Value Object, Domain Service | 外部依赖 (Repo, API) | ms |
+| **Integration** | API 端点, Repository 实现 | 外部服务 (S3, SES) | s |
+| **E2E** | 完整业务流程 | 无 Mock | min |
+
+---
+
+## 覆盖率标准
+
+| 层级 | 最低覆盖率 | 目标覆盖率 |
+|------|-----------|-----------|
+| Domain | 95% | 100% |
+| Application | 90% | 95% |
+| Infrastructure | 80% | 85% |
+| Presentation | 80% | 85% |
+| **整体** | **{{COVERAGE_MIN}}%** | **90%** |
+
+---
+
+## Python 测试哲学
+
+- **conftest.py 共享**: session 级 fixture 放 `tests/conftest.py`，模块级放 `tests/modules/{m}/conftest.py`
+- **Factory 模式**: 使用 `factory_boy` 生成测试数据，避免手动构造
+- **异步测试**: 使用 `pytest-asyncio` + `AsyncMock` 测试异步代码
+- **测试标记**: 所有测试必须标记 `@pytest.mark.unit`/`integration`/`e2e`
+
+---
+
+## 速查卡片
 
 ### 命令 (CLAUDE.md 补充)
 
@@ -26,15 +65,7 @@ uv run pytest tests/modules/ -m unit  # 所有模块单元测试
 | 类 | `Test{Class}` | `TestTaskService` |
 | 方法 | `test_{method}_{scenario}_{expected}` | `test_create_with_invalid_email_raises` |
 
-### 分层
-
-| 层级 | 覆盖 | Mock | 速度 |
-|------|------|------|------|
-| Unit | Entity/Service | 外部依赖 | ms |
-| Integration | API/Repo | 外部服务 | s |
-| E2E | 完整流程 | 无 | min |
-
-### 陷阱 ⚠️
+### 陷阱
 
 - ❌ Mock 被测对象 → ✅ 只 Mock 外部依赖
 - ❌ 测试顺序依赖 → ✅ 每测试独立数据
@@ -171,4 +202,4 @@ class TaskFactory(factory.Factory):
 
 ## 7. 覆盖率
 
-分层覆盖率目标见 [CLAUDE.md](../CLAUDE.md) §覆盖率要求。配置详见 `pyproject.toml` `[tool.coverage]`。
+分层覆盖率目标见 [CLAUDE.md](../../CLAUDE.md) §覆盖率要求。配置详见 `pyproject.toml` `[tool.coverage]`。

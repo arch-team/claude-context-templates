@@ -1,16 +1,50 @@
-> **Purpose**: Testing standards - TDD workflow, test layering, coverage requirements
-
 # Testing Standards
+
+> **Purpose**: Testing standards - Testing strategy, standards, templates, MSW configuration, E2E patterns
 
 ---
 
-## 0. Quick Reference Card
+## React Testing Strategy
 
-### Commands
+### Testing Priority
 
-> See [CLAUDE.md](../CLAUDE.md) Section: Testing for test commands
+1. **Component Tests** — User interaction and rendering verification (preferred)
+2. **Hook Tests** — Custom Hook logic testing
+3. **Integration Tests** — Page-level integration testing (MSW for API mocking)
+4. **E2E Tests** — Critical user flows (Playwright)
 
-### Naming
+### Testing Layers
+
+| Layer | Coverage | Mock Strategy | Tools |
+|-------|----------|--------------|-------|
+| Unit | Hook/Component/Utility | External dependencies | Vitest + Testing Library |
+| Integration | Page/API integration | External services | Vitest + MSW |
+| E2E | User flows | None | Playwright |
+
+---
+
+## React Testing Philosophy
+
+- Test user-visible behavior and interactions, not implementation details (state, internal methods)
+- Use Testing Library's `screen` and `userEvent`, not enzyme's shallow rendering
+- Query priority: `getByRole` > `getByLabelText` > `getByPlaceholderText` > `getByText` > `getByTestId`
+- Use MSW (Mock Service Worker) to mock API boundaries, not internal modules
+- Use `waitFor` / `findBy` for async tests, not synchronous assertions
+
+---
+
+## Coverage Standards
+
+| Layer | Minimum | Target |
+|-------|---------|--------|
+| Components | {{COVERAGE_MIN}}% | 85% |
+| Hooks/Utils | 90% | 95% |
+| Utils | 95% | 100% |
+| **Overall** | **{{COVERAGE_MIN}}%** | **85%** |
+
+---
+
+## Test Naming Conventions
 
 | Element | Pattern | Example |
 |---------|---------|---------|
@@ -18,21 +52,6 @@
 | Test suite | `describe('{Component}')` | `describe('Button')` |
 | Test case | `it('should {behavior}')` | `it('should render children')` |
 | E2E file | `{feature}.spec.ts` | `auth.spec.ts` |
-
-### Layering
-
-| Layer | Coverage | Mock | Tools |
-|-------|----------|------|-------|
-| Unit | Hook/Component/Utility | External dependencies | Vitest + Testing Library |
-| Integration | Page/API integration | External services | Vitest + MSW |
-| E2E | User flows | None | Playwright |
-
-### Pitfalls
-
-- ❌ Testing implementation details → ✅ Test behavior
-- ❌ `getByTestId` first → ✅ Accessibility queries first
-- ❌ Synchronous expectations for async → ✅ `waitFor` / `findBy`
-
 
 ---
 
@@ -219,14 +238,3 @@ export class LoginPage {
 ## 6. Test Configuration
 
 > Vitest and Playwright configuration files are located at the project root (`vitest.config.ts`, `playwright.config.ts`). Refer to official documentation for specific configuration options.
-
----
-
-## 7. Coverage Requirements
-
-| Layer | Minimum | Target |
-|-------|---------|--------|
-| Hooks | 90% | 95% |
-| Components | {{COVERAGE_MIN}}% | 85% |
-| Utils | 95% | 100% |
-| **Overall** | **{{COVERAGE_MIN}}%** | **85%** |

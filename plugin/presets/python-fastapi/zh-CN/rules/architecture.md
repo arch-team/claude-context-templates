@@ -1,6 +1,6 @@
-# 后端架构规范 (Backend Architecture Standards)
+# 架构规范
 
-> **职责**: 后端架构规范的单一真实源，定义分层规则、模块隔离和 DDD 模式。
+> **职责**: Python 后端架构设计原则、标准和具体模块结构模板。
 
 > **架构模式**: DDD + Modular Monolith + Clean Architecture
 > **适用范围**: Python 后端项目
@@ -9,11 +9,65 @@
 
 ---
 
-## 0. 速查卡片
+## 架构模式融合
+
+```
+DDD (战术设计)         -> Entity, Value Object, Aggregate, Domain Event, Repository
+Modular Monolith (模块化) -> 垂直切分业务模块，模块间松耦合，共享基础设施
+Clean Architecture (分层) -> 依赖倒置，核心业务与外部依赖隔离
+```
+
+---
+
+## 分层原则
+
+### 四层结构
+
+| 层级 | 职责 | 可依赖 | 禁止依赖 |
+|------|------|--------|---------|
+| **Domain** | 核心业务逻辑 | Pydantic, shared/domain | FastAPI, SQLAlchemy, boto3 |
+| **Application** | 业务用例编排 | Domain | FastAPI, SQLAlchemy, boto3 |
+| **Infrastructure** | 技术实现 | Domain, Application | - |
+| **API (Presentation)** | HTTP 端点 | Application, Domain (类型) | Infrastructure (通过 DI) |
+
+### 依赖方向
+
+```
+模块内: API 层 -> Application 层 -> Domain 层 <- Infrastructure 层
+跨模块: modules/A ---X---> modules/B (禁止横向依赖)
+              └---> shared/ (唯一允许的共享依赖)
+```
+
+---
+
+## 模块化原则
+
+| 原则 | 说明 |
+|------|------|
+| **模块自治** | 每个模块拥有独立的领域模型和业务逻辑 |
+| **显式依赖** | 模块间依赖必须通过接口显式声明 |
+| **最小知识** | 模块只暴露必要的接口，内部实现不可见 |
+| **单向依赖** | 禁止循环依赖，使用事件解耦 |
+
+---
+
+## 模块隔离黄金法则
+
+| 规则 | 说明 | 强制性 |
+|------|------|--------|
+| **R1** | 模块的 Domain 层**绝对不能**导入任何其他模块代码 | 强制 |
+| **R2** | 模块的 Application 层只能依赖**接口**，不能依赖具体实现 | 强制 |
+| **R3** | 模块间通信必须通过**事件总线**或**共享接口** | 强制 |
+| **R4** | `auth` 模块的认证依赖是**唯一例外**，可被其他模块 API 层导入 | 例外 |
+| **R5** | Domain Events 作为模块公开契约，其他模块 Application 层可导入用于事件订阅 | 例外 |
+
+---
+
+## 速查卡片
 
 > Claude 生成代码时优先查阅此章节
 
-### 0.1 依赖合法性速查矩阵
+### 依赖合法性速查矩阵
 
 > **模块间通信**: 优先 EventBus (异步解耦)，备选 shared/interfaces (同步调用)，禁止直接依赖其他模块实现。
 
@@ -24,7 +78,7 @@
 | **Infrastructure** | ✅ | ❌ | ❌ | ❌ | ⚠️ 仅外键 |
 | **API** | ✅ | ✅ | ❌ | ❌ | ❌ |
 
-### 0.2 数据模型选择速查
+### 数据模型选择速查
 
 | 层级 | 组件类型 | 推荐方案 | 理由 |
 |------|---------|---------|------|
@@ -52,36 +106,15 @@
 dataclass
 ```
 
-### 0.3 PR Review 检查清单
+### PR Review 检查清单
 
 完整检查清单见 [checklist.md](checklist.md) §分层与架构
 
 ---
 
-## 1. 核心原则
+## 1. 分层规则
 
-### 1.1 架构模式融合
-
-```
-DDD (战术设计)         → Entity, Value Object, Aggregate, Domain Event, Repository
-Modular Monolith (模块化) → 垂直切分业务模块，模块间松耦合，共享基础设施
-Clean Architecture (分层) → 依赖倒置，核心业务与外部依赖隔离
-```
-
-### 1.2 模块化原则
-
-| 原则 | 说明 |
-|------|------|
-| **模块自治** | 每个模块拥有独立的领域模型和业务逻辑 |
-| **显式依赖** | 模块间依赖必须通过接口显式声明 |
-| **最小知识** | 模块只暴露必要的接口，内部实现不可见 |
-| **单向依赖** | 禁止循环依赖，使用事件解耦 |
-
----
-
-## 2. 分层规则
-
-### 2.1 模块内部四层结构
+### 1.1 模块内部四层结构
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -99,7 +132,7 @@ Clean Architecture (分层) → 依赖倒置，核心业务与外部依赖隔离
 └──────────────────────────────────────────────────┘
 ```
 
-### 2.2 依赖规则
+### 1.2 依赖规则
 
 | 层级 | 可以依赖 | 禁止依赖 |
 |------|---------|---------|
@@ -108,7 +141,7 @@ Clean Architecture (分层) → 依赖倒置，核心业务与外部依赖隔离
 | **Infrastructure** | Domain, Application | - |
 | **API (Presentation)** | Application, Domain (类型) | Infrastructure (通过 DI) |
 
-### 2.3 依赖方向
+### 1.3 依赖方向
 
 ```
 模块内: API 层 → Application 层 → Domain 层 ← Infrastructure 层
@@ -121,19 +154,9 @@ Clean Architecture (分层) → 依赖倒置，核心业务与外部依赖隔离
 
 ---
 
-## 3. 模块隔离规则
+## 2. 模块隔离规则
 
-### 3.1 黄金法则
-
-| 规则 | 说明 | 强制性 |
-|------|------|--------|
-| **R1** | 模块的 Domain 层**绝对不能**导入任何其他模块代码 | 🔴 强制 |
-| **R2** | 模块的 Application 层只能依赖**接口**，不能依赖具体实现 | 🔴 强制 |
-| **R3** | 模块间通信必须通过**事件总线**或**共享接口** | 🔴 强制 |
-| **R4** | `auth` 模块的认证依赖是**唯一例外**，可被其他模块 API 层导入 | 🟡 例外 |
-| **R5** | Domain Events 作为模块公开契约，其他模块 Application 层可导入用于事件订阅 | 🟡 例外 |
-
-### 3.2 允许的共享内核依赖
+### 2.1 允许的共享内核依赖
 
 ```python
 # ✅ 所有模块可导入 shared/
@@ -144,7 +167,7 @@ from {PROJECT}.shared.api import domain_exception_handler
 
 **约束**: `shared/` 只包含技术基础设施和跨模块抽象，**禁止包含任何业务逻辑**
 
-### 3.3 禁止的依赖
+### 2.2 禁止的依赖
 
 ```python
 # ❌ 禁止：跨模块直接导入
@@ -157,9 +180,9 @@ from {PROJECT}.modules.{other_module}.infrastructure.repositories import {RepoIm
 
 ---
 
-## 4. 模块间通信
+## 3. 模块间通信
 
-### 4.1 集成模式决策
+### 3.1 集成模式决策
 
 | 场景 | 推荐模式 | 实现方式 |
 |------|---------|---------|
@@ -167,7 +190,7 @@ from {PROJECT}.modules.{other_module}.infrastructure.repositories import {RepoIm
 | 异步通知 | Published Language | Domain Events + EventBus |
 | 复杂外部系统 | Anti-Corruption Layer | Infrastructure 适配器 |
 
-### 4.2 事件驱动通信（推荐）
+### 3.2 事件驱动通信（推荐）
 
 ```python
 # 定义 → 发布 → 订阅
@@ -189,30 +212,30 @@ class TaskCompletedEvent(DomainEvent):
 | **Outbox Pattern** | 事件与业务操作原子性提交 | 事件先写入 `outbox` 表，后台轮询发布 |
 | **顺序保证** | 同一聚合根的事件需有序处理 | 按 `aggregate_id` 分区 |
 
-### 4.3 接口位置区分
+### 3.3 接口位置区分
 
 - `shared/domain/interfaces/`: **跨模块能力接口**（如 `IQuotaChecker`）
 - `modules/{module}/application/interfaces/`: **模块内外部服务抽象**（如 `IS3Client`）
 
 ---
 
-## 5. DDD 战术模式
+## 4. DDD 战术模式
 
-### 5.1 Entity 实体
+### 4.1 Entity 实体
 
 继承 `PydanticEntity`，自动获得 `id`, `created_at`, `updated_at`。
 
 **规范**: 必须配置 `ConfigDict(validate_assignment=True)` | 状态转换在 Entity 内部（调用 `self.touch()` 更新时间戳） | 禁止依赖外部服务 | 只抛 Domain 异常 | Pydantic 视为标准工具不属于"外部框架"
 
-### 5.2 Value Object 值对象
+### 4.2 Value Object 值对象
 
 使用 `@dataclass(frozen=True)` 确保不可变，相等性基于值。
 
-### 5.3 Domain Service 领域服务
+### 4.3 Domain Service 领域服务
 
 使用 `@dataclass` 定义，无状态 | 只依赖值对象和领域异常 | 禁止依赖 Repository
 
-### 5.4 Repository 仓库
+### 4.4 Repository 仓库
 
 接口在 Domain 层 (`I{Entity}Repository(IRepository[{Entity}, int])`)，实现在 Infrastructure 层 (`{Entity}RepositoryImpl(PydanticRepository[...])`)。
 
@@ -220,9 +243,9 @@ class TaskCompletedEvent(DomainEvent):
 
 ---
 
-## 6. 模块结构模板
+## 5. 模块结构模板
 
-### 6.1 目录结构
+### 5.1 目录结构
 
 ```
 modules/{module}/
@@ -254,7 +277,7 @@ modules/{module}/
     └── external/           # 外部服务适配器
 ```
 
-### 6.2 文件命名规范
+### 5.2 文件命名规范
 
 | 类型 | 命名规范 | 示例 |
 |------|---------|------|
@@ -265,13 +288,13 @@ modules/{module}/
 | 应用服务 | `{entity}_service.py` | `task_service.py` |
 | 外部适配器 | `{service}_adapter.py` | `s3_adapter.py` |
 
-### 6.3 `__init__.py` 导出规则
+### 5.3 `__init__.py` 导出规则
 
 导出: `router`, Service, Entity, Domain Events | 禁止导出: ORM Model, RepositoryImpl, 外部客户端实现
 
 ---
 
-## 7. 依赖注入
+## 6. 依赖注入
 
 ```
 Layer 1: Database Session (get_db)
@@ -283,7 +306,7 @@ Layer 1: Database Session (get_db)
 
 ---
 
-## 8. 异常处理
+## 7. 异常处理
 
 异常在 `shared/domain/exceptions.py` 定义，由 `shared/api/exception_handlers.py` 自动映射 HTTP 状态码：
 
@@ -297,7 +320,7 @@ Layer 1: Database Session (get_db)
 
 ---
 
-## 9. 架构合规测试
+## 8. 架构合规测试
 
 > **测试位置**: `tests/unit/test_architecture_compliance.py`
 

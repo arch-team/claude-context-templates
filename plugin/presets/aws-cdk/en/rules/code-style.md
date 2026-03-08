@@ -1,12 +1,12 @@
-> **Purpose**: Code style standards - CDK TypeScript naming conventions, Construct class design, import ordering
+# Code Style Standards
 
-# CDK Code Style Standards
+> **Purpose**: Concrete CDK code style practices — code examples, ESLint configuration, and file organization.
 
 ---
 
 ## 0. Quick Reference Card
 
-### Naming Quick Reference
+### Naming Conventions
 
 | Element | Style | Example |
 |---------|-------|---------|
@@ -16,22 +16,33 @@
 | Construct ID | `PascalCase` descriptive | `'DataBucket'`, `'ApiHandler'` |
 | Functions/Variables | `camelCase` | `getEnvironmentConfig`, `vpcCidr` |
 | Constants | `UPPER_SNAKE_CASE` | `MAX_AZS`, `DEFAULT_TIMEOUT` |
-| Types/Interfaces | `PascalCase` | `EnvironmentConfig`, `DeploymentStage` |
-| Files (Stack) | `kebab-case.ts` | `network-stack.ts`, `compute-stack.ts` |
-| Files (Construct) | `kebab-case.ts` | `secure-bucket.ts`, `monitored-api.ts` |
+| Files | `kebab-case.ts` | `network-stack.ts`, `secure-bucket.ts` |
 | Directories | `kebab-case` | `stacks/`, `constructs/`, `config/` |
 
-### TypeScript Quick Reference
+### Construct ID Naming Convention
 
-| Rule | ✅ Correct | ❌ Wrong |
-|------|-----------|---------|
-| Props definition | `interface ComputeStackProps extends StackProps {}` | `type ComputeStackProps = {}` |
-| Props fields | `readonly vpc: ec2.IVpc` | `vpc: ec2.IVpc` (missing readonly) |
-| Avoid any | Specific type / `unknown` | `any` |
-| Strict mode | `strict: true` | `strict: false` |
-| Enum alternative | `as const` object or union type | `enum` |
+- **PascalCase**: Describe resource purpose, e.g., `'DataBucket'`, `'ApiHandler'`
+- **Prohibited**: Meaningless names (`'bucket1'`), non-PascalCase (`'my-function'`)
 
-### Import Ordering
+### TypeScript Coding Principles
+
+| Rule | Requirement |
+|------|-------------|
+| Props definition | Use `interface` (extensible), fields use `readonly` |
+| Strict mode | `strict: true` |
+| Avoid any | Use specific types or `unknown` |
+| Enum alternative | Use `as const` objects or union types, avoid `enum` |
+| Boolean naming | Use `enable`/`is`/`has` prefix |
+
+### Import Ordering Principle
+
+1. AWS CDK core (`aws-cdk-lib`, `constructs`)
+2. AWS CDK modules (`aws-cdk-lib/aws-*`)
+3. Third-party libraries
+4. Internal project modules
+5. Type imports (`import type`, separate line)
+
+### Import Ordering Example
 
 ```typescript
 // 1. AWS CDK core

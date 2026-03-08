@@ -1,20 +1,62 @@
-> **职责**: 前端安全规范 - XSS 防护、敏感数据存储、输入验证 (基于 OWASP)
+# 安全规范
 
-# 前端安全规范 (Frontend Security Standards)
+> **职责**: 安全规范 - 前端安全模型、XSS 防护代码、CSRF 配置、CSP 模板
+
+---
+
+## 前端安全模型
+
+### 核心安全规则
+
+| 规则 | 禁止 | 正确做法 |
+|------|------|---------|
+| XSS | `dangerouslySetInnerHTML` 未清洗 | React 自动转义 / DOMPurify |
+| 敏感存储 | `localStorage.setItem('token')` | httpOnly Cookie / 内存存储 |
+| API 密钥 | 硬编码在代码中 | `VITE_` 前缀环境变量 |
+| URL 参数 | 直接拼接 | `URLSearchParams` / 验证 |
+| 第三方脚本 | 直接引入 | SRI 校验 / CSP |
+
+---
+
+## 客户端数据安全
+
+### Token 存储策略
+
+| 存储方式 | 安全性 | 推荐场景 |
+|---------|-------|---------|
+| httpOnly Cookie | 最安全 | 首选（需后端配合） |
+| 内存 (Zustand 不持久化) | 安全 | 短期会话 |
+| sessionStorage | 中等 | 标签页级别会话 |
+| localStorage | 不安全 | **禁止存储敏感数据** |
+
+### 环境变量安全
+
+- 前端只使用 `VITE_` 前缀的公开配置
+- 敏感信息（API Secret、私钥）永远不出现在前端代码中
+- 所有环境变量必须在 `.env.example` 中声明
+
+---
+
+## 输入验证
+
+| 输入类型 | 验证方式 |
+|---------|---------|
+| 表单输入 | Zod schema + React Hook Form |
+| URL 参数 | 正则验证 + 白名单 |
+| API 响应 | 类型校验 |
+| 用户提供的 URL | 协议白名单验证（http/https/mailto） |
+
+---
+
+## 内容安全策略 (CSP)
+
+- 启用 CSP 头限制脚本和样式来源
+- 外部脚本必须使用 SRI (Subresource Integrity) 校验
+- CORS 配置应限制为已知的 API 域名
 
 ---
 
 ## 0. 速查卡片
-
-### 安全规则速查表
-
-| 规则 | ❌ 禁止 | ✅ 正确 |
-|------|--------|--------|
-| XSS | `dangerouslySetInnerHTML` | React 自动转义 / DOMPurify |
-| 敏感存储 | `localStorage.setItem('token')` | httpOnly Cookie / 内存 |
-| API 密钥 | 硬编码在代码中 | `VITE_` 前缀环境变量 |
-| URL 参数 | 直接拼接 | `URLSearchParams` / 验证 |
-| 第三方脚本 | 直接引入 | SRI 校验 / CSP |
 
 ### 检测命令
 
@@ -70,16 +112,7 @@ const isValidUrl = (url: string): boolean => {
 
 ## 3. 敏感数据存储
 
-### Token 存储策略
-
-| 存储方式 | 安全性 | 推荐场景 |
-|---------|-------|---------|
-| httpOnly Cookie | ✅ 最安全 | 首选 (需后端配合) |
-| 内存 (Zustand 不持久化) | ✅ 安全 | 短期会话 |
-| sessionStorage | ⚠️ 中等 | 标签页级别会话 |
-| localStorage | ❌ 不安全 | **禁止存储敏感数据** |
-
-> Zustand Store 持久化实现详见 state-management.md §2.1
+> Zustand Store 持久化实现详见 [state-management.md](state-management.md) §2.1
 
 ---
 
@@ -103,7 +136,7 @@ const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 ---
 
-## 5. 输入验证
+## 5. 输入验证实践
 
 | 输入类型 | 验证方式 |
 |---------|---------|

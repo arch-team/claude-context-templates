@@ -48,6 +48,6 @@ uv run python -c "import sqlalchemy; print(sqlalchemy.__version__)"
 
 | 文档 | 说明 |
 |------|------|
-| [CLAUDE.md](../CLAUDE.md) | 技术栈概述和开发命令 |
+| [CLAUDE.md](../../CLAUDE.md) | 技术栈概述和开发命令 |
 | [testing.md](testing.md) | 测试规范 |
 | [code-style.md](code-style.md) | 代码风格规范 |

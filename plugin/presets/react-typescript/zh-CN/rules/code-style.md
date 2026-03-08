@@ -1,12 +1,10 @@
-> **职责**: 代码风格规范 - 命名规范、TypeScript 规范、导入排序
+# 代码风格规范
 
-# 代码风格规范 (Code Style Standards)
+> **职责**: 代码风格规范 - 命名规范、TypeScript 类型原则、导入排序、事件命名、泛型命名
 
 ---
 
-## 0. 速查卡片
-
-### 命名速查
+## 命名规范
 
 | 元素 | 样式 | 示例 |
 |------|------|------|
@@ -20,37 +18,36 @@
 | 文件 (工具) | `camelCase.ts` | `formatDate.ts` |
 | 目录 | `kebab-case` | `user-profile/`, `auth/` |
 
-### TypeScript 速查
+---
 
-| 规则 | ✅ 正确 | ❌ 错误 |
-|------|--------|--------|
+## TypeScript 类型原则
+
+| 规则 | 正确 | 错误 |
+|------|------|------|
 | Props 定义 | `interface ButtonProps {}` | `type ButtonProps = {}` |
 | 导出类型 | `export type { User }` | `export { User }` |
-| 避免 any | 具体类型 / unknown | `any` |
+| 避免 any | 具体类型 / `unknown` | `any` |
 | 联合类型 | `'sm' \| 'md' \| 'lg'` | `string` |
+| 对象形状、Props | `interface` | `type` |
+| 联合/映射/工具类型 | `type` | `interface` |
 
-### 导入排序
+---
 
-```typescript
-// 1. React 核心
-import { useState, useEffect } from 'react';
+## 导入排序原则
 
-// 2. 第三方库
-import { useQuery } from '@tanstack/react-query';
-import { clsx } from 'clsx';
+1. React 核心
+2. 第三方库
+3. 内部别名（按 FSD 层级）
+4. 相对导入
+5. 类型导入（单独行）
 
-// 3. 内部别名 (按 FSD 层级)
-import { Button } from '@/shared/ui';
-import { useAuth } from '@/features/auth';
-import { TaskCard } from '@/entities/task';
+---
 
-// 4. 相对导入
-import { useLocalState } from './hooks';
+## 组件文件组织原则
 
-// 5. 类型导入 (单独行)
-import type { User } from '@/entities/user';
-```
-
+- 使用 `@/` 路径别名替代深层相对路径
+- 禁止 `import * as` 通配符导入（不利于 Tree Shaking）
+- 禁止导入内部实现文件（破坏模块封装）
 
 ---
 

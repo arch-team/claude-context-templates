@@ -1,14 +1,28 @@
 # 测试规范
 
-> **职责**: 定义 TDD 工作流、覆盖率要求、Fine-grained Assertions 和 CDK Nag 合规测试规范。
+> **职责**: CDK 测试的具体实践 — 代码模板、API 用法和命令参考。
 
 > Claude 生成 CDK 测试代码时优先查阅此文档
-
-本项目全面采用测试驱动开发 (TDD)。
 
 ---
 
 ## 0. 速查卡片
+
+### CDK 测试策略
+
+#### 测试优先级
+
+1. **Fine-grained Assertions** — 验证特定资源属性（首选）
+2. **Snapshot Tests** — 检测意外变更（补充）
+3. **CDK Nag Compliance** — 安全合规检查（必须）
+
+#### 覆盖率标准
+
+| 层级 | 最低覆盖率 | 目标覆盖率 |
+|------|-----------|-----------|
+| Constructs | 90% | 95% |
+| Stacks | {{COVERAGE_MIN}}% | 90% |
+| **整体** | **{{COVERAGE_MIN}}%** | **90%** |
 
 ### TDD 核心循环
 
@@ -20,13 +34,21 @@
 
 **测试诚信原则**: 切勿为让测试通过而伪造结果。测试失败 = 代码有问题，必须修复代码。
 
-### 覆盖率要求
+### CDK 测试哲学
 
-| 层级 | 最低覆盖率 | 目标覆盖率 |
-|------|-----------|-----------|
-| Constructs | 90% | 95% |
-| Stacks | {{COVERAGE_MIN}}% | 90% |
-| **整体** | **{{COVERAGE_MIN}}%** | **90%** |
+| ✅ 应该 | ❌ 避免 |
+|--------|--------|
+| 测试业务配置和安全属性 | 测试 CDK 内部实现 |
+| beforeEach 独立创建 stack | 全局共享 stack 状态 |
+| 验证关键安全属性 | 仅验证资源存在 |
+
+### 测试类型
+
+| 类型 | 用途 | 工具 |
+|------|------|------|
+| **Fine-grained** | 验证特定资源属性 | CDK Assertions |
+| **Snapshot** | 检测意外变更 | Jest Snapshot |
+| **Compliance** | 安全合规检查 | CDK Nag |
 
 ### 命令
 
@@ -36,14 +58,6 @@ pnpm test:coverage                     # 测试 + 覆盖率
 pnpm test -- -u                        # 更新快照
 pnpm test test/snapshot/main.test.ts   # 运行特定测试
 ```
-
-### 测试类型
-
-| 类型 | 用途 | 工具 |
-|------|------|------|
-| **Fine-grained** | 验证特定资源属性 | CDK Assertions |
-| **Snapshot** | 检测意外变更 | Jest Snapshot |
-| **Compliance** | 安全合规检查 | CDK Nag |
 
 ### CDK Assertions API
 
@@ -60,14 +74,6 @@ Match.anyValue()             // 任意值
 Match.absent()               // 属性不存在
 Match.arrayWith([...])       // 数组包含
 ```
-
-### 最佳实践
-
-| ✅ 应该 | ❌ 避免 |
-|--------|--------|
-| 测试业务配置和安全属性 | 测试 CDK 内部实现 |
-| beforeEach 独立创建 stack | 全局共享 stack 状态 |
-| 验证关键安全属性 | 仅验证资源存在 |
 
 ---
 

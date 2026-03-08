@@ -34,7 +34,8 @@ my-awesome-app/                  # Monorepo root
 ├── .claude/                     # Root: common specs
 │   ├── CLAUDE.md                # Global entry point
 │   └── rules/
-│       └── common.md            # Cross-project rules
+│       ├── common.md            # Cross-project rules
+│       └── principles/          # Cross-preset engineering principles
 ├── backend/                     # Backend (Python + FastAPI)
 ├── frontend/                    # Frontend (React + TypeScript)
 ├── infra/                       # Infrastructure (AWS CDK)

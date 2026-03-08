@@ -121,7 +121,7 @@ pnpm test lib/constructs/
 
 ## 代码风格
 
-代码风格规范详见 [construct-design.md](rules/construct-design.md) 和 [project-structure.md](rules/project-structure.md)
+代码风格规范详见 [rules/construct-design.md](rules/construct-design.md) 和 [rules/project-structure.md](rules/project-structure.md)
 
 ---
 

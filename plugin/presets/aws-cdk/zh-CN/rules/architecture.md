@@ -1,16 +1,12 @@
-# CDK 架构规范
+# 架构规范
 
-> **职责**: 定义 CDK Construct 分层 (L1/L2/L3)、Stack 组合模式和跨 Stack 通信规范。
-
-> Claude 生成 CDK 代码时优先查阅
-
-**架构模式**: CDK Construct 分层 (L1 → L2 → L3)
+> **职责**: CDK 架构的具体实践 — 代码模式、Stack 设计和环境配置示例。
 
 ---
 
 ## 0. 速查卡片
 
-### Construct 层级
+### Construct 分层模型
 
 | 层级 | 描述 | 来源 | 示例 |
 |------|------|------|------|
@@ -20,7 +16,7 @@
 
 **规则**: 优先 L2 → 需要组合时用 L3 → L2 不支持时才用 L1
 
-### 依赖方向
+### 依赖方向原则
 
 ```
 App → Stack A → L3 → L2 → L1
@@ -33,13 +29,23 @@ App → Stack A → L3 → L2 → L1
 - Construct 内部从高层调用低层
 - 禁止循环依赖
 
-### Stack 组合模式
+### Stack 划分原则
 
 | 模式 | 适用场景 | 示例 |
 |------|---------|------|
 | 按资源类型 | 生命周期不同 | NetworkStack, DatabaseStack |
 | 按环境 | 多环境部署 | dev-Stack, prod-Stack |
 | 按服务 | 微服务架构 | AuthStack, ApiStack |
+
+### 跨 Stack 通信原则
+
+| 方式 | 适用场景 | 优先级 |
+|------|---------|--------|
+| **Props 传递** | 同一 App 内 Stack 间依赖 | 首选 |
+| **SSM Parameter** | 跨 App/跨团队共享配置 | 次选 |
+| **CfnOutput** | 遗留系统集成 | 仅遗留集成 |
+
+> **规则**: 优先 Props 传递 → 跨 App 用 SSM → 仅遗留集成用 CfnOutput
 
 ### Stack 职责划分
 

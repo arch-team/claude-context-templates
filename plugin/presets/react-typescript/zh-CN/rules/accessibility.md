@@ -1,25 +1,46 @@
-> **职责**: 无障碍规范 - WCAG 2.1 AA、ARIA 使用、键盘导航 (基于 POUR 原则)
+# 无障碍规范
 
-# 无障碍规范 (Accessibility Standards)
+> **职责**: 无障碍规范 - POUR 原则、WCAG 标准、ARIA 指南、表单模式、焦点管理代码
 
 ---
 
-## 0. 速查卡片
-
-### POUR 原则
+## POUR 原则
 
 | 原则 | 说明 | 示例 |
 |------|------|------|
-| **可感知** | 信息可被用户感知 | 图片有 alt，视频有字幕 |
-| **可操作** | 界面可被用户操作 | 键盘可访问，无时间限制 |
-| **可理解** | 内容可被用户理解 | 清晰标签，一致导航 |
-| **健壮性** | 兼容辅助技术 | 语义化 HTML，ARIA |
+| **可感知 (Perceivable)** | 信息可被用户感知 | 图片有 alt，视频有字幕 |
+| **可操作 (Operable)** | 界面可被用户操作 | 键盘可访问，无时间限制 |
+| **可理解 (Understandable)** | 内容可被用户理解 | 清晰标签，一致导航 |
+| **健壮性 (Robust)** | 兼容辅助技术 | 语义化 HTML，ARIA |
 
-### ARIA 属性速查
+---
+
+## WCAG 2.1 AA 合规标准
+
+### 视觉标准
+
+| 规则 | 要求 |
+|------|------|
+| 文本对比度 | >= 4.5:1（正常文本），>= 3:1（大文本） |
+| 不仅依赖颜色 | 颜色 + 图标 + 文字组合区分状态 |
+| 焦点样式 | 禁止 `outline: none`，必须保持 `:focus-visible` 可见 |
+
+### 语义化标准
+
+| 场景 | 正确 | 错误 |
+|------|------|------|
+| 页面结构 | `<header>`, `<main>`, `<footer>` | `<div class="header">` |
+| 导航 | `<nav>` | `<div class="nav">` |
+| 执行操作 | `<button onClick={}>` | `<div onClick={}>` |
+| 页面跳转 | `<a href="">`, `<Link to="">` | `<a href="#" onClick={}>` |
+
+---
+
+## ARIA 使用指南
 
 | 属性 | 用途 | 示例 |
 |------|------|------|
-| `aria-label` | 为元素提供标签 | `<button aria-label="关闭">×</button>` |
+| `aria-label` | 为元素提供标签 | `<button aria-label="关闭">x</button>` |
 | `aria-labelledby` | 引用其他元素作为标签 | `<div aria-labelledby="title-id">` |
 | `aria-describedby` | 引用描述性文本 | `<input aria-describedby="error-id">` |
 | `aria-hidden` | 从无障碍树中隐藏 | `<span aria-hidden="true">icon</span>` |
@@ -28,7 +49,21 @@
 | `aria-invalid` | 无效输入状态 | `<input aria-invalid="true">` |
 | `aria-required` | 必填字段 | `<input aria-required="true">` |
 
-### Alt 文本规则
+---
+
+## 键盘导航要求
+
+| 场景 | 要求 |
+|------|------|
+| Modal 打开 | 焦点移到 Modal 内首个可交互元素 |
+| Modal 关闭 | 焦点回到触发元素 |
+| 焦点陷阱 | Modal 内 Tab 循环，不逃逸到背景 |
+| 跳过链接 | 页面顶部提供"跳过导航到主内容"链接 |
+| 焦点样式 | 禁止移除 `outline`，必须保持 `:focus-visible` 可见 |
+
+---
+
+## Alt 文本规则
 
 | 图片类型 | Alt 处理 | 示例 |
 |---------|---------|------|
@@ -37,23 +72,9 @@
 | 功能性图片 | 描述功能 | `alt="搜索"` |
 | SVG 图标 | `aria-hidden` 或 `role="img"` | `<svg aria-hidden="true">` |
 
-
 ---
 
-## 1. 语义化规则
-
-| 场景 | ✅ 正确 | ❌ 错误 |
-|------|--------|--------|
-| 页面结构 | `<header>`, `<main>`, `<footer>` | `<div class="header">` |
-| 导航 | `<nav>` | `<div class="nav">` |
-| 执行操作 | `<button onClick={}>` | `<div onClick={}>` |
-| 页面跳转 | `<a href="">`, `<Link to="">` | `<a href="#" onClick={}>` |
-
-**按钮 vs 链接**: 操作用 `<button>`，导航用 `<a>` 或 `<Link>`
-
----
-
-## 2. 表单无障碍
+## 1. 表单无障碍
 
 ### 2.1 标签关联
 
@@ -98,7 +119,7 @@
 
 ---
 
-## 3. ARIA 模式
+## 2. ARIA 模式
 
 ### 3.1 图标按钮
 
@@ -127,7 +148,7 @@
 
 ---
 
-## 4. 键盘导航
+## 3. 键盘导航实现
 
 ### 焦点管理规则
 
@@ -141,7 +162,7 @@
 
 ---
 
-## 5. 视觉无障碍
+## 4. 视觉无障碍实现
 
 ### 颜色规则
 

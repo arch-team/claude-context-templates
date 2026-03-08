@@ -1,12 +1,10 @@
 # Logging Standards
 
-> **Purpose**: Structured logging standards defining log format, levels, Correlation ID, and data masking rules.
+> **Purpose**: Log level standards, field naming, data masking rules, and concrete structlog configuration.
 
 ---
 
-## Quick Reference Card
-
-### Log Levels
+## Log Level Standards
 
 | Level | Scenario | Example |
 |-------|----------|---------|
@@ -16,10 +14,12 @@
 | `ERROR` | Business errors | Third-party API failures, data validation failures |
 | `CRITICAL` | System-level failures | Database unreachable, missing configuration |
 
-### Prohibited Practices
+---
 
-| ❌ Prohibited | ✅ Correct |
-|--------------|-----------|
+## Prohibited Practices
+
+| Prohibited | Correct |
+|-----------|---------|
 | `print()` debug output | `logger.debug()` |
 | `logger.info(f"password: {pwd}")` | `logger.info("login_attempt", user_id=user.id)` |
 | String concatenation in logs | Structured key-value pairs |
@@ -27,20 +27,7 @@
 
 ---
 
-## 1. Structured Logging
-
-**Library**: structlog | **Configuration**: `src/shared/infrastructure/logging.py`
-
-```python
-# Logger initialization and usage
-logger = structlog.get_logger(__name__)
-logger.info("task_created", task_id=task.id, owner=task.owner)
-logger.error("api_call_failed", service="external", status_code=500, duration_ms=1200)
-```
-
-**Key Constraint**: Colorized console output in dev environment, JSON output in prod environment.
-
-### Standard Field Naming
+## Standard Field Naming
 
 | Field | Name | Type |
 |-------|------|------|
@@ -55,7 +42,44 @@ logger.error("api_call_failed", service="external", status_code=500, duration_ms
 
 ---
 
-## 2. Correlation ID
+## Data Masking Rules
+
+| Field | Masking Method | Example |
+|-------|---------------|---------|
+| Password | Fully hidden | `"****"` |
+| Token/API Key | Preserve first 4 chars | `"sk-1****"` |
+| Email | Partially hidden | `"z***@example.com"` |
+| Phone number | Middle digits hidden | `"138****5678"` |
+| IP address | Context-dependent | Preserved for security audits, masked in regular logs |
+
+---
+
+## Environment Differences
+
+| Configuration | Dev | Staging | Prod |
+|--------------|-----|---------|------|
+| Format | Colorized console | JSON | JSON |
+| Level | DEBUG | INFO | INFO |
+| Output | stdout | stdout | stdout -> Log collection service |
+
+---
+
+## 1. Structured Logging Configuration
+
+**Library**: structlog | **Configuration**: `src/shared/infrastructure/logging.py`
+
+```python
+# Logger initialization and usage
+logger = structlog.get_logger(__name__)
+logger.info("task_created", task_id=task.id, owner=task.owner)
+logger.error("api_call_failed", service="external", status_code=500, duration_ms=1200)
+```
+
+**Key Constraint**: Colorized console output in dev environment, JSON output in prod environment.
+
+---
+
+## 2. Correlation ID Implementation
 
 **Middleware**: `src/presentation/api/middleware/correlation.py`
 
@@ -68,27 +92,13 @@ logger.error("api_call_failed", service="external", status_code=500, duration_ms
 
 ---
 
-## 3. Data Masking Rules
+## 3. Data Masking Utility Functions
 
 **Utility Functions**: `src/shared/infrastructure/logging_utils.py`
 
-| Field | Masking Method | Example |
-|-------|---------------|---------|
-| Password | Fully hidden | `"****"` |
-| Token/API Key | `mask_token()` preserve first 4 chars | `"sk-1****"` |
-| Email | `mask_email()` partially hidden | `"z***@example.com"` |
-| Phone number | `mask_phone()` middle digits hidden | `"138****5678"` |
-| IP address | Context-dependent | Preserved for security audits, masked in regular logs |
-
----
-
-## 4. Environment Differences
-
-| Configuration | Dev | Staging | Prod |
-|--------------|-----|---------|------|
-| Format | Colorized console | JSON | JSON |
-| Level | DEBUG | INFO | INFO |
-| Output | stdout | stdout | stdout → Log collection service |
+- `mask_token()` — Token/API Key preserve first 4 chars
+- `mask_email()` — Email partially hidden
+- `mask_phone()` — Phone number middle digits hidden
 
 ---
 

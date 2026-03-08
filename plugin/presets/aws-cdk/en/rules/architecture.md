@@ -1,16 +1,12 @@
-# CDK Architecture Standards
+# Architecture Standards
 
-> **Purpose**: Define CDK Construct layering (L1/L2/L3), Stack composition patterns, and cross-Stack communication standards.
-
-> Consult first when Claude generates CDK code
-
-**Architecture pattern**: CDK Construct layering (L1 → L2 → L3)
+> **Purpose**: Concrete CDK architecture practices — code patterns, Stack design, and environment configuration examples.
 
 ---
 
 ## 0. Quick Reference Card
 
-### Construct Layers
+### Construct Layering Model
 
 | Layer | Description | Source | Example |
 |-------|-------------|--------|---------|
@@ -20,7 +16,7 @@
 
 **Rule**: Prefer L2 → Use L3 when composition is needed → Use L1 only when L2 doesn't support it
 
-### Dependency Direction
+### Dependency Direction Principle
 
 ```
 App → Stack A → L3 → L2 → L1
@@ -33,13 +29,23 @@ App → Stack A → L3 → L2 → L1
 - Within Constructs, call from higher to lower layers
 - Circular dependencies are prohibited
 
-### Stack Composition Patterns
+### Stack Division Principle
 
 | Pattern | Use Case | Example |
 |---------|----------|---------|
 | By resource type | Different lifecycles | NetworkStack, DatabaseStack |
 | By environment | Multi-environment deployment | dev-Stack, prod-Stack |
 | By service | Microservices architecture | AuthStack, ApiStack |
+
+### Cross-Stack Communication Principle
+
+| Method | Use Case | Priority |
+|--------|----------|----------|
+| **Props passing** | Inter-Stack dependencies within the same App | Preferred |
+| **SSM Parameter** | Cross-App/cross-team config sharing | Secondary |
+| **CfnOutput** | Legacy system integration | Legacy only |
+
+> **Rule**: Prefer Props passing → Use SSM for cross-App → Use CfnOutput only for legacy integration
 
 ### Stack Responsibility Division
 

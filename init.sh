@@ -281,6 +281,15 @@ copy_common_templates() {
     safe_mkdir "${target_dir}/.claude/rules"
     safe_copy "${src}/root-CLAUDE.md" "${target_dir}/.claude/CLAUDE.md"
     safe_copy "${src}/common-rules.md" "${target_dir}/.claude/rules/common.md"
+
+    # 复制跨 preset 通用工程原则
+    if [[ -d "${src}/rules/principles" ]]; then
+        safe_mkdir "${target_dir}/.claude/rules/principles"
+        for principle_file in "${src}/rules/principles"/*.md; do
+            [[ -f "$principle_file" ]] || continue
+            safe_copy "$principle_file" "${target_dir}/.claude/rules/principles/$(basename "$principle_file")"
+        done
+    fi
 }
 
 copy_preset_templates() {
@@ -468,7 +477,8 @@ generate_monorepo_structure() {
     tree+="├── .claude/                    # Root: common specs\n"
     tree+="│   ├── CLAUDE.md               # Global entry\n"
     tree+="│   └── rules/\n"
-    tree+="│       └── common.md           # Common rules\n"
+    tree+="│       ├── common.md           # Common rules\n"
+    tree+="│       └── principles/         # Cross-preset principles\n"
 
     local count=${#entries[@]}
     local idx=0
@@ -498,7 +508,8 @@ generate_monorepo_structure_zhcn() {
     tree+="├── .claude/                    # 根级：通用规范\n"
     tree+="│   ├── CLAUDE.md               # 全局入口\n"
     tree+="│   └── rules/\n"
-    tree+="│       └── common.md           # 跨项目通用规则\n"
+    tree+="│       ├── common.md           # 跨项目通用规则\n"
+    tree+="│       └── principles/         # 跨 preset 工程原则\n"
 
     local count=${#entries[@]}
     local idx=0

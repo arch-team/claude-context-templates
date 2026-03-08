@@ -1,10 +1,40 @@
 # Security Standards
 
-> **Purpose**: Security standards defining prohibited practices, mandatory requirements, and security detection commands.
+> **Purpose**: Python backend security design principles, standards, and concrete detection commands.
 
 ---
 
-## 0. Quick Reference Card
+## Application Security Model
+
+### Input Validation
+
+- All external input validated through **Pydantic** at system boundaries
+- Pydantic `Field` + `field_validator` for precise constraints
+- Allowlist strategy preferred: only accept explicitly permitted values
+
+### Authentication & Authorization
+
+- OAuth2 + RBAC model
+- Dependency chain: `get_current_user` -> `require_role`
+- Password storage: `passlib` bcrypt (`bcrypt__rounds=12`)
+- Login throttling: 5 failures -> locked for 30 minutes
+
+---
+
+## API Security Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Environment Variables** | Sensitive config uses `pydantic_settings.BaseSettings` + `SecretStr` |
+| **Error Responses** | Never return `str(e)` or traceback; use generic error messages |
+| **SQL Protection** | No SQL concatenation; use parameterized queries (SQLAlchemy ORM / `text()`) |
+| **Path Protection** | Never concatenate user input into file paths; use `Path.name` validation |
+| **Dangerous Functions** | No `eval()`/`exec()`/`pickle.loads()`; use safe alternatives |
+| **Sensitive Logs** | Never log passwords/tokens/keys; see logging masking rules |
+
+---
+
+## Quick Reference Card
 
 > Claude should consult this section first when generating code
 

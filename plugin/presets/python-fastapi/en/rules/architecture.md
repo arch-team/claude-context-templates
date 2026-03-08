@@ -1,6 +1,6 @@
-# Backend Architecture Standards
+# Architecture Standards
 
-> **Purpose**: Single Source of Truth (SSoT) for backend architecture standards, defining layering rules, module isolation, and DDD patterns.
+> **Purpose**: Python backend architecture design principles, standards, and concrete module structure templates.
 
 > **Architecture Pattern**: DDD + Modular Monolith + Clean Architecture
 > **Scope**: Python backend projects
@@ -9,11 +9,65 @@
 
 ---
 
-## 0. Quick Reference Card
+## Architecture Pattern Fusion
+
+```
+DDD (Tactical Design)          -> Entity, Value Object, Aggregate, Domain Event, Repository
+Modular Monolith (Modularity)  -> Vertical business module slicing, loose inter-module coupling, shared infrastructure
+Clean Architecture (Layering)  -> Dependency inversion, core business isolated from external dependencies
+```
+
+---
+
+## Layering Principles
+
+### Four-Layer Structure
+
+| Layer | Responsibility | May Depend On | Must Not Depend On |
+|-------|---------------|---------------|-------------------|
+| **Domain** | Core business logic | Pydantic, shared/domain | FastAPI, SQLAlchemy, boto3 |
+| **Application** | Business use case orchestration | Domain | FastAPI, SQLAlchemy, boto3 |
+| **Infrastructure** | Technical implementation | Domain, Application | - |
+| **API (Presentation)** | HTTP endpoints | Application, Domain (types) | Infrastructure (via DI) |
+
+### Dependency Direction
+
+```
+Within module: API Layer -> Application Layer -> Domain Layer <- Infrastructure Layer
+Cross-module: modules/A ---X---> modules/B (horizontal dependencies prohibited)
+                   └---> shared/ (only allowed shared dependency)
+```
+
+---
+
+## Modularity Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Module Autonomy** | Each module owns its independent domain model and business logic |
+| **Explicit Dependencies** | Inter-module dependencies must be explicitly declared via interfaces |
+| **Least Knowledge** | Modules only expose necessary interfaces; internal implementation is hidden |
+| **Unidirectional Dependencies** | Circular dependencies are prohibited; use events for decoupling |
+
+---
+
+## Module Isolation Golden Rules
+
+| Rule | Description | Enforcement |
+|------|-------------|-------------|
+| **R1** | A module's Domain layer **must never** import code from any other module | Mandatory |
+| **R2** | A module's Application layer may only depend on **interfaces**, not concrete implementations | Mandatory |
+| **R3** | Inter-module communication must go through **EventBus** or **shared interfaces** | Mandatory |
+| **R4** | The `auth` module's authentication dependencies are the **only exception**, importable by other modules' API layers | Exception |
+| **R5** | Domain Events serve as a module's public contract; other modules' Application layers may import them for event subscription | Exception |
+
+---
+
+## Quick Reference Card
 
 > Claude should consult this section first when generating code
 
-### 0.1 Dependency Legality Quick Reference Matrix
+### Dependency Legality Quick Reference Matrix
 
 > **Inter-Module Communication**: Prefer EventBus (async decoupling), fallback to shared/interfaces (sync calls), direct dependency on other module implementations is prohibited.
 
@@ -24,7 +78,7 @@
 | **Infrastructure** | ✅ | ❌ | ❌ | ❌ | ⚠️ FK only |
 | **API** | ✅ | ✅ | ❌ | ❌ | ❌ |
 
-### 0.2 Data Model Selection Quick Reference
+### Data Model Selection Quick Reference
 
 | Layer | Component Type | Recommended | Rationale |
 |-------|---------------|-------------|-----------|
@@ -52,36 +106,15 @@ Needs immutability? ──Yes──► dataclass(frozen=True)
 dataclass
 ```
 
-### 0.3 PR Review Checklist
+### PR Review Checklist
 
 See [checklist.md](checklist.md) Section: Layering & Architecture for the full checklist.
 
 ---
 
-## 1. Core Principles
+## 1. Layering Rules
 
-### 1.1 Architecture Pattern Fusion
-
-```
-DDD (Tactical Design)          → Entity, Value Object, Aggregate, Domain Event, Repository
-Modular Monolith (Modularity)  → Vertical business module slicing, loose inter-module coupling, shared infrastructure
-Clean Architecture (Layering)  → Dependency inversion, core business isolated from external dependencies
-```
-
-### 1.2 Modularity Principles
-
-| Principle | Description |
-|-----------|-------------|
-| **Module Autonomy** | Each module owns its independent domain model and business logic |
-| **Explicit Dependencies** | Inter-module dependencies must be explicitly declared via interfaces |
-| **Least Knowledge** | Modules only expose necessary interfaces; internal implementation is hidden |
-| **Unidirectional Dependencies** | Circular dependencies are prohibited; use events for decoupling |
-
----
-
-## 2. Layering Rules
-
-### 2.1 Four-Layer Structure Within a Module
+### 1.1 Four-Layer Structure Within a Module
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -99,7 +132,7 @@ Clean Architecture (Layering)  → Dependency inversion, core business isolated 
 └──────────────────────────────────────────────────┘
 ```
 
-### 2.2 Dependency Rules
+### 1.2 Dependency Rules
 
 | Layer | May Depend On | Must Not Depend On |
 |-------|--------------|-------------------|
@@ -108,7 +141,7 @@ Clean Architecture (Layering)  → Dependency inversion, core business isolated 
 | **Infrastructure** | Domain, Application | - |
 | **API (Presentation)** | Application, Domain (types) | Infrastructure (via DI) |
 
-### 2.3 Dependency Direction
+### 1.3 Dependency Direction
 
 ```
 Within module: API Layer → Application Layer → Domain Layer ← Infrastructure Layer
@@ -121,19 +154,9 @@ Cross-module: modules/A ───X───► modules/B (horizontal dependencie
 
 ---
 
-## 3. Module Isolation Rules
+## 2. Module Isolation Rules
 
-### 3.1 Golden Rules
-
-| Rule | Description | Enforcement |
-|------|-------------|-------------|
-| **R1** | A module's Domain layer **must never** import code from any other module | 🔴 Mandatory |
-| **R2** | A module's Application layer may only depend on **interfaces**, not concrete implementations | 🔴 Mandatory |
-| **R3** | Inter-module communication must go through **EventBus** or **shared interfaces** | 🔴 Mandatory |
-| **R4** | The `auth` module's authentication dependencies are the **only exception**, importable by other modules' API layers | 🟡 Exception |
-| **R5** | Domain Events serve as a module's public contract; other modules' Application layers may import them for event subscription | 🟡 Exception |
-
-### 3.2 Allowed Shared Kernel Dependencies
+### 2.1 Allowed Shared Kernel Dependencies
 
 ```python
 # ✅ All modules may import from shared/
@@ -144,7 +167,7 @@ from {PROJECT}.shared.api import domain_exception_handler
 
 **Constraint**: `shared/` contains only technical infrastructure and cross-module abstractions; **business logic is strictly prohibited**
 
-### 3.3 Prohibited Dependencies
+### 2.2 Prohibited Dependencies
 
 ```python
 # ❌ Prohibited: Direct cross-module imports
@@ -157,9 +180,9 @@ from {PROJECT}.modules.{other_module}.infrastructure.repositories import {RepoIm
 
 ---
 
-## 4. Inter-Module Communication
+## 3. Inter-Module Communication
 
-### 4.1 Integration Pattern Decision
+### 3.1 Integration Pattern Decision
 
 | Scenario | Recommended Pattern | Implementation |
 |----------|-------------------|----------------|
@@ -167,7 +190,7 @@ from {PROJECT}.modules.{other_module}.infrastructure.repositories import {RepoIm
 | Asynchronous notifications | Published Language | Domain Events + EventBus |
 | Complex external systems | Anti-Corruption Layer | Infrastructure adapters |
 
-### 4.2 Event-Driven Communication (Recommended)
+### 3.2 Event-Driven Communication (Recommended)
 
 ```python
 # Define → Publish → Subscribe
@@ -189,30 +212,30 @@ class TaskCompletedEvent(DomainEvent):
 | **Outbox Pattern** | Atomic commit of events with business operations | Write events to `outbox` table first, publish via background polling |
 | **Ordering Guarantee** | Events for the same aggregate root must be processed in order | Partition by `aggregate_id` |
 
-### 4.3 Interface Location Distinction
+### 3.3 Interface Location Distinction
 
 - `shared/domain/interfaces/`: **Cross-module capability interfaces** (e.g., `IQuotaChecker`)
 - `modules/{module}/application/interfaces/`: **Module-internal external service abstractions** (e.g., `IS3Client`)
 
 ---
 
-## 5. DDD Tactical Patterns
+## 4. DDD Tactical Patterns
 
-### 5.1 Entity
+### 4.1 Entity
 
 Inherits from `PydanticEntity`, automatically gains `id`, `created_at`, `updated_at`.
 
 **Standards**: Must configure `ConfigDict(validate_assignment=True)` | State transitions happen inside the Entity (call `self.touch()` to update timestamps) | Must not depend on external services | Only throws Domain exceptions | Pydantic is treated as a standard tool, not an "external framework"
 
-### 5.2 Value Object
+### 4.2 Value Object
 
 Use `@dataclass(frozen=True)` to ensure immutability; equality is value-based.
 
-### 5.3 Domain Service
+### 4.3 Domain Service
 
 Defined using `@dataclass`, stateless | Depends only on value objects and domain exceptions | Must not depend on Repositories
 
-### 5.4 Repository
+### 4.4 Repository
 
 Interface in Domain layer (`I{Entity}Repository(IRepository[{Entity}, int])`), implementation in Infrastructure layer (`{Entity}RepositoryImpl(PydanticRepository[...])`).
 
@@ -220,9 +243,9 @@ Interface in Domain layer (`I{Entity}Repository(IRepository[{Entity}, int])`), i
 
 ---
 
-## 6. Module Structure Template
+## 5. Module Structure Template
 
-### 6.1 Directory Structure
+### 5.1 Directory Structure
 
 ```
 modules/{module}/
@@ -254,7 +277,7 @@ modules/{module}/
     └── external/           # External service adapters
 ```
 
-### 6.2 File Naming Conventions
+### 5.2 File Naming Conventions
 
 | Type | Naming Convention | Example |
 |------|------------------|---------|
@@ -265,13 +288,13 @@ modules/{module}/
 | Application Service | `{entity}_service.py` | `task_service.py` |
 | External Adapter | `{service}_adapter.py` | `s3_adapter.py` |
 
-### 6.3 `__init__.py` Export Rules
+### 5.3 `__init__.py` Export Rules
 
 Export: `router`, Service, Entity, Domain Events | Do not export: ORM Model, RepositoryImpl, external client implementations
 
 ---
 
-## 7. Dependency Injection
+## 6. Dependency Injection
 
 ```
 Layer 1: Database Session (get_db)
@@ -283,7 +306,7 @@ Layer 1: Database Session (get_db)
 
 ---
 
-## 8. Exception Handling
+## 7. Exception Handling
 
 Exceptions are defined in `shared/domain/exceptions.py` and automatically mapped to HTTP status codes by `shared/api/exception_handlers.py`:
 
@@ -297,7 +320,7 @@ Exceptions are defined in `shared/domain/exceptions.py` and automatically mapped
 
 ---
 
-## 9. Architecture Compliance Tests
+## 8. Architecture Compliance Tests
 
 > **Test Location**: `tests/unit/test_architecture_compliance.py`
 

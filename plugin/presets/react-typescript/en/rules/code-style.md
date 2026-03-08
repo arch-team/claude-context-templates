@@ -1,12 +1,10 @@
-> **Purpose**: Code style standards - Naming conventions, TypeScript standards, import ordering
-
 # Code Style Standards
+
+> **Purpose**: Code style standards - Naming conventions, TypeScript type principles, import ordering, event naming, generic naming
 
 ---
 
-## 0. Quick Reference Card
-
-### Naming Quick Reference
+## Naming Conventions
 
 | Element | Style | Example |
 |---------|-------|---------|
@@ -20,37 +18,36 @@
 | Files (utilities) | `camelCase.ts` | `formatDate.ts` |
 | Directories | `kebab-case` | `user-profile/`, `auth/` |
 
-### TypeScript Quick Reference
+---
 
-| Rule | ✅ Correct | ❌ Wrong |
-|------|-----------|---------|
+## TypeScript Type Principles
+
+| Rule | Correct | Wrong |
+|------|---------|-------|
 | Props definition | `interface ButtonProps {}` | `type ButtonProps = {}` |
 | Export types | `export type { User }` | `export { User }` |
-| Avoid any | Specific type / unknown | `any` |
+| Avoid any | Specific type / `unknown` | `any` |
 | Union types | `'sm' \| 'md' \| 'lg'` | `string` |
+| Object shapes, Props | `interface` | `type` |
+| Union/Mapped/Utility types | `type` | `interface` |
 
-### Import Ordering
+---
 
-```typescript
-// 1. React core
-import { useState, useEffect } from 'react';
+## Import Ordering Principles
 
-// 2. Third-party libraries
-import { useQuery } from '@tanstack/react-query';
-import { clsx } from 'clsx';
+1. React core
+2. Third-party libraries
+3. Internal aliases (by FSD layer)
+4. Relative imports
+5. Type imports (separate line)
 
-// 3. Internal aliases (by FSD layer)
-import { Button } from '@/shared/ui';
-import { useAuth } from '@/features/auth';
-import { TaskCard } from '@/entities/task';
+---
 
-// 4. Relative imports
-import { useLocalState } from './hooks';
+## Component File Organization Principles
 
-// 5. Type imports (separate line)
-import type { User } from '@/entities/user';
-```
-
+- Use `@/` path aliases instead of deep relative paths
+- Prohibit `import * as` wildcard imports (hinders tree shaking)
+- Prohibit importing internal implementation files (breaks module encapsulation)
 
 ---
 

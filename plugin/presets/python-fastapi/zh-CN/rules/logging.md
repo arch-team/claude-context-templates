@@ -1,12 +1,10 @@
-# 日志规范 (Logging Standards)
+# 日志规范
 
-> **职责**: 结构化日志规范，定义日志格式、级别、Correlation ID 和脱敏规则。
+> **职责**: 日志级别标准、字段命名、脱敏规则和具体 structlog 配置。
 
 ---
 
-## 速查卡片
-
-### 日志级别
+## 日志级别标准
 
 | 级别 | 场景 | 示例 |
 |------|------|------|
@@ -16,10 +14,12 @@
 | `ERROR` | 业务错误 | 第三方 API 失败、数据校验失败 |
 | `CRITICAL` | 系统级故障 | 数据库不可达、配置缺失 |
 
-### 禁止事项
+---
 
-| ❌ 禁止 | ✅ 正确 |
-|--------|--------|
+## 禁止事项
+
+| 禁止 | 正确 |
+|------|------|
 | `print()` 调试输出 | `logger.debug()` |
 | `logger.info(f"密码: {pwd}")` | `logger.info("login_attempt", user_id=user.id)` |
 | 字符串拼接日志 | 结构化键值对 |
@@ -27,20 +27,7 @@
 
 ---
 
-## 1. 结构化日志
-
-**库**: structlog | **配置**: `src/shared/infrastructure/logging.py`
-
-```python
-# Logger 获取和使用
-logger = structlog.get_logger(__name__)
-logger.info("task_created", task_id=task.id, owner=task.owner)
-logger.error("api_call_failed", service="external", status_code=500, duration_ms=1200)
-```
-
-**关键约束**: dev 环境彩色控制台输出，prod 环境 JSON 输出。
-
-### 标准字段命名
+## 标准字段命名
 
 | 字段 | 命名 | 类型 |
 |------|------|------|
@@ -55,7 +42,44 @@ logger.error("api_call_failed", service="external", status_code=500, duration_ms
 
 ---
 
-## 2. Correlation ID
+## 脱敏规则
+
+| 字段 | 脱敏方式 | 示例 |
+|------|---------|------|
+| 密码 | 完全隐藏 | `"****"` |
+| Token/API Key | 前 4 位保留 | `"sk-1****"` |
+| 邮箱 | 部分隐藏 | `"z***@example.com"` |
+| 手机号 | 中间隐藏 | `"138****5678"` |
+| IP 地址 | 视场景 | 安全审计保留，普通日志脱敏 |
+
+---
+
+## 环境差异
+
+| 配置项 | Dev | Staging | Prod |
+|--------|-----|---------|------|
+| 格式 | 彩色控制台 | JSON | JSON |
+| 级别 | DEBUG | INFO | INFO |
+| 输出 | stdout | stdout | stdout -> 日志收集服务 |
+
+---
+
+## 1. 结构化日志配置
+
+**库**: structlog | **配置**: `src/shared/infrastructure/logging.py`
+
+```python
+# Logger 获取和使用
+logger = structlog.get_logger(__name__)
+logger.info("task_created", task_id=task.id, owner=task.owner)
+logger.error("api_call_failed", service="external", status_code=500, duration_ms=1200)
+```
+
+**关键约束**: dev 环境彩色控制台输出，prod 环境 JSON 输出。
+
+---
+
+## 2. Correlation ID 实现
 
 **中间件**: `src/presentation/api/middleware/correlation.py`
 
@@ -68,27 +92,13 @@ logger.error("api_call_failed", service="external", status_code=500, duration_ms
 
 ---
 
-## 3. 脱敏规则
+## 3. 脱敏工具函数
 
 **工具函数**: `src/shared/infrastructure/logging_utils.py`
 
-| 字段 | 脱敏方式 | 示例 |
-|------|---------|------|
-| 密码 | 完全隐藏 | `"****"` |
-| Token/API Key | `mask_token()` 前 4 位保留 | `"sk-1****"` |
-| 邮箱 | `mask_email()` 部分隐藏 | `"z***@example.com"` |
-| 手机号 | `mask_phone()` 中间隐藏 | `"138****5678"` |
-| IP 地址 | 视场景 | 安全审计保留，普通日志脱敏 |
-
----
-
-## 4. 环境差异
-
-| 配置项 | Dev | Staging | Prod |
-|--------|-----|---------|------|
-| 格式 | 彩色控制台 | JSON | JSON |
-| 级别 | DEBUG | INFO | INFO |
-| 输出 | stdout | stdout | stdout → 日志收集服务 |
+- `mask_token()` — Token/API Key 前 4 位保留
+- `mask_email()` — 邮箱部分隐藏
+- `mask_phone()` — 手机号中间隐藏
 
 ---
 

@@ -1,29 +1,20 @@
 # API Design Standards
 
-> **Purpose**: API design standards defining RESTful routing, HTTP status codes, and error response format.
+> **Purpose**: RESTful API design standards, contract specifications, and concrete FastAPI route code examples.
 
 > Claude should consult this document first when generating API code
 
 ---
 
-## RESTful Route Naming
+## RESTful Naming Conventions
 
-```python
-# ✅ Correct - Use plural nouns
-GET    /api/v1/users          # List users
-GET    /api/v1/users/{id}     # Get a single user
-POST   /api/v1/users          # Create a user
-PUT    /api/v1/users/{id}     # Update a user
-DELETE /api/v1/users/{id}     # Delete a user
-
-# ❌ Wrong - Using verbs
-POST   /api/v1/createUser
-GET    /api/v1/getUserById
-```
+- Routes use **plural nouns**, verbs are prohibited
+- Route paths use `kebab-case`
+- Query parameters and request/response fields use `snake_case`
 
 ---
 
-## HTTP Status Codes
+## HTTP Status Code Standards
 
 | Status Code | Scenario |
 |-------------|----------|
@@ -51,7 +42,7 @@ class ErrorResponse(BaseModel):
 
 ---
 
-## Pagination Standards
+## Pagination Contract
 
 | Parameter/Field | Type | Description |
 |----------------|------|-------------|
@@ -73,10 +64,27 @@ class ErrorResponse(BaseModel):
 
 ---
 
-## Versioning
+## Versioning Strategy
 
 - URL path versioning: `/api/v1/`, `/api/v2/`
 - Maintain at least 2 major versions
+
+---
+
+## RESTful Route Code Examples
+
+```python
+# ✅ Correct - Use plural nouns
+GET    /api/v1/users          # List users
+GET    /api/v1/users/{id}     # Get a single user
+POST   /api/v1/users          # Create a user
+PUT    /api/v1/users/{id}     # Update a user
+DELETE /api/v1/users/{id}     # Delete a user
+
+# ❌ Wrong - Using verbs
+POST   /api/v1/createUser
+GET    /api/v1/getUserById
+```
 
 ---
 

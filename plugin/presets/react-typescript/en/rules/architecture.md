@@ -1,6 +1,6 @@
-> **Purpose**: Single Source of Truth (SSoT) for FSD architecture standards - Layering rules, dependency matrix, slice structure templates
+# Architecture Standards
 
-# Frontend Architecture Standards
+> **Purpose**: Architecture standards - FSD layering principles, dependency rules, slice structure templates, export examples, cross-layer communication code
 
 > **Architecture Pattern**: Feature-Sliced Design (FSD)
 > **Scope**: React + TypeScript frontend projects
@@ -16,11 +16,9 @@
 
 ---
 
-## 0. Quick Reference Card
+## Feature-Sliced Design (FSD) Layering Principles
 
-> Claude should consult this section first when generating code
-
-### 0.1 FSD Layer Dependency Matrix
+### Layer Dependency Matrix
 
 | From ↓ Import → | shared | entities | features | widgets | pages | app |
 |-----------------|:------:|:--------:|:--------:|:-------:|:-----:|:---:|
@@ -31,22 +29,47 @@
 | **entities** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **shared** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-**Legend**: ✅ Allowed | ❌ Prohibited
-
 **Core Rule**: Dependencies may only point downward; upward or same-level dependencies are prohibited
 
-### 0.2 Layer Responsibilities Quick Reference
+---
 
-| Layer | Responsibility | Examples | ✅ Allowed | ❌ Prohibited |
-|-------|---------------|----------|-----------|-------------|
-| **app** | App initialization, routing, global providers | `App.tsx`, `routes.tsx`, `providers.tsx` | Providers, routing, global styles | Concrete business implementation |
-| **pages** | Page components, compose widgets/features | `LoginPage`, `DashboardPage` | Compose widgets/features, page layout | Business logic |
-| **widgets** | Independent UI blocks, compose multiple features | `Header`, `Sidebar`, `UserMenu` | Compose lower-layer components, simple state | Direct business logic, API calls |
-| **features** | Business features with business logic | `auth/LoginForm`, `tasks/TaskList` | Business logic, API calls, state management | Cross-feature dependencies |
-| **entities** | Business entities, data models and basic UI | `user/model`, `task/ui/TaskCard` | Data models, basic UI, type definitions | Complex business logic, cross-entity dependencies |
-| **shared** | Shared utilities, no business logic | `ui/Button`, `api/client`, `lib/utils` | Utility functions, basic UI, API client | Any business logic, business entities |
+## Layer Responsibilities
 
-### 0.3 Slice Structure Template
+| Layer | Responsibility | ✅ Allowed | ❌ Prohibited |
+|-------|---------------|-----------|-------------|
+| **app** | App initialization, routing, global providers | Providers, routing, global styles | Concrete business implementation |
+| **pages** | Page components, compose widgets/features | Compose widgets/features, page layout | Business logic |
+| **widgets** | Independent UI blocks, compose multiple features | Compose lower-layer components, simple state | Direct business logic, API calls |
+| **features** | Business features with business logic | Business logic, API calls, state management | Cross-feature dependencies |
+| **entities** | Business entities, data models and basic UI | Data models, basic UI, type definitions | Complex business logic, cross-entity dependencies |
+| **shared** | Shared utilities, no business logic | Utility functions, basic UI, API client | Any business logic, business entities |
+
+---
+
+## Component Abstraction Levels
+
+### Public API Principle
+
+- Every slice must have an `index.ts` defining its public API
+- Prohibited: exporting internal utility functions, private components, implementation details
+- External consumers may only import through `index.ts`
+
+### Module Communication Principles
+
+| Scenario | Recommended Approach |
+|----------|---------------------|
+| Data passing between components | Props drilling / Context |
+| Global state | Zustand store |
+| Server data | React Query |
+| Event communication | Custom Events / Zustand |
+
+---
+
+## 0. Quick Reference Card
+
+> Claude should consult this section first when generating code
+
+### 0.1 Slice Structure Template
 
 ```
 {layer}/{slice}/

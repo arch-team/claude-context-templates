@@ -1,26 +1,49 @@
-# 安全规范 (Security Standards)
+# 安全规范
 
-> **职责**: 定义 IAM 最小权限、密钥管理、网络安全、数据加密和 CDK Nag 合规规范。
+> **职责**: CDK 安全的具体实践 — 代码模板、Grant 方法速查和配置示例。
 
-> Claude 生成 CDK 代码时优先查阅此文档
-
-基于 AWS Well-Architected Framework 安全支柱的 CDK 安全规范。
-
-> **职责边界**: 本文档关注安全**原理和合规要求**（为什么这样写）。安全配置的**代码模板**详见 [construct-design.md §3](construct-design.md#3-安全默认配置)
+> 安全配置的**代码模板**详见 [construct-design.md §3](construct-design.md#3-安全默认配置)
 
 ---
 
 ## 0. 速查卡片
 
-### 安全规则速查表
+### IAM 最小权限原则
 
-| 规则 | 禁止 | 正确 |
-|------|--------|--------|
-| IAM 权限 | `PolicyStatement({ actions: ['*'] })` | `bucket.grantRead(role)` |
-| 密钥管理 | 硬编码在代码中 | Secrets Manager |
-| S3 访问 | 公开访问 | `BlockPublicAccess.BLOCK_ALL` |
-| RDS | 公开子网 | `PRIVATE_ISOLATED` 子网 |
-| 传输加密 | HTTP | HTTPS + TLS 1.2+ |
+- **Grant 方法优先**: 使用 CDK L2 Construct 提供的 Grant 方法自动创建最小权限策略
+- **禁止通配符**: 不允许 `actions: ['*']` 或 `resources: ['*']`
+- **禁止 Admin 权限**: 不使用 `AdministratorAccess`
+- **精细资源范围**: 限制到具体资源路径（如 `bucket.grantRead(fn, 'data/*')`）
+
+### 密钥管理原则
+
+| 类型 | 存储方式 |
+|------|---------|
+| 敏感凭证（密码、API Key） | Secrets Manager |
+| 非敏感配置（URL、配置项） | SSM Parameter Store |
+| **禁止** | 硬编码在源代码中 |
+
+### 网络安全分层原则
+
+| 子网类型 | 用途 | 示例资源 |
+|---------|------|---------|
+| `PUBLIC` | 公网入口 | ALB, NAT Gateway |
+| `PRIVATE_WITH_EGRESS` | 应用层 | ECS, Lambda |
+| `PRIVATE_ISOLATED` | 数据层 | RDS, ElastiCache |
+
+**关键规则**: 数据库必须放 `PRIVATE_ISOLATED`，禁止 RDS 在 `PUBLIC` 子网。
+
+### 数据加密原则
+
+- **静态加密**: S3 使用 `S3_MANAGED` 或 `KMS`，RDS 启用 `storageEncrypted`
+- **传输加密**: HTTPS + TLS 1.2+，HTTP 自动重定向到 HTTPS
+- **敏感数据**: 使用 CMK + `enableKeyRotation: true`
+
+### CDK Nag 合规原则
+
+- **必须启用**: 所有 Stack 应用 `AwsSolutionsChecks`
+- **抑制粒度**: 优先资源级 `addResourceSuppressions` → 仅在确实需要时使用 Stack 级
+- **抑制必须说明理由**: 每条抑制规则必须提供 `reason` 字段
 
 ### Grant 方法速查
 

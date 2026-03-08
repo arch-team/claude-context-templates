@@ -121,7 +121,7 @@ See [rules/architecture.md](rules/architecture.md) for detailed architecture sta
 
 ## Security Quick Reference
 
-See [rules/security.md](rules/security.md) Section 0 Quick Reference Card for cheat sheets and detection commands.
+See [rules/security.md](rules/security.md) for cheat sheets and detection commands.
 
 ---
 

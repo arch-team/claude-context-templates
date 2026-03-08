@@ -1,12 +1,12 @@
-> **职责**: 代码风格规范 - CDK TypeScript 命名约定、Construct 类设计、导入排序
+# 代码风格规范
 
-# CDK 代码风格规范 (Code Style Standards)
+> **职责**: CDK 代码风格的具体实践 — 代码示例、ESLint 配置和文件组织。
 
 ---
 
 ## 0. 速查卡片
 
-### 命名速查
+### 命名规范
 
 | 元素 | 样式 | 示例 |
 |------|------|------|
@@ -16,22 +16,33 @@
 | Construct ID | `PascalCase` 描述性 | `'DataBucket'`, `'ApiHandler'` |
 | 函数/变量 | `camelCase` | `getEnvironmentConfig`, `vpcCidr` |
 | 常量 | `UPPER_SNAKE_CASE` | `MAX_AZS`, `DEFAULT_TIMEOUT` |
-| 类型/接口 | `PascalCase` | `EnvironmentConfig`, `DeploymentStage` |
-| 文件 (Stack) | `kebab-case.ts` | `network-stack.ts`, `compute-stack.ts` |
-| 文件 (Construct) | `kebab-case.ts` | `secure-bucket.ts`, `monitored-api.ts` |
+| 文件 | `kebab-case.ts` | `network-stack.ts`, `secure-bucket.ts` |
 | 目录 | `kebab-case` | `stacks/`, `constructs/`, `config/` |
 
-### TypeScript 速查
+### Construct ID 命名规范
 
-| 规则 | ✅ 正确 | ❌ 错误 |
-|------|--------|--------|
-| Props 定义 | `interface ComputeStackProps extends StackProps {}` | `type ComputeStackProps = {}` |
-| Props 字段 | `readonly vpc: ec2.IVpc` | `vpc: ec2.IVpc` (缺少 readonly) |
-| 避免 any | 具体类型 / `unknown` | `any` |
-| 严格模式 | `strict: true` | `strict: false` |
-| 枚举替代 | `as const` 对象或联合类型 | `enum` |
+- **PascalCase**: 描述资源用途，如 `'DataBucket'`、`'ApiHandler'`
+- **禁止**: 无意义名称（`'bucket1'`）、非 PascalCase（`'my-function'`）
 
-### 导入排序
+### TypeScript 编码原则
+
+| 规则 | 要求 |
+|------|------|
+| Props 定义 | 使用 `interface`（可扩展），字段用 `readonly` |
+| 严格模式 | `strict: true` |
+| 避免 any | 使用具体类型或 `unknown` |
+| 枚举替代 | 使用 `as const` 对象或联合类型，避免 `enum` |
+| 布尔值命名 | 使用 `enable`/`is`/`has` 前缀 |
+
+### 导入排序原则
+
+1. AWS CDK 核心（`aws-cdk-lib`, `constructs`）
+2. AWS CDK 模块（`aws-cdk-lib/aws-*`）
+3. 第三方库
+4. 项目内部模块
+5. 类型导入（`import type`，单独行）
+
+### 导入排序示例
 
 ```typescript
 // 1. AWS CDK 核心
