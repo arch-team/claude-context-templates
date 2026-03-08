@@ -1,6 +1,7 @@
 {
   "schema_version": "1.0",
-  "plugin_version": "1.1.0",
+  "plugin_version": "1.2.0",
+  "context_schema_version": "1.0",
   "generated_at": "2026-03-08T06:12:00Z",
   "presets": {
     "aws-cdk": {
@@ -17,6 +18,12 @@
       "version": "1.1.0",
       "files_hash": "6c2d6f06eca57b69c0b3ed8f3da20ee3a262f0783b6e4eac1870394906fefc79",
       "file_count": 27
+    },
+    "generic": {
+      "version": "1.0.0",
+      "is_generic": true,
+      "files_hash": "86fe68bbf4249373ce43b90fcd0e3409db182235e8cd1bf2c31eff2dd632494a",
+      "file_count": 19
     }
   },
   "_common": {

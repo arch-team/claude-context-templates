@@ -81,11 +81,102 @@ my-awesome-app/                  # Monorepo root
 
 ## Variable Syntax
 
-Variables use double curly braces: `{{VARIABLE_NAME}}`
+### Standard Variables: `{{VARIABLE_NAME}}`
+
+Standard variables use double curly braces with UPPER_SNAKE_CASE names.
 
 - Variable names are UPPER_SNAKE_CASE
-- Variables are replaced by `sed` during initialization
+- Variables are replaced by `sed` (init.sh) or AI (init-context command) during initialization
 - Unreplaced variables remain as-is in the output (useful for manual customization)
+
+### AI-Generated Placeholders: `{{AI_GENERATED:xxx}}`
+
+> **仅用于 generic preset 模板**。内置 preset（python-fastapi 等）不使用此占位符。
+
+AI-generated placeholders mark regions where the `/init-context` command's AI engine dynamically generates content based on project analysis results.
+
+**CLAUDE.md** (6 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:tech_stack_summary}}` | Tech stack overview based on detected dependencies |
+| `{{AI_GENERATED:dev_commands}}` | Development commands (lint, test, run) |
+| `{{AI_GENERATED:core_principles}}` | Core development principles for the tech stack |
+| `{{AI_GENERATED:coverage_table}}` | Coverage requirement table by architecture layer |
+| `{{AI_GENERATED:pre_commit_one_liner}}` | One-line pre-commit command (lint + typecheck + test) |
+| `{{AI_GENERATED:gotchas}}` | Common pitfalls and gotchas |
+
+**rules/architecture.md** (5 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:architecture_pattern}}` | Architecture pattern description |
+| `{{AI_GENERATED:layer_structure}}` | Layer responsibility table |
+| `{{AI_GENERATED:dependency_direction}}` | Dependency direction ASCII diagram |
+| `{{AI_GENERATED:module_principles}}` | Module design principles table |
+| `{{AI_GENERATED:communication_pattern}}` | Inter-module communication patterns |
+
+**rules/tech-stack.md** (4 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:version_matrix}}` | Version matrix table |
+| `{{AI_GENERATED:key_constraints}}` | Key technical constraints |
+| `{{AI_GENERATED:version_check_commands}}` | Quick version verification commands |
+| `{{AI_GENERATED:toolchain_config}}` | Toolchain configuration table |
+
+**rules/code-style.md** (5 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:code_style_quick_ref}}` | Code style quick reference card |
+| `{{AI_GENERATED:naming_conventions}}` | Naming convention rules |
+| `{{AI_GENERATED:import_rules}}` | Import ordering rules |
+| `{{AI_GENERATED:type_annotations}}` | Type annotation requirements |
+| `{{AI_GENERATED:do_dont_examples}}` | DO / DON'T code examples |
+
+**rules/testing.md** (3 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:test_layering}}` | Test layering table |
+| `{{AI_GENERATED:coverage_requirements}}` | Coverage requirements |
+| `{{AI_GENERATED:test_commands}}` | Test command quick reference |
+
+**rules/security.md** (3 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:security_quick_ref}}` | Security quick reference card |
+| `{{AI_GENERATED:security_scanning}}` | Security scanning commands |
+| `{{AI_GENERATED:auth_guidelines}}` | Authentication/authorization guidelines |
+
+**rules/checklist.md** (6 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:checklist_architecture}}` | Architecture check items |
+| `{{AI_GENERATED:checklist_code_style}}` | Code style check items |
+| `{{AI_GENERATED:checklist_security_extra}}` | Extra security check items |
+| `{{AI_GENERATED:checklist_testing_extra}}` | Extra testing check items |
+| `{{AI_GENERATED:checklist_structure_extra}}` | Extra project structure check items |
+| `{{AI_GENERATED:pre_commit_command}}` | Full pre-commit validation command |
+
+**rules/project-structure.md** (4 placeholders):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{AI_GENERATED:directory_tree}}` | Project directory tree |
+| `{{AI_GENERATED:config_files}}` | Configuration file quick reference table |
+| `{{AI_GENERATED:naming_rules}}` | File naming conventions |
+| `{{AI_GENERATED:new_module_template}}` | New module template |
+
+**Total: 36 unique placeholders across 9 files.**
+
+**Behavior**:
+- During `/init-context` generic path: AI reads `context-schema.yaml` generation hints and replaces each placeholder with tech-stack-specific content
+- Quality criteria from `context-schema.yaml` are used to self-check the generated content
+- Generated content follows the same format style as built-in presets (tables, code blocks, Section 0 quick reference)
 
 ## Adding Custom Variables
 

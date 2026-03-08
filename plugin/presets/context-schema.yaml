@@ -1,0 +1,624 @@
+# context-schema.yaml — 规范类型体系 SSoT
+#
+# 定义 .claude/ 目录中所有规范文件类型、触发条件和 AI 生成提示。
+# 是 /init-context 命令决定"应该生成哪些文件"的核心依据。
+#
+# schema_version: 用于版本管理和兼容性检查
+
+schema_version: "1.0"
+
+# =============================================================================
+# 入口文件定义
+# =============================================================================
+
+entry_files:
+  claude_md:
+    output_file: "CLAUDE.md"
+    condition: always
+    description:
+      zh-CN: "项目入口规范文件"
+      en: "Project entry point specification"
+
+  project_config:
+    output_file: "project-config.md"
+    condition: always
+    description:
+      zh-CN: "项目特定配置（业务模块、技术选型补充）"
+      en: "Project-specific configuration (business modules, tech choices)"
+
+# =============================================================================
+# 规范类型定义
+# =============================================================================
+
+rule_types:
+
+  # ---------------------------------------------------------------------------
+  # Core 类型 — 所有项目必选
+  # ---------------------------------------------------------------------------
+
+  architecture:
+    display_name:
+      zh-CN: "架构规范"
+      en: "Architecture Standards"
+    description:
+      zh-CN: "项目架构模式、分层原则、模块划分和依赖规则"
+      en: "Architecture patterns, layering principles, module boundaries, dependency rules"
+    output_file: "rules/architecture.md"
+    category: core
+    condition: always
+    common_principle: "rules/principles/architecture.md"
+    ai_generation_hints:
+      zh-CN: |
+        基于检测到的架构模式 ({{architecture_pattern}}) 和技术栈 ({{tech_stack}}) 生成架构规范。
+        必须包含：
+        1. 分层结构表格（层级、职责、可依赖、禁止依赖）
+        2. 依赖方向 ASCII 图
+        3. 模块化原则表格
+        输出格式：Markdown，100-300 行
+      en: |
+        Generate architecture standards based on detected pattern ({{architecture_pattern}}) and tech stack ({{tech_stack}}).
+        Must include:
+        1. Layer structure table (layer, responsibility, allowed deps, forbidden deps)
+        2. Dependency direction ASCII diagram
+        3. Module design principles table
+        Output format: Markdown, 100-300 lines
+    quality_criteria:
+      - "包含分层原则表格"
+      - "有依赖方向图"
+      - "定义了模块边界规则"
+
+  tech-stack:
+    display_name:
+      zh-CN: "技术栈定义"
+      en: "Tech Stack Definition"
+    description:
+      zh-CN: "技术栈版本矩阵、核心依赖约束（版本 SSoT）"
+      en: "Tech stack version matrix, core dependency constraints (version SSoT)"
+    output_file: "rules/tech-stack.md"
+    category: core
+    condition: always
+    ai_generation_hints:
+      zh-CN: |
+        基于检测到的依赖和版本信息生成技术栈定义。
+        必须包含：
+        1. 版本矩阵表格（类别、技术、版本约束、说明）
+        2. 工具链配置（包管理器、Linter、Formatter、测试框架）
+        3. 升级策略说明
+      en: |
+        Generate tech stack definition from detected dependencies and versions.
+        Must include:
+        1. Version matrix table (category, technology, version constraint, notes)
+        2. Toolchain config (package manager, linter, formatter, test framework)
+        3. Upgrade strategy
+    quality_criteria:
+      - "包含版本矩阵表格"
+      - "指定了包管理器和工具链"
+
+  code-style:
+    display_name:
+      zh-CN: "代码风格"
+      en: "Code Style"
+    description:
+      zh-CN: "编码规范、命名约定、格式化规则、类型标注要求"
+      en: "Coding standards, naming conventions, formatting rules, type annotation requirements"
+    output_file: "rules/code-style.md"
+    category: core
+    condition: always
+    common_principle: "rules/principles/code-quality.md"
+    ai_generation_hints:
+      zh-CN: |
+        基于技术栈 ({{tech_stack}}) 和检测到的 Linter/Formatter 生成代码风格规范。
+        必须包含：
+        1. 命名规范表格（类型、规范、示例）
+        2. 导入排序规则
+        3. DO / DON'T 对比代码示例
+      en: |
+        Generate code style rules based on tech stack ({{tech_stack}}) and detected linter/formatter.
+        Must include:
+        1. Naming convention table (type, convention, example)
+        2. Import ordering rules
+        3. DO / DON'T comparison code examples
+    quality_criteria:
+      - "包含命名规范表格"
+      - "有 DO/DON'T 代码示例"
+
+  testing:
+    display_name:
+      zh-CN: "测试规范"
+      en: "Testing Standards"
+    description:
+      zh-CN: "测试策略、覆盖率要求、TDD 工作流、测试分层"
+      en: "Testing strategy, coverage requirements, TDD workflow, test layering"
+    output_file: "rules/testing.md"
+    category: core
+    condition: always
+    common_principle: "rules/principles/testing.md"
+    ai_generation_hints:
+      zh-CN: |
+        基于检测到的测试框架 ({{test_runner}}) 生成测试规范。
+        必须包含：
+        1. TDD 核心循环说明
+        2. 测试分层表格（层级、范围、速度、占比）
+        3. 覆盖率要求表格
+        4. 测试命令速查
+      en: |
+        Generate testing standards based on detected test framework ({{test_runner}}).
+        Must include:
+        1. TDD core cycle
+        2. Test layering table (layer, scope, speed, ratio)
+        3. Coverage requirement table
+        4. Test command quick reference
+    quality_criteria:
+      - "包含测试分层表格"
+      - "定义了覆盖率要求"
+      - "有测试命令示例"
+
+  security:
+    display_name:
+      zh-CN: "安全规范"
+      en: "Security Standards"
+    description:
+      zh-CN: "安全检查清单、认证授权、数据保护、依赖安全"
+      en: "Security checklist, authentication/authorization, data protection, dependency security"
+    output_file: "rules/security.md"
+    category: core
+    condition: always
+    common_principle: "rules/principles/security.md"
+    ai_generation_hints:
+      zh-CN: |
+        基于技术栈和项目类型生成安全规范。
+        必须包含：
+        1. 安全检查清单（分类表格）
+        2. 密钥管理规则
+        3. 输入验证要求
+        4. 安全扫描命令
+      en: |
+        Generate security standards based on tech stack and project type.
+        Must include:
+        1. Security checklist (categorized table)
+        2. Secret management rules
+        3. Input validation requirements
+        4. Security scanning commands
+    quality_criteria:
+      - "包含安全检查清单"
+      - "有密钥管理规则"
+
+  checklist:
+    display_name:
+      zh-CN: "PR 审查清单"
+      en: "PR Review Checklist"
+    description:
+      zh-CN: "代码审查检查项、预提交验证命令"
+      en: "Code review check items, pre-commit validation commands"
+    output_file: "rules/checklist.md"
+    category: core
+    condition: always
+    ai_generation_hints:
+      zh-CN: |
+        基于技术栈生成 PR 审查清单，按以下 5 个分类分别填充占位符：
+        - checklist_architecture: 架构检查项（依赖方向、模块边界等）
+        - checklist_code_style: 代码风格检查项（类型标注、命名规范等）
+        - checklist_security_extra: 额外安全检查项（参数化查询、危险函数等）
+        - checklist_testing_extra: 额外测试检查项（测试标记、测试目录等）
+        - checklist_structure_extra: 额外结构检查项（目录镜像、初始化文件等）
+        另外生成 pre_commit_command 占位符：一行可执行的预提交验证命令
+      en: |
+        Generate PR review checklist based on tech stack, filling 5 categorized placeholders:
+        - checklist_architecture: Architecture checks (dependency direction, module boundaries, etc.)
+        - checklist_code_style: Code style checks (type annotations, naming conventions, etc.)
+        - checklist_security_extra: Extra security checks (parameterized queries, dangerous functions, etc.)
+        - checklist_testing_extra: Extra testing checks (test markers, test directories, etc.)
+        - checklist_structure_extra: Extra structure checks (directory mirroring, init files, etc.)
+        Also generate pre_commit_command placeholder: one-line pre-commit validation command
+    quality_criteria:
+      - "包含 5 个分类复选框清单"
+      - "有预提交验证命令"
+
+  project-structure:
+    display_name:
+      zh-CN: "目录结构"
+      en: "Project Structure"
+    description:
+      zh-CN: "项目目录结构说明、文件命名规范、新增模块模板"
+      en: "Project directory structure, file naming conventions, new module template"
+    output_file: "rules/project-structure.md"
+    category: core
+    condition: always
+    ai_generation_hints:
+      zh-CN: |
+        基于扫描到的实际目录结构生成项目结构规范。
+        必须包含：
+        1. ASCII 目录树（带注释）
+        2. 文件命名规范表格
+        3. 新增模块/组件模板
+      en: |
+        Generate project structure docs based on scanned directory layout.
+        Must include:
+        1. ASCII directory tree (with annotations)
+        2. File naming convention table
+        3. New module/component template
+    quality_criteria:
+      - "包含 ASCII 目录树"
+      - "有文件命名规范"
+
+  # ---------------------------------------------------------------------------
+  # Optional 类型 — 根据项目特征推荐
+  # ---------------------------------------------------------------------------
+
+  api-design:
+    display_name:
+      zh-CN: "API 设计规范"
+      en: "API Design Standards"
+    description:
+      zh-CN: "RESTful 路由、HTTP 状态码、错误响应格式、版本策略"
+      en: "RESTful routing, HTTP status codes, error response format, versioning"
+    output_file: "rules/api-design.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到 Web 框架（FastAPI, Express, Gin, Spring Boot 等）"
+        - "项目类型为 Web API 或后端服务"
+        - "存在 routes/、controllers/、endpoints/ 目录"
+    ai_generation_hints:
+      zh-CN: "基于 Web 框架生成 RESTful API 设计规范，含路由命名、状态码表、错误格式。"
+      en: "Generate RESTful API design standards based on web framework, including route naming, status codes, error format."
+    quality_criteria:
+      - "包含路由命名规范"
+      - "有 HTTP 状态码表"
+
+  component-design:
+    display_name:
+      zh-CN: "组件设计规范"
+      en: "Component Design Standards"
+    description:
+      zh-CN: "UI 组件设计原则、组件分类、Props 规范、状态管理"
+      en: "UI component design principles, classification, Props conventions, state management"
+    output_file: "rules/component-design.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到前端框架（React, Vue, Angular, Svelte 等）"
+        - "存在 components/ 目录"
+    ai_generation_hints:
+      zh-CN: "基于前端框架生成组件设计规范，含组件分类、Props 规范、组合模式。"
+      en: "Generate component design standards based on frontend framework, including classification, props, composition."
+
+  state-management:
+    display_name:
+      zh-CN: "状态管理规范"
+      en: "State Management Standards"
+    description:
+      zh-CN: "状态管理策略、Store 设计、数据流方向"
+      en: "State management strategy, store design, data flow direction"
+    output_file: "rules/state-management.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到状态管理库（Redux, Zustand, Pinia, MobX 等）"
+        - "前端项目中存在 store/、stores/ 目录"
+
+  performance:
+    display_name:
+      zh-CN: "性能优化规范"
+      en: "Performance Standards"
+    description:
+      zh-CN: "性能预算、优化策略、监控指标"
+      en: "Performance budget, optimization strategies, monitoring metrics"
+    output_file: "rules/performance.md"
+    category: optional
+    condition:
+      triggers:
+        - "用户明确要求性能相关规范"
+        - "检测到性能监控工具配置"
+
+  accessibility:
+    display_name:
+      zh-CN: "无障碍规范"
+      en: "Accessibility Standards"
+    description:
+      zh-CN: "WCAG 合规、ARIA 标签、键盘导航、屏幕阅读器支持"
+      en: "WCAG compliance, ARIA labels, keyboard navigation, screen reader support"
+    output_file: "rules/accessibility.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到前端框架"
+        - "存在 a11y 相关配置或依赖"
+
+  logging:
+    display_name:
+      zh-CN: "日志规范"
+      en: "Logging Standards"
+    description:
+      zh-CN: "结构化日志、日志级别、脱敏规则、Correlation ID"
+      en: "Structured logging, log levels, sanitization rules, correlation ID"
+    output_file: "rules/logging.md"
+    category: optional
+    condition:
+      triggers:
+        - "后端服务项目"
+        - "检测到日志库（structlog, winston, slog 等）"
+
+  observability:
+    display_name:
+      zh-CN: "可观测性规范"
+      en: "Observability Standards"
+    description:
+      zh-CN: "Metrics 命名、Distributed Tracing、Health Check 端点"
+      en: "Metrics naming, distributed tracing, health check endpoints"
+    output_file: "rules/observability.md"
+    category: optional
+    condition:
+      triggers:
+        - "后端服务或微服务项目"
+        - "检测到 OpenTelemetry、Prometheus 等可观测性工具"
+
+  deployment:
+    display_name:
+      zh-CN: "部署规范"
+      en: "Deployment Standards"
+    description:
+      zh-CN: "CI/CD 流程、Docker 配置、环境管理"
+      en: "CI/CD pipeline, Docker configuration, environment management"
+    output_file: "rules/deployment.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到 Dockerfile、docker-compose.yml"
+        - "检测到 CI/CD 配置（.github/workflows/、.gitlab-ci.yml）"
+
+  construct-design:
+    display_name:
+      zh-CN: "Construct 设计规范"
+      en: "Construct Design Standards"
+    description:
+      zh-CN: "IaC Construct 模式、L1/L2/L3 分级、安全默认值"
+      en: "IaC construct patterns, L1/L2/L3 levels, security defaults"
+    output_file: "rules/construct-design.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到 CDK、Terraform、Pulumi 等 IaC 框架"
+        - "存在 cdk.json 或 cdktf.json"
+
+  cost-optimization:
+    display_name:
+      zh-CN: "成本优化规范"
+      en: "Cost Optimization Standards"
+    description:
+      zh-CN: "云资源成本标签、预算监控、优化策略"
+      en: "Cloud resource cost tags, budget monitoring, optimization strategies"
+    output_file: "rules/cost-optimization.md"
+    category: optional
+    condition:
+      triggers:
+        - "检测到云基础设施配置（CDK、Terraform）"
+        - "用户明确要求成本相关规范"
+
+  sdk-first:
+    display_name:
+      zh-CN: "SDK-First 原则"
+      en: "SDK-First Principle"
+    description:
+      zh-CN: "优先使用 SDK 和库简化实现，避免重复造轮子"
+      en: "Prioritize SDK/library usage to simplify implementation"
+    output_file: "rules/sdk-first.md"
+    category: optional
+    condition:
+      triggers:
+        - "后端或全栈项目"
+        - "用户明确要求"
+
+# =============================================================================
+# 深度分析探针定义
+# =============================================================================
+
+analysis_probes:
+
+  language_detection:
+    description: "通过配置文件和文件扩展名检测主要编程语言"
+    indicators:
+      - file: "pyproject.toml"
+        language: "Python"
+        weight: 1.0
+      - file: "setup.py"
+        language: "Python"
+        weight: 0.8
+      - file: "requirements.txt"
+        language: "Python"
+        weight: 0.6
+      - file: "package.json"
+        language: "JavaScript/TypeScript"
+        weight: 1.0
+      - file: "tsconfig.json"
+        language: "TypeScript"
+        weight: 1.0
+      - file: "go.mod"
+        language: "Go"
+        weight: 1.0
+      - file: "Cargo.toml"
+        language: "Rust"
+        weight: 1.0
+      - file: "pom.xml"
+        language: "Java"
+        weight: 1.0
+      - file: "build.gradle"
+        language: "Java/Kotlin"
+        weight: 0.9
+      - file: "*.csproj"
+        language: "C#"
+        weight: 1.0
+      - file: "Gemfile"
+        language: "Ruby"
+        weight: 1.0
+      - file: "mix.exs"
+        language: "Elixir"
+        weight: 1.0
+      - file: "pubspec.yaml"
+        language: "Dart/Flutter"
+        weight: 1.0
+
+  framework_detection:
+    description: "通过依赖列表检测使用的框架"
+    indicators:
+      # Python 框架
+      - dependency: "fastapi"
+        framework: "FastAPI"
+        preset_hint: "python-fastapi"
+      - dependency: "django"
+        framework: "Django"
+      - dependency: "flask"
+        framework: "Flask"
+      # JavaScript/TypeScript 框架
+      - dependency: "react"
+        framework: "React"
+        preset_hint: "react-typescript"
+      - dependency: "next"
+        framework: "Next.js"
+      - dependency: "vue"
+        framework: "Vue"
+      - dependency: "angular"
+        framework: "Angular"
+      - dependency: "svelte"
+        framework: "Svelte"
+      - dependency: "express"
+        framework: "Express"
+      - dependency: "nestjs"
+        framework: "NestJS"
+      # IaC
+      - dependency: "aws-cdk-lib"
+        framework: "AWS CDK"
+        preset_hint: "aws-cdk"
+      # Go 框架
+      - dependency: "gin-gonic/gin"
+        framework: "Gin"
+      - dependency: "gofiber/fiber"
+        framework: "Fiber"
+      # Java 框架
+      - dependency: "spring-boot"
+        framework: "Spring Boot"
+      # Rust 框架
+      - dependency: "actix-web"
+        framework: "Actix Web"
+      - dependency: "axum"
+        framework: "Axum"
+
+  toolchain_detection:
+    description: "检测项目使用的开发工具链"
+    categories:
+      package_manager:
+        - file: "uv.lock"
+          tool: "uv"
+        - file: "poetry.lock"
+          tool: "poetry"
+        - file: "Pipfile.lock"
+          tool: "pipenv"
+        - file: "pnpm-lock.yaml"
+          tool: "pnpm"
+        - file: "yarn.lock"
+          tool: "yarn"
+        - file: "package-lock.json"
+          tool: "npm"
+        - file: "bun.lockb"
+          tool: "bun"
+        - file: "go.sum"
+          tool: "go modules"
+        - file: "Cargo.lock"
+          tool: "cargo"
+      linter:
+        - file: "ruff.toml"
+          tool: "ruff"
+        - file: ".flake8"
+          tool: "flake8"
+        - file: ".eslintrc*"
+          tool: "eslint"
+        - file: "eslint.config.*"
+          tool: "eslint"
+        - file: "biome.json"
+          tool: "biome"
+        - file: ".golangci.yml"
+          tool: "golangci-lint"
+      formatter:
+        - file: ".prettierrc*"
+          tool: "prettier"
+        - file: "biome.json"
+          tool: "biome"
+        - file: "rustfmt.toml"
+          tool: "rustfmt"
+      test_runner:
+        - file: "pytest.ini"
+          tool: "pytest"
+        - file: "pyproject.toml[tool.pytest]"
+          tool: "pytest"
+        - file: "vitest.config.*"
+          tool: "vitest"
+        - file: "jest.config.*"
+          tool: "jest"
+        - file: "*_test.go"
+          tool: "go test"
+      ci:
+        - file: ".github/workflows/"
+          tool: "GitHub Actions"
+        - file: ".gitlab-ci.yml"
+          tool: "GitLab CI"
+        - file: "Jenkinsfile"
+          tool: "Jenkins"
+        - file: ".circleci/"
+          tool: "CircleCI"
+
+  architecture_detection:
+    description: "通过目录结构模式推断架构风格"
+    patterns:
+      - directories: ["domain", "application", "infrastructure", "presentation"]
+        pattern: "DDD + Clean Architecture"
+      - directories: ["domain", "application", "infrastructure", "api"]
+        pattern: "DDD + Clean Architecture"
+      - directories: ["models", "views", "controllers"]
+        pattern: "MVC"
+      - directories: ["models", "views", "templates", "urls"]
+        pattern: "Django MVT"
+      - directories: ["features", "shared", "entities", "widgets"]
+        pattern: "Feature-Sliced Design"
+      - directories: ["components", "pages", "hooks", "utils"]
+        pattern: "Component-Based (React)"
+      - directories: ["cmd", "internal", "pkg"]
+        pattern: "Go Standard Layout"
+      - directories: ["src", "tests", "docs"]
+        pattern: "Standard Layout"
+      - directories: ["lib", "stacks", "constructs"]
+        pattern: "CDK Construct Pattern"
+
+  existing_config_detection:
+    description: "检测已有的规范和配置文件"
+    files:
+      - ".editorconfig"
+      - ".eslintrc*"
+      - ".prettierrc*"
+      - "ruff.toml"
+      - ".flake8"
+      - "mypy.ini"
+      - "tsconfig.json"
+      - "biome.json"
+      - ".github/CODEOWNERS"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - "CONTRIBUTING.md"
+      - "README.md"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - "Makefile"
+
+# =============================================================================
+# Preset 匹配规则
+# =============================================================================
+
+preset_matching:
+  confidence_thresholds:
+    high: 0.8      # >= 0.8 → 直接推荐 preset 快车道
+    medium: 0.5    # 0.5-0.8 → 提示最接近的 preset，让用户确认
+    low: 0.0       # < 0.5 → generic 路径
+
+  scoring_rules:
+    - "framework_detection 中匹配到 preset_hint 的框架 → +0.5"
+    - "language_detection 匹配对应语言 → +0.2"
+    - "toolchain_detection 匹配 preset defaults → +0.1 (每项)"
+    - "architecture_detection 匹配 preset 架构模式 → +0.2"

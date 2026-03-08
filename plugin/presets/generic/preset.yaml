@@ -1,0 +1,37 @@
+name: generic
+display_name:
+  zh-CN: "通用项目 (AI 智能生成)"
+  en: "Generic Project (AI-Powered Generation)"
+description:
+  zh-CN: "适用于任意技术栈的通用模板，基于项目分析由 AI 动态填充"
+  en: "Universal template for any tech stack, dynamically filled by AI based on project analysis"
+version: "1.0.0"
+is_generic: true
+
+defaults: {}
+# generic preset 没有固定默认值，所有技术栈信息由深度分析或交互收集
+
+files:
+  required:
+    - CLAUDE.md
+    - project-config.md
+    - rules/architecture.md
+    - rules/tech-stack.md
+    - rules/code-style.md
+    - rules/testing.md
+    - rules/security.md
+    - rules/checklist.md
+    - rules/project-structure.md
+  optional: []
+  # 可选文件由 context-schema.yaml 动态决定，不在此处硬编码
+
+variables:
+  - name: PROJECT_NAME
+    prompt: "项目名称"
+    required: true
+  - name: PROJECT_SLUG
+    prompt: "项目标识符 (kebab-case)"
+    required: true
+  - name: PROJECT_DESCRIPTION
+    prompt: "项目描述"
+    required: false
