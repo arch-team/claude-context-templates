@@ -41,6 +41,7 @@ The project lacks a `.claude/` directory. Guide the user to create one.
    - No clear match for built-in presets → mention that `/init-context` supports **any tech stack** via the `generic` preset (AI-powered generation)
 3. **Suggest `/init-context`** to interactively generate the directory
    - `/init-context` performs deep project analysis and automatically routes to the best path: preset fast-track (for matching projects) or generic AI generation (for any other tech stack)
+   - All paths also generate cross-preset engineering principles (`rules/principles/*.md`) covering architecture, code quality, testing, and security fundamentals
 
 ## Path B: .claude/ Already Exists
 
@@ -72,6 +73,10 @@ The user proactively asks how to improve Claude Code's understanding or their `.
 | `aws-cdk` | AWS CDK + TypeScript | Construct Patterns, Security, Cost Optimization |
 | `generic` | Any tech stack (AI-powered) | Deep analysis + AI-generated rules for any project |
 
+All presets also include **cross-preset engineering principles** from `_common/rules/principles/*.md` (architecture, code quality, testing, security) — these are universal best practices shared across all tech stacks.
+
+The full rule type taxonomy, quality criteria, and AI generation hints are defined in `presets/context-schema.yaml`.
+
 ## Example Responses
 
 **Scenario 1 — No .claude/, Python project detected:**
@@ -84,7 +89,7 @@ The user proactively asks how to improve Claude Code's understanding or their `.
 >
 > Want me to set it up now?
 
-**Scenario 3 — No .claude/, unrecognized tech stack (e.g., Go + Gin):**
+**Scenario 2 — No .claude/, unrecognized tech stack (e.g., Go + Gin):**
 
 > I noticed your project doesn't have a `.claude/` directory yet. Based on `go.mod` and Gin in your dependencies, this looks like a Go + Gin project.
 >
@@ -92,7 +97,7 @@ The user proactively asks how to improve Claude Code's understanding or their `.
 >
 > Want me to set it up now?
 
-**Scenario 2 — .claude/ exists, user says "Claude keeps making mistakes":**
+**Scenario 3 — .claude/ exists, user says "Claude keeps making mistakes":**
 
 > Your project already has a `.claude/` directory — that's a great start. The issues you're experiencing might come from incomplete or outdated context rules.
 >
