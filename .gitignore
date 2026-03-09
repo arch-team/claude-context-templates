@@ -24,6 +24,9 @@ __pycache__/
 # Local test marketplace
 local-marketplace/
 
+# Skill eval workspaces
+*-workspace/
+
 # Temporary files
 *.tmp
 *.bak
