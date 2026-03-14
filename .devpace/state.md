@@ -15,6 +15,6 @@
 
 ## 下一步
 
-CR-001（PF-029 版本对齐）已合并。可继续处理剩余技术债务：PF-028（init.sh generic 支持）或 PF-030（project-strategy.md 更新）。
+PF-028 确认为有意设计（generic preset 专为 AI 路径设计），已关闭。剩余技术债务：PF-030（project-strategy.md 更新 audit-context 状态）。
 
 <!-- devpace-version: 1.6.2 -->

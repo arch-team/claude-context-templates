@@ -36,7 +36,7 @@ OBJ-1 上下文生成能力
 ├── BR-001 Shell 脚本路径
 │   ├── PF-001 交互式初始化脚本 (init.sh)
 │   ├── PF-002 远程一键安装 (install.sh)
-│   └── PF-028 init.sh 补充 generic preset 支持（技术债务）
+│   └── ~~PF-028~~ generic preset 仅限 Plugin 路径（有意设计，非技术债务）
 ├── BR-002 Plugin 路径
 │   ├── PF-003 /init-context 命令
 │   ├── PF-004 /audit-context 命令
