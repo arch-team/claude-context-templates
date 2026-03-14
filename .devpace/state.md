@@ -15,6 +15,6 @@
 
 ## 下一步
 
-试试说'帮我实现 XXX'或'帮我修复 XXX'，devpace 会自动追踪变更。
+CR-001（PF-029 版本对齐）已合并。可继续处理剩余技术债务：PF-028（init.sh generic 支持）或 PF-030（project-strategy.md 更新）。
 
 <!-- devpace-version: 1.6.2 -->
