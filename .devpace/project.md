@@ -76,7 +76,7 @@ OBJ-4 社区分发与文档
 │   ├── PF-023 项目文档体系 (docs/)
 │   ├── PF-024 博客文章 (docs/blog/, 4 篇, zh-CN/en)
 │   ├── PF-025 双语 README
-│   └── PF-030 project-strategy.md 更新 audit-context 状态（技术债务）
+│   └── PF-030 project-strategy.md 更新 audit-context 状态（技术债务）→ CR-002 ✅
 └── BR-011 社区基础设施
     ├── PF-026 社区协作模板 (.github/ Issue/PR 模板 + CONTRIBUTING.md)
     └── PF-027 Plugin marketplace 配置

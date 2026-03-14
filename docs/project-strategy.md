@@ -233,6 +233,7 @@ claude-context-templates 的目标是提供**最佳起点**，
 | M1.5.1 | Plugin MVP（/init-context 命令 + context-setup Skill） | ✅ 完成 |
 | M1.5.2 | Plugin 工具链（build/sync-check/release 脚本 + CI 集成） | ✅ 完成 |
 | M1.5.3 | GitHub marketplace 分发配置 + README 更新 | ✅ 完成 |
+| M1.5.5 | /audit-context 命令（.claude/ 目录质量审计） | ✅ 完成 |
 | M1.5.4 | 端到端外部用户安装测试 | 进行中 |
 
 ### Phase 2: Ecosystem（生态）— v2.0
@@ -250,7 +251,6 @@ claude-context-templates 的目标是提供**最佳起点**，
 
 > 以下方向不是承诺的路线图，而是基于当前认知的探索性选项。是否执行取决于 Phase 1-2 的反馈和维护者资源。
 
-- `/audit-context` 命令（评估现有 .claude/ 目录的完整度并给出改进建议）
 - Plugin preset 远程热更新（无需重新安装即可获取最新模板）
 - 社区驱动更多 preset（依赖外部贡献者出现）
 - 更多语言支持（依社区需求）
