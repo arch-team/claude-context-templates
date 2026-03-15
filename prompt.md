@@ -96,3 +96,8 @@ value-map
 
 
 在深入全面的了解claude-context-templates项目的基础上帮我整理一份关于这个下面项目的详细介绍文档，内容应该包括项目背景、设计理念与原则、使用与实践，如果你不清楚这个文档的内容规划可以提问跟我一起讨论
+
+
+在理解当前项目（claude-context-templates）的基础上将下面devpace项目的Claude code上下文规范：
+/Users/jinhuasu/Project_Workspace/Anker-Projects/ml-platform-research/llm-platform-solution/claude-code-forge/devpace/.claude
+转换为当前项目（claude-context-templates）的Claude code上下文规范
