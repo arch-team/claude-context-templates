@@ -22,17 +22,6 @@
 └─ 不确定 → 先问，不要放项目根目录
 ```
 
-### 分层归属速查表
-
-| 目录 | 归属层 | 自动加载 | 随 Plugin 分发 |
-|------|--------|---------|---------------|
-| `plugin/` | 产品层 | 按组件类型 | 是 |
-| `.claude/rules/` | 开发层 | 是 | 否 |
-| `.claude/references/` | 开发层 | 否（按需） | 否 |
-| `docs/` | 开发层 | 否 | 否 |
-| `scripts/` | 开发层 | 否 | 否 |
-| `examples/` | 开发层 | 否 | 否 |
-
 ## §1 完整目录树
 
 > 本节是项目结构的**单一真实源 (Single Source of Truth)**
@@ -102,13 +91,9 @@ claude-context-templates/            # 仓库根目录
 │   ├── customization-guide.md       # Preset 定制指南
 │   ├── customization-guide.zh-CN.md # Preset 定制指南（中文）
 │   ├── plugin-delivery-design.md    # Plugin 分发架构
-│   ├── project-introduction.md      # 项目详细介绍
 │   ├── project-strategy.md          # 项目战略与路线图
 │   ├── template-variables.md        # 模板变量说明
 │   └── template-variables.zh-CN.md  # 模板变量说明（中文）
-├── local-marketplace/               # 本地 marketplace（开发测试用）
-│   └── .claude-plugin/
-│       └── marketplace.json
 ├── init.sh                          # 项目初始化脚本
 ├── install.sh                       # 安装脚本
 ├── CONTRIBUTING.md                  # 贡献指南

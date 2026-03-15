@@ -1,25 +1,33 @@
 {
   "schema_version": "1.0",
   "plugin_version": "1.2.0",
-  "generated_at": "2026-03-15T06:57:57Z",
+  "generated_at": "2026-03-15T15:49:31Z",
   "presets": {
     "aws-cdk": {
       "version": "1.0.0",
+      "display_name": "AWS CDK (TypeScript)",
+      "description": "AWS CDK 基础设施项目模板 (TypeScript, CDK v2, CDK Nag)",
       "files_hash": "987946a879f2bb52e733d6df3efa38aed6eff1b2dca6f1e7eced1558e2698f6d",
       "file_count": 25
     },
     "generic": {
       "version": "1.0.0",
+      "display_name": "通用项目 (AI 智能生成)",
+      "description": "适用于任意技术栈的通用模板，基于项目分析由 AI 动态填充",
       "files_hash": "fbf1cdd748e00ab0c6004cea7d14ddbf8c5f46b26091bdb9d5db30cd1619fa0b",
       "file_count": 19
     },
     "python-fastapi": {
       "version": "1.0.0",
+      "display_name": "Python + FastAPI",
+      "description": "Python 后端 API 项目模板 (FastAPI, SQLAlchemy, Pydantic)",
       "files_hash": "af8962ef8381ae336fc247a8db98007b8db3496041fcee3f73bcc21c44445209",
       "file_count": 27
     },
     "react-typescript": {
       "version": "1.0.0",
+      "display_name": "React + TypeScript",
+      "description": "React 前端项目模板 (TypeScript, Vite, React Query, Zustand)",
       "files_hash": "6c2d6f06eca57b69c0b3ed8f3da20ee3a262f0783b6e4eac1870394906fefc79",
       "file_count": 27
     }

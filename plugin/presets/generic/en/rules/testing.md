@@ -2,24 +2,14 @@
 
 > **Purpose**: Testing standards - TDD workflow, test layering, coverage requirements, test commands, mock strategy
 
+> For universal testing principles (TDD cycle, test integrity, AAA pattern, mock boundaries, test independence, naming), see `_common/rules/principles/testing.md`
+> TDD workflow: see [CLAUDE.md](../CLAUDE.md)
+
 ---
 
-## TDD Core Cycle
+## Universal Testing Principles
 
-> This cycle is universal and applies regardless of tech stack.
-
-```
-RED    -> Write a failing test that defines desired behavior
-GREEN  -> Write the minimum code to make the test pass
-REFACTOR -> Improve code quality while keeping tests green
-```
-
-**TDD Discipline Rules**:
-1. Never write production code without a failing test
-2. Write only enough test to demonstrate a failure
-3. Write only enough production code to pass the test
-4. Refactor only when all tests are green
-5. Each cycle should take minutes, not hours
+> For universal testing principles (TDD cycle, test integrity, AAA pattern, mock boundaries, test independence, naming), see `rules/principles/testing.md`
 
 ---
 
@@ -72,34 +62,6 @@ REFACTOR -> Improve code quality while keeping tests green
   <command>
   ```
 -->
-
----
-
-## Test Naming Conventions
-
-| Element | Pattern | Example |
-|---------|---------|---------|
-| Test file | Co-located or in `tests/` directory | `test_user.py`, `User.test.ts` |
-| Test suite | `describe('ModuleName')` or class-based | `describe('UserService')` |
-| Test case | `it('should {expected behavior}')` | `it('should return user by id')` |
-
----
-
-## Mock Boundary Strategy
-
-> This strategy is universal and applies regardless of tech stack.
-
-**What to mock**:
-- External services (APIs, databases, file systems, message queues)
-- Time-dependent operations (clocks, timers, schedulers)
-- Non-deterministic operations (random, UUIDs)
-
-**What NOT to mock**:
-- Internal modules and functions (test real integration)
-- Simple data transformations (test actual logic)
-- The unit under test itself
-
-**Mock boundary rule**: Mock at the architectural boundary, not inside modules. If you find yourself mocking internal implementation details, your test is too coupled to the implementation.
 
 ---
 

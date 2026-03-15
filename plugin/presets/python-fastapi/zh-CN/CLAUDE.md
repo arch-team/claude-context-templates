@@ -78,26 +78,7 @@ uv run uvicorn src.presentation.api.main:app --host 0.0.0.0 --port 8000 --worker
 
 ### TDD 工作流
 
-本项目全面采用测试驱动开发 (TDD)。
-
-**核心循环**:
-```
-1. 🔴 Red: 先写失败的测试
-2. 🟢 Green: 编写最少代码使测试通过
-3. 🔄 Refactor: 重构代码，保持测试通过
-```
-
-**测试分层策略**:
-
-| 层级 | 说明 |
-|------|------|
-| **Unit** | 实体、值对象、域逻辑 |
-| **Integration** | API 端点、仓库实现 |
-| **E2E** | 完整流程、外部服务集成 |
-
-**测试诚信原则**: 切勿为让测试通过而伪造结果。测试失败 = 代码有问题，必须修复代码。
-
-详细说明请参考 [rules/testing.md](rules/testing.md)
+本项目全面采用测试驱动开发 (TDD)。详见 [rules/testing.md](rules/testing.md)
 
 ---
 

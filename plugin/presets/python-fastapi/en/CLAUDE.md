@@ -78,26 +78,7 @@ See [rules/sdk-first.md](rules/sdk-first.md) for details.
 
 ### TDD Workflow
 
-This project fully adopts Test-Driven Development (TDD).
-
-**Core Loop**:
-```
-1. Red: Write a failing test first
-2. Green: Write the minimum code to make the test pass
-3. Refactor: Refactor the code while keeping tests green
-```
-
-**Testing Layer Strategy**:
-
-| Layer | Description |
-|-------|-------------|
-| **Unit** | Entities, value objects, domain logic |
-| **Integration** | API endpoints, repository implementations |
-| **E2E** | End-to-end flows, external service integrations |
-
-**Test Integrity Principle**: Never fake results to make tests pass. A failing test = a code problem that must be fixed.
-
-See [rules/testing.md](rules/testing.md) for details.
+This project follows Test-Driven Development (TDD). See [rules/testing.md](rules/testing.md) for details.
 
 ---
 

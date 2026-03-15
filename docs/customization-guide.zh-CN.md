@@ -128,13 +128,21 @@ variables:
 - 使用 `{{VARIABLE}}` 作为项目特定内容的占位符
 - 在 project-config.md 中使用 `<!-- TODO: ... -->` 标记用户需填写的部分
 
-### 步骤 5: 更新 init.sh
+### 步骤 5: 注册预置模板
 
-将你的预置模板添加到 `init.sh` 的选择菜单中：
+有两条初始化路径，注册方式不同：
 
-1. 在 `select_preset()` 函数中添加到预置模板列表
-2. 为你的预置模板定义 `TECH_STACK_SUMMARY`
-3. 添加可选规范的处理逻辑
+> **`init.sh`（Shell 脚本路径）**
+>
+> 编辑 `init.sh` 第 17-18 行，将你的 preset 添加到两个数组中：
+> ```bash
+> PRESET_IDS=("python-fastapi" "react-typescript" "aws-cdk" "your-preset")
+> PRESET_DISPLAY_NAMES=("Python + FastAPI" "React + TypeScript" "AWS CDK (TypeScript)" "你的技术栈")
+> ```
+>
+> **`/init-context`（Plugin 命令路径）**
+>
+> 无需注册。该命令通过读取 `plugin/presets/` 下每个目录的 `preset.yaml` 自动发现所有预置模板。
 
 ### 步骤 6: 测试
 
@@ -147,6 +155,46 @@ variables:
 ./init.sh
 # 添加一个使用你的预置模板的子项目并验证
 ```
+
+## 使用 Generic 预置模板
+
+`generic` 预置模板通过 AI 驱动的内容生成支持**任意技术栈**。当 `/init-context` 检测到项目不匹配任何内置预置模板时，会自动选择 generic。
+
+### 何时使用 Generic
+
+| 场景 | 路径 |
+|------|------|
+| 已有项目含 FastAPI → 匹配 `python-fastapi` | 内置预置模板（快速通道） |
+| 已有项目含 Django → 无匹配 | Generic（AI 生成） |
+| 已有项目含 Go + Gin → 无匹配 | Generic（AI 生成） |
+| 空项目，用户选择 Python + FastAPI | 内置预置模板（快速通道） |
+| 空项目，用户选择 Rust + Axum | Generic（AI 生成） |
+
+### 工作原理
+
+1. `/init-context` 执行深度项目分析（语言、框架、工具链、架构）
+2. 从 `presets/generic/{lang}/` 复制骨架模板文件
+3. `{{AI_GENERATED:xxx}}` 占位符根据分析结果由 AI 替换为生成内容
+4. 质量自检确保生成内容满足 `context-schema.yaml` 标准
+
+### 生成后的定制
+
+AI 生成的内容是**起点**。生成后：
+
+1. **检查 `rules/architecture.md`** — 验证架构描述是否与实际设计匹配
+2. **检查 `rules/tech-stack.md`** — 确认版本号和约束条件
+3. **填写 `project-config.md`** — 添加业务模块、导入路径等
+4. **运行 `/audit-context`** — 获取质量报告和改进建议
+5. **添加可选规范** — 参考 `context-schema.yaml` 了解可添加的规范
+
+### 模板结构
+
+Generic 模板使用两种占位符：
+
+- `{{VARIABLE}}` — 简单文本替换（项目名、标识符等）
+- `{{AI_GENERATED:xxx}}` — AI 根据项目分析结果填充
+
+完整占位符参考见 [template-variables.zh-CN.md](template-variables.zh-CN.md)。
 
 ## 预置模板设计建议
 

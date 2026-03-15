@@ -13,7 +13,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 PLUGIN_JSON="${ROOT_DIR}/plugin/.claude-plugin/plugin.json"
-MARKETPLACE_JSON="${ROOT_DIR}/plugin/.claude-plugin/marketplace.json"
+PLUGIN_MARKETPLACE_JSON="${ROOT_DIR}/plugin/.claude-plugin/marketplace.json"
+ROOT_MARKETPLACE_JSON="${ROOT_DIR}/.claude-plugin/marketplace.json"
 
 # 颜色定义
 if [[ -t 1 ]]; then
@@ -105,16 +106,28 @@ else
 fi
 success "已更新 plugin.json"
 
-# 更新 marketplace.json
-if [[ -f "$MARKETPLACE_JSON" ]]; then
+# 更新 plugin marketplace.json
+if [[ -f "$PLUGIN_MARKETPLACE_JSON" ]]; then
     if [[ "$(uname)" == "Darwin" ]]; then
-        sed -i '' "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$MARKETPLACE_JSON"
+        sed -i '' "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$PLUGIN_MARKETPLACE_JSON"
     else
-        sed -i "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$MARKETPLACE_JSON"
+        sed -i "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$PLUGIN_MARKETPLACE_JSON"
     fi
-    success "已更新 marketplace.json"
+    success "已更新 plugin/.claude-plugin/marketplace.json"
 else
-    warn "marketplace.json 不存在，跳过"
+    warn "plugin marketplace.json 不存在，跳过"
+fi
+
+# 更新根 marketplace.json
+if [[ -f "$ROOT_MARKETPLACE_JSON" ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
+        sed -i '' "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$ROOT_MARKETPLACE_JSON"
+    else
+        sed -i "s/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"version\": \"${VERSION}\"/" "$ROOT_MARKETPLACE_JSON"
+    fi
+    success "已更新 .claude-plugin/marketplace.json"
+else
+    warn "根 marketplace.json 不存在，跳过"
 fi
 
 echo ""
@@ -152,7 +165,8 @@ echo -e "  ${BOLD}版本:${RESET} v${CURRENT_VERSION} → v${VERSION}"
 echo ""
 echo -e "  ${BOLD}已更新文件:${RESET}"
 echo -e "    - plugin/.claude-plugin/plugin.json"
-[[ -f "$MARKETPLACE_JSON" ]] && echo -e "    - plugin/.claude-plugin/marketplace.json"
+[[ -f "$PLUGIN_MARKETPLACE_JSON" ]] && echo -e "    - plugin/.claude-plugin/marketplace.json"
+[[ -f "$ROOT_MARKETPLACE_JSON" ]] && echo -e "    - .claude-plugin/marketplace.json"
 echo -e "    - plugin/presets/manifest.json"
 echo ""
 echo -e "  ${BOLD}后续步骤（请手动执行）:${RESET}"

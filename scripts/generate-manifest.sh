@@ -44,6 +44,43 @@ extract_preset_version() {
     echo "${version:-unknown}"
 }
 
+# 从 preset.yaml 提取顶层字符串字段（如 display_name, description）
+# 处理普通字符串值和双语结构（取 zh-CN 值作为默认）
+extract_yaml_string() {
+    local yaml_file="$1"
+    local field="$2"
+    if [[ ! -f "$yaml_file" ]]; then
+        echo ""
+        return
+    fi
+    local value
+    # 先尝试直接提取顶层字段（非嵌套结构）
+    value=$(grep -m1 "^${field}:" "$yaml_file" | sed "s/^${field}:[[:space:]]*//" | tr -d '"' | tr -d "'" | sed 's/[[:space:]]*$//')
+    if [[ -n "$value" ]]; then
+        echo "$value"
+        return
+    fi
+    # 如果顶层字段无值，尝试读取 zh-CN 子键
+    local in_field=0
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^${field}: ]]; then
+            in_field=1
+            continue
+        fi
+        if [[ $in_field -eq 1 ]]; then
+            if [[ "$line" =~ ^[[:space:]]+zh-CN:[[:space:]]*(.*) ]]; then
+                value="${BASH_REMATCH[1]}"
+                value=$(echo "$value" | tr -d '"' | tr -d "'" | sed 's/[[:space:]]*$//')
+                echo "$value"
+                return
+            elif [[ "$line" =~ ^[a-z] ]]; then
+                break
+            fi
+        fi
+    done < "$yaml_file"
+    echo ""
+}
+
 # 计算目录内容的哈希值（基于所有文件内容的 SHA256）
 compute_dir_hash() {
     local dir="$1"
@@ -76,6 +113,8 @@ for preset_dir in "${PRESETS_DIR}"/*/; do
     [[ "$preset_name" == "_common" ]] && continue
 
     local_version=$(extract_preset_version "${preset_dir}/preset.yaml")
+    display_name=$(extract_yaml_string "${preset_dir}/preset.yaml" "display_name")
+    description=$(extract_yaml_string "${preset_dir}/preset.yaml" "description")
     dir_hash=$(compute_dir_hash "$preset_dir")
     file_count=$(count_files "$preset_dir")
 
@@ -88,6 +127,8 @@ for preset_dir in "${PRESETS_DIR}"/*/; do
     presets_json+="
     \"${preset_name}\": {
       \"version\": \"${local_version}\",
+      \"display_name\": \"${display_name}\",
+      \"description\": \"${description}\",
       \"files_hash\": \"${dir_hash}\",
       \"file_count\": ${file_count}
     }"

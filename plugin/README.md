@@ -44,11 +44,14 @@ Plugin 会在检测到项目缺少 `.claude/` 目录时自动建议生成。
 
 ## 支持的预设
 
-| 预设 | 技术栈 | 说明 |
-|------|--------|------|
-| `python-fastapi` | Python + FastAPI + SQLAlchemy | DDD + Clean Architecture, TDD, API Design |
-| `react-typescript` | React + TypeScript + Vite | Feature-Sliced Design, State Management |
-| `aws-cdk` | AWS CDK + TypeScript | Construct Patterns, Security, Cost Optimization |
+可用预设定义在 `presets/manifest.json` 中。当前包含：
+
+- **python-fastapi** — Python + FastAPI（DDD + Clean Architecture, TDD, API Design）
+- **react-typescript** — React + TypeScript（Feature-Sliced Design, State Management）
+- **aws-cdk** — AWS CDK + TypeScript（Construct Patterns, Security, Cost Optimization）
+- **generic** — 任意技术栈（AI 智能生成）
+
+新增 preset 后运行 `./scripts/build-plugin.sh` 即可自动更新 manifest。
 
 ## 功能特性
 

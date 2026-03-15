@@ -126,13 +126,21 @@ Start with these required files:
 - Use `{{VARIABLE}}` for project-specific content
 - Use `<!-- TODO: ... -->` for user-fillable sections in project-config.md
 
-### Step 5: Update init.sh
+### Step 5: Register Your Preset
 
-Add your preset to the selection menu in `init.sh`:
+There are two initialization paths, and each has a different registration method:
 
-1. Add it to the preset list in the `select_preset()` function
-2. Define the `TECH_STACK_SUMMARY` for your preset
-3. Add optional rules handling
+> **`init.sh` (shell script path)**
+>
+> Edit `init.sh` lines 17-18 to add your preset to the two arrays:
+> ```bash
+> PRESET_IDS=("python-fastapi" "react-typescript" "aws-cdk" "your-preset")
+> PRESET_DISPLAY_NAMES=("Python + FastAPI" "React + TypeScript" "AWS CDK (TypeScript)" "Your Tech Stack")
+> ```
+>
+> **`/init-context` (Plugin command path)**
+>
+> No registration needed. The command auto-discovers all presets under `plugin/presets/` by reading each `preset.yaml`.
 
 ### Step 6: Test
 

@@ -12,89 +12,17 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 ### Contributing New Presets
 
-New presets for additional tech stacks are highly welcome! Here's how:
+New presets for additional tech stacks are highly welcome! For detailed preset development guidelines, directory structure, required files, and `preset.yaml` format, see [docs/customization-guide.md](docs/customization-guide.md).
 
-#### 1. Directory Structure
+**Quick checklist for new presets:**
 
-Create a new preset directory following this structure:
-
-```
-plugin/presets/your-preset-name/
-├── preset.yaml           # Preset metadata and configuration
-├── zh-CN/                # Chinese version
-│   ├── CLAUDE.md         # Sub-project entry point
-│   ├── project-config.md # Project config (fill-in template)
-│   └── rules/            # Topic-specific rules
-│       ├── architecture.md
-│       ├── tech-stack.md
-│       ├── code-style.md
-│       ├── testing.md
-│       ├── security.md
-│       ├── checklist.md
-│       ├── project-structure.md
-│       └── ...           # Additional rules
-└── en/                   # English version (same structure)
-```
-
-#### 2. Required Files
-
-Every preset MUST include:
-- `preset.yaml` — Metadata, defaults, variable definitions
-- `CLAUDE.md` — Sub-project entry point with tech stack overview
-- `project-config.md` — Fill-in template for project-specific config
-- `rules/architecture.md` — Architecture patterns
-- `rules/tech-stack.md` — Version requirements (SSoT)
-- `rules/code-style.md` — Coding standards
-- `rules/testing.md` — Testing methodology
-- `rules/security.md` — Security checklist
-- `rules/checklist.md` — PR review checklist
-- `rules/project-structure.md` — Directory structure
-
-#### 3. Design Guidelines
-
-Follow these patterns from existing presets:
-
-- **Section 0 Quick Reference Card** at the top of each rules file
-- **Single Source of Truth** — don't duplicate information
-- **Bidirectional links** between related documents
-- **kebab-case** file naming
-- **Tables over prose** for quick reference
-- **TODO markers** in project-config.md for user-fillable fields
-- Use `{{VARIABLE}}` placeholders for project-specific content
-
-#### 4. preset.yaml Format
-
-```yaml
-name: your-preset-name
-display_name: "Your Tech Stack"
-description: "Brief description of what this preset covers"
-version: "1.0.0"
-
-defaults:
-  package_manager: npm
-  linter: eslint
-  test_runner: jest
-  source_root: src
-  architecture_pattern: "Your Architecture Pattern"
-  coverage_minimum: 80
-
-files:
-  required:
-    - CLAUDE.md
-    - project-config.md
-    - rules/architecture.md
-    - rules/tech-stack.md
-    # ... more required files
-  optional:
-    - rules/optional-topic.md
-    # ... optional files
-
-variables:
-  - name: PROJECT_NAME
-    prompt: "Project name"
-    required: true
-  # ... more variables
-```
+- [ ] Create directory under `plugin/presets/your-preset-name/`
+- [ ] Include both `zh-CN/` and `en/` language versions
+- [ ] Include `preset.yaml` with metadata, defaults, and variable definitions
+- [ ] Include all required files (CLAUDE.md, project-config.md, 7 core rules)
+- [ ] Follow design principles: Section 0, SSoT, bidirectional links, kebab-case naming
+- [ ] Use `{{VARIABLE}}` placeholders for project-specific content
+- [ ] Run `./scripts/validate-presets.sh` to verify structure
 
 ### Contributing Translations
 
@@ -119,18 +47,18 @@ When improving existing rules:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/new-preset-go`)
 3. Make your changes
-4. Test the init.sh script with your changes
+4. Run validation scripts:
+   - `./scripts/validate-presets.sh` — Preset structure verification
+   - `./scripts/check-links.sh` — Documentation link check
+   - `./scripts/test-init.sh` — init.sh functionality test
 5. Submit a Pull Request with a clear description
 
 ### PR Checklist
 
-- [ ] Files follow the naming conventions (`kebab-case.md`)
-- [ ] All required files are included (for new presets)
-- [ ] Both `zh-CN/` and `en/` versions are provided
-- [ ] `preset.yaml` is complete and valid
-- [ ] Templates use `{{VARIABLE}}` placeholders correctly
+- [ ] Files follow naming conventions (`kebab-case.md`)
+- [ ] Both `zh-CN/` and `en/` versions are provided (for new presets)
+- [ ] All validation scripts pass
 - [ ] No project-specific content remains (proper abstraction)
-- [ ] `init.sh` updated if new preset added
 
 ## Code of Conduct
 

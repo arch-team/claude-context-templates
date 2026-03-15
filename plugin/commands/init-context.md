@@ -8,14 +8,9 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 
 ## 可用预设
 
-本 Plugin 内置以下技术栈预设模板：
+从本 Plugin 的 `presets/manifest.json` 读取可用预设列表。该文件的 `presets` 对象包含每个预设的 `display_name`、`description` 和 `file_count`。在 Step 3 向用户展示时，动态构建预设选项表格。
 
-| 预设 ID | 技术栈 | 规则文件数 | 说明 |
-|---------|--------|:----------:|------|
-| `python-fastapi` | Python + FastAPI + SQLAlchemy | 11 | DDD + Clean Architecture, TDD, API Design |
-| `react-typescript` | React + TypeScript + Vite | 11 | Feature-Sliced Design, State Management, Accessibility |
-| `aws-cdk` | AWS CDK + TypeScript | 9 | Construct Patterns, Security Defaults, Cost Optimization |
-| `generic` | 任意技术栈 (AI 智能生成) | 7+ | 基于项目分析动态生成，适配任意技术栈 |
+`generic` 预设用于任意技术栈（AI 智能生成），当项目不匹配任何内置 preset 时使用。
 
 预设模板文件存放在本 Plugin 的 `presets/` 目录中。规范类型体系定义见 `presets/context-schema.yaml`。
 

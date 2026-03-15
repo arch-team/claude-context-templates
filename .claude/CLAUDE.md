@@ -4,33 +4,22 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## §0 速查卡片
 
-### 权威文件索引
+### 文件索引
 
-| 概念 | 权威文件 | 说明 |
-|------|---------|------|
-| 项目方向与路线图 | `docs/project-strategy.md` | 项目战略规划 |
-| Preset 创建流程 | `docs/customization-guide.md` | 定制指南（SSoT） |
-| 模板变量占位符 | `docs/template-variables.md` | 变量规范（SSoT） |
-| Plugin 分发架构 | `docs/plugin-delivery-design.md` | 分发策略和工具链 |
-| 项目目录结构 | `.claude/rules/project-structure.md` | 结构 SSoT + 分层归属 |
-| 贡献流程 | `CONTRIBUTING.md` | 项目贡献指南 |
-
-### 开发规范索引
-
-| 规范文件（`.claude/rules/`，自动加载） | 职责 |
-|--------------------------------------|------|
-| `common.md` | 语言、Git 提交、命名、审查 |
-| `dev-workflow.md` | 会话协议、质量检查、跨会话连续性 |
-| `plugin-dev-spec.md` | Plugin/Preset 组件开发规范（Skill/Command/Preset） |
-| `project-structure.md` | 项目结构 SSoT、分层归属、新文件放置 |
-
-### 参考文档索引
-
-| 参考文件（`.claude/references/`，按需加载） | 何时读 |
-|--------------------------------------------|--------|
-| `component-reference.md` | 开发/修改 Agent、Hook、MCP 组件时 |
-| `design-principles.md` | 创建规范文件、组织项目结构时 |
-| `ia-principles.md` | 审视信息架构、创建新 Preset、审计文档结构时 |
+| 文件 | 职责 | 加载方式 |
+|------|------|---------|
+| `docs/project-strategy.md` | 项目方向与路线图 | 按需 |
+| `docs/customization-guide.md` | Preset 创建流程（SSoT） | 按需 |
+| `docs/template-variables.md` | 模板变量占位符（SSoT） | 按需 |
+| `docs/plugin-delivery-design.md` | Plugin 分发策略和工具链 | 按需 |
+| `CONTRIBUTING.md` | 项目贡献指南 | 按需 |
+| `.claude/rules/common.md` | 语言、Git 提交、命名、审查 | 自动加载 |
+| `.claude/rules/dev-workflow.md` | 会话协议、质量检查、跨会话连续性 | 自动加载 |
+| `.claude/rules/plugin-dev-spec.md` | Plugin/Preset 组件开发规范 | 自动加载 |
+| `.claude/rules/project-structure.md` | 项目结构 SSoT、分层归属、新文件放置 | 自动加载 |
+| `.claude/references/component-reference.md` | Agent/Hook/MCP 组件规格 | 按需（开发组件时） |
+| `.claude/references/design-principles.md` | 6 条核心设计原则 | 按需（创建规范时） |
+| `.claude/references/ia-principles.md` | 11 条信息架构原则 | 按需（审计结构时） |
 
 ---
 
@@ -112,7 +101,7 @@ feat/{module-name} → main
 
 ## 研发协作
 
-本项目使用 `.devpace/` 管理迭代研发。行为规则由 devpace Plugin 的 `rules/devpace-rules.md` 自动注入，此处不重复。
+本项目使用 `.devpace/` 管理迭代研发。行为规则由 devpace Plugin 的 `rules/devpace-rules.md` 自动注入，此处不重复。小型变更（< 3 个文件）可简化 CR 流程，直接提交无需完整 CR 工作流。
 
 ### .devpace/ 文件参考
 

@@ -24,15 +24,9 @@
 | Stacks | {{COVERAGE_MIN}}% | 90% |
 | **Overall** | **{{COVERAGE_MIN}}%** | **90%** |
 
-### TDD Core Cycle
+### Universal Testing Principles
 
-```
-1. Red: Write a failing test first
-2. Green: Write minimal code to make the test pass
-3. Refactor: Refactor code while keeping tests passing
-```
-
-**Test integrity principle**: Never fake results to make tests pass. Test failure = code has a problem; the code must be fixed.
+> For TDD core cycle and test integrity principles, see `rules/principles/testing.md`
 
 ### CDK Testing Philosophy
 

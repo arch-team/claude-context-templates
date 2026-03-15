@@ -62,12 +62,7 @@ The user proactively asks how to improve Claude Code's understanding or their `.
 
 ## Available Presets
 
-| Preset | Tech Stack | Focus Areas |
-|--------|-----------|-------------|
-| `python-fastapi` | Python + FastAPI + SQLAlchemy | DDD, TDD, API Design |
-| `react-typescript` | React + TypeScript + Vite | FSD, State Management, Accessibility |
-| `aws-cdk` | AWS CDK + TypeScript | Construct Patterns, Security, Cost Optimization |
-| `generic` | Any tech stack (AI-powered) | Deep analysis + AI-generated rules for any project |
+Read the available preset list from `presets/manifest.json`. Each preset entry contains `display_name` and `description`. The `generic` preset supports any tech stack via AI-powered generation.
 
 All presets also include **cross-preset engineering principles** from `_common/rules/principles/*.md` (architecture, code quality, testing, security) — these are universal best practices shared across all tech stacks.
 

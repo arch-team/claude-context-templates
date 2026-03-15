@@ -140,40 +140,13 @@ Plugin 内置了 `local-dev` marketplace，开发者可直接测试：
 
 ## 5. 实施路径与当前进度
 
-### Phase 1: MVP Plugin — ✅ 已完成
+完整路线图详见 `project-strategy.md` §10。以下仅列出 Plugin 相关的关键里程碑状态：
 
-| 任务 | 状态 |
-|------|------|
-| Plugin 目录结构 + `plugin.json` | ✅ |
-| `/init-context` 命令（单项目 + Monorepo + 3 preset） | ✅ |
-| `context-setup` Skill（自动检测） | ✅ |
-| `build-plugin.sh`（preset 同步 + 结构验证） | ✅ |
-| 内置 `marketplace.json`（local-dev） | ✅ |
-| `check-plugin-sync.sh`（CI 一致性检查） | ✅ |
-| `release-plugin.sh`（版本发布流程） | ✅ |
-| CI workflow 集成 | ✅ |
-| Plugin README | ✅ |
-
-### Phase 2: 正式发布 + 主仓库整合
-
-**目标**：让外部用户可以安装使用，并更新主仓库文档推荐 Plugin 方式。
-
-| 任务 | 说明 |
-|------|------|
-| 确定 marketplace 分发方案 | 方案 A（主仓库）或方案 B（独立仓库） |
-| 配置 marketplace 正式发布 | 根据所选方案配置 GitHub 仓库 |
-| 更新主仓库 README | 添加 Plugin 安装方式作为推荐使用方法 |
-| 更新 project-strategy.md | 将 Plugin 交付纳入路线图 |
-| 端到端发布测试 | 模拟外部用户完整安装流程验证 |
-
-### Phase 3: 增强与生态
-
-| 任务 | 说明 |
-|------|------|
-| `/audit-context` 命令 | 检查现有 `.claude/` 目录质量并给出改进建议 |
-| Preset 远程更新 | Plugin 从 GitHub 获取最新 preset，无需重新安装 |
-| 社区 preset 支持 | 允许第三方 preset 来源 |
-| 新增 preset（Go, Next.js 等） | 随主仓库 Phase 2 同步扩展 |
+| Phase | 状态 | 说明 |
+|-------|------|------|
+| Phase 1: MVP Plugin | ✅ 已完成 | Plugin 结构 + 命令 + Skill + 工具链 + CI |
+| Phase 2: 正式发布 | 进行中 | Marketplace 分发 + 文档更新 + 端到端测试 |
+| Phase 3: 增强与生态 | 待启动 | /audit-context + 远程更新 + 社区 preset |
 
 ---
 

@@ -49,7 +49,7 @@ my-awesome-app/                  # Monorepo 根目录
 | 变量 | 说明 | 示例 | 使用位置 |
 |------|------|------|---------|
 | `{{SUBPROJECT_NAME}}` | 子项目名称 | `backend` | 子项目 CLAUDE.md |
-| `{{TECH_STACK_SUMMARY}}` | 技术栈一行摘要 | `Python 3.12 + FastAPI 0.115` | 子项目 CLAUDE.md |
+| `{{DATE}}` | 初始化日期 | `2025-03-15` | 由 init.sh 中 `date +%Y-%m-%d` 生成 |
 
 ## 预置模板特定变量
 
@@ -58,8 +58,6 @@ my-awesome-app/                  # Monorepo 根目录
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `{{PACKAGE_MANAGER}}` | `uv` | Python 包管理器 |
-| `{{LINTER}}` | `ruff` | 代码检查工具 |
-| `{{TEST_RUNNER}}` | `pytest` | 测试框架 |
 | `{{COVERAGE_MIN}}` | `85` | 最低测试覆盖率 % |
 
 ### react-typescript
@@ -67,18 +65,16 @@ my-awesome-app/                  # Monorepo 根目录
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `{{PACKAGE_MANAGER}}` | `pnpm` | Node.js 包管理器 |
-| `{{LINTER}}` | `eslint` | 代码检查工具 |
-| `{{TEST_RUNNER}}` | `vitest` | 测试框架 |
 | `{{COVERAGE_MIN}}` | `80` | 最低测试覆盖率 % |
 
 ### aws-cdk
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| `{{PACKAGE_MANAGER}}` | `pnpm` | Node.js 包管理器 |
-| `{{LINTER}}` | `eslint` | 代码检查工具 |
-| `{{TEST_RUNNER}}` | `jest` | 测试框架 |
 | `{{COVERAGE_MIN}}` | `85` | 最低测试覆盖率 % |
+| `{{PROJECT_SLUG}}` | （必填） | 项目标识符（kebab-case，用于标签和命名） |
+
+> **注意**：aws-cdk 预置模板在模板中硬编码了 `pnpm`。与 react-typescript 不同，CDK 生态的工具链命令（`pnpm cdk synth`、`pnpm exec`、GitHub Actions `pnpm/action-setup`）与特定包管理器紧耦合，简单文本替换不可靠。
 
 ## 变量语法
 

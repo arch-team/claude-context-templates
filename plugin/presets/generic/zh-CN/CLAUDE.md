@@ -43,18 +43,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### TDD 工作流
 
-本项目采用测试驱动开发 (TDD)。
-
-**核心循环**:
-```
-1. Red: 先写失败的测试
-2. Green: 编写最少代码使测试通过
-3. Refactor: 重构代码，保持测试通过
-```
-
-**测试诚信原则**: 切勿为让测试通过而伪造结果。测试失败 = 代码有问题，必须修复代码。
-
-详细说明请参考 [rules/testing.md](rules/testing.md)
+本项目采用测试驱动开发 (TDD)。详见 [rules/testing.md](rules/testing.md)
 
 ---
 

@@ -43,18 +43,7 @@ See [rules/tech-stack.md](rules/tech-stack.md) for version matrix and constraint
 
 ### TDD Workflow
 
-This project follows Test-Driven Development (TDD).
-
-**Core cycle**:
-```
-1. Red: Write a failing test first
-2. Green: Write minimal code to make the test pass
-3. Refactor: Refactor the code while keeping tests passing
-```
-
-**Test integrity principle**: Never fake results to make tests pass. A failing test = a code problem that must be fixed.
-
-See [rules/testing.md](rules/testing.md) for details.
+This project follows Test-Driven Development (TDD). See [rules/testing.md](rules/testing.md) for details.
 
 ---
 

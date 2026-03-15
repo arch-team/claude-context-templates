@@ -263,6 +263,70 @@ validate_bilingual_symmetry() {
 # 主流程
 # ============================================================
 
+# ============================================================
+# 验证版本一致性
+# ============================================================
+
+validate_version_consistency() {
+  header "版本一致性检查"
+
+  local plugin_json="${PROJECT_ROOT}/plugin/.claude-plugin/plugin.json"
+  local plugin_marketplace="${PROJECT_ROOT}/plugin/.claude-plugin/marketplace.json"
+  local root_marketplace="${PROJECT_ROOT}/.claude-plugin/marketplace.json"
+  local manifest="${PRESETS_DIR}/manifest.json"
+
+  # 提取 plugin.json 版本
+  local plugin_ver=""
+  if [[ -f "$plugin_json" ]]; then
+    plugin_ver=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$plugin_json" | head -1 | grep -o '"[^"]*"$' | tr -d '"')
+  fi
+
+  # 提取 manifest.json plugin_version
+  local manifest_ver=""
+  if [[ -f "$manifest" ]]; then
+    manifest_ver=$(grep -o '"plugin_version"[[:space:]]*:[[:space:]]*"[^"]*"' "$manifest" | grep -o '"[^"]*"$' | tr -d '"')
+  fi
+
+  # 提取 plugin marketplace 版本
+  local plugin_mp_ver=""
+  if [[ -f "$plugin_marketplace" ]]; then
+    plugin_mp_ver=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$plugin_marketplace" | head -1 | grep -o '"[^"]*"$' | tr -d '"')
+  fi
+
+  # 提取根 marketplace 版本
+  local root_mp_ver=""
+  if [[ -f "$root_marketplace" ]]; then
+    root_mp_ver=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$root_marketplace" | head -1 | grep -o '"[^"]*"$' | tr -d '"')
+  fi
+
+  # 检查一致性
+  local ref_ver="${plugin_ver}"
+
+  if [[ -n "$plugin_ver" ]]; then
+    pass "plugin.json 版本: ${plugin_ver}"
+  else
+    fail "无法读取 plugin.json 版本"
+  fi
+
+  if [[ -n "$manifest_ver" && "$manifest_ver" == "$ref_ver" ]]; then
+    pass "manifest.json plugin_version 与 plugin.json 一致: ${manifest_ver}"
+  elif [[ -n "$manifest_ver" ]]; then
+    fail "manifest.json plugin_version (${manifest_ver}) 与 plugin.json (${ref_ver}) 不一致"
+  fi
+
+  if [[ -n "$plugin_mp_ver" && "$plugin_mp_ver" == "$ref_ver" ]]; then
+    pass "plugin marketplace.json 版本一致: ${plugin_mp_ver}"
+  elif [[ -n "$plugin_mp_ver" ]]; then
+    fail "plugin marketplace.json 版本 (${plugin_mp_ver}) 与 plugin.json (${ref_ver}) 不一致"
+  fi
+
+  if [[ -n "$root_mp_ver" && "$root_mp_ver" == "$ref_ver" ]]; then
+    pass "根 marketplace.json 版本一致: ${root_mp_ver}"
+  elif [[ -n "$root_mp_ver" ]]; then
+    fail "根 marketplace.json 版本 (${root_mp_ver}) 与 plugin.json (${ref_ver}) 不一致"
+  fi
+}
+
 main() {
   printf "\n${BOLD}========================================${NC}\n"
   printf "${BOLD}  Preset 结构验证${NC}\n"
@@ -273,6 +337,9 @@ main() {
     printf "\n${RED}错误: presets 目录不存在: ${PRESETS_DIR}${NC}\n"
     exit 1
   fi
+
+  # 版本一致性检查
+  validate_version_consistency
 
   # 验证 _common
   validate_common

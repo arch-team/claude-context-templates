@@ -13,9 +13,33 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRESETS_DIR="${SCRIPT_DIR}/plugin/presets"
 
-# Available presets (directory names under plugin/presets/)
-PRESET_IDS=("python-fastapi" "react-typescript" "aws-cdk")
-PRESET_DISPLAY_NAMES=("Python + FastAPI" "React + TypeScript" "AWS CDK (TypeScript)")
+# Dynamically discover available presets from plugin/presets/
+# Reads display_name from each preset's preset.yaml
+PRESET_IDS=()
+PRESET_DISPLAY_NAMES=()
+
+for preset_dir in "${PRESETS_DIR}"/*/; do
+    preset_dir="${preset_dir%/}"
+    preset_name="$(basename "$preset_dir")"
+    # Skip _common and generic (generic is AI-powered, not selectable in init.sh)
+    [[ "$preset_name" == "_common" ]] && continue
+    [[ "$preset_name" == "generic" ]] && continue
+
+    yaml_file="${preset_dir}/preset.yaml"
+    if [[ -f "$yaml_file" ]]; then
+        # Extract display_name from preset.yaml
+        display_name=$(grep -m1 '^display_name:' "$yaml_file" | sed 's/^display_name:[[:space:]]*//' | tr -d '"' | tr -d "'" | sed 's/[[:space:]]*$//')
+        if [[ -n "$display_name" ]]; then
+            PRESET_IDS+=("$preset_name")
+            PRESET_DISPLAY_NAMES+=("$display_name")
+        fi
+    fi
+done
+
+if [[ ${#PRESET_IDS[@]} -eq 0 ]]; then
+    echo -e "${RED}[ERROR]${RESET} No presets found in ${PRESETS_DIR}" >&2
+    exit 1
+fi
 
 # --- CLI Flags ---
 
