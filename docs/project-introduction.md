@@ -728,7 +728,7 @@ your-project/
 |------|------|
 | `README.md` | 项目总说明和快速开始指南 |
 | `CONTRIBUTING.md` | 贡献指南和 PR 流程 |
-| `docs/design-principles.md` | 6 大设计原则详解 |
+| `.claude/references/design-principles.md` | 6 大设计原则详解 |
 | `docs/customization-guide.md` | 自定义和创建新 preset 指南 |
 | `docs/template-variables.md` | 模板变量完整参考 |
 | `docs/project-strategy.md` | 项目战略、愿景和路线图 |

@@ -9,7 +9,6 @@ This file provides guidance to Claude Code when working with code in this reposi
 | 概念 | 权威文件 | 说明 |
 |------|---------|------|
 | 项目方向与路线图 | `docs/project-strategy.md` | 项目战略规划 |
-| 6 条核心设计原则 | `docs/design-principles.md` | SSoT、Section 0、分层等 |
 | Preset 创建流程 | `docs/customization-guide.md` | 定制指南（SSoT） |
 | 模板变量占位符 | `docs/template-variables.md` | 变量规范（SSoT） |
 | Plugin 分发架构 | `docs/plugin-delivery-design.md` | 分发策略和工具链 |
@@ -29,6 +28,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 | 参考文件（`.claude/references/`，按需加载） | 何时读 |
 |--------------------------------------------|--------|
 | `component-reference.md` | 开发/修改 Agent、Hook、MCP 组件时 |
+| `design-principles.md` | 创建规范文件、组织项目结构时 |
 | `ia-principles.md` | 审视信息架构、创建新 Preset、审计文档结构时 |
 
 ---
@@ -123,7 +123,7 @@ feat/{module-name} → main
 | [开发工作流](rules/dev-workflow.md) | 会话协议、质量检查 |
 | [Plugin 开发规范](rules/plugin-dev-spec.md) | Plugin/Preset 组件规范 |
 | [项目结构](rules/project-structure.md) | 目录结构 SSoT、分层归属 |
-| [设计原则](../docs/design-principles.md) | 模板系统的 6 条核心设计原则 |
+| [设计原则](references/design-principles.md) | 模板系统的 6 条核心设计原则 |
 | [定制指南](../docs/customization-guide.md) | 创建和贡献新预设模板 |
 | [项目战略](../docs/project-strategy.md) | 项目方向和发展规划 |
 | [贡献指南](../CONTRIBUTING.md) | 项目贡献流程和规范 |

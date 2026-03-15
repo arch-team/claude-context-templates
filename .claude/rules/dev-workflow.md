@@ -31,7 +31,7 @@
 ## §2 任务执行
 
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
-2. **遵循设计原则**：实现时参照 `docs/design-principles.md` 的 6 条核心原则：
+2. **遵循设计原则**：实现时参照 `.claude/references/design-principles.md` 的 6 条核心原则：
    - SSoT：每个概念只在一处定义
    - Section 0：规则文件以速查卡片开头
    - 分层架构：开发层 vs 产品层分离

@@ -49,6 +49,7 @@ claude-context-templates/            # 仓库根目录
 │   │   └── project-structure.md     # 项目结构 SSoT（本文件）
 │   └── references/                  # 按需加载的参考文档
 │       ├── component-reference.md   # Agent/Hook/MCP 完整规格参考
+│       ├── design-principles.md     # 设计原则（6 条核心）
 │       └── ia-principles.md         # 11 条通用信息架构原则
 ├── plugin/                          # Claude Code Plugin（产品层）
 │   ├── .claude-plugin/              # Plugin 元数据
@@ -67,7 +68,6 @@ claude-context-templates/            # 仓库根目录
 │   └── single-project-python/       # 单项目示例
 ├── scripts/                         # CI/CD 和验证脚本
 ├── docs/                            # 项目文档
-│   ├── design-principles.md         # 设计原则（6 条核心）
 │   ├── customization-guide.md       # Preset 定制指南
 │   ├── template-variables.md        # 模板变量说明
 │   ├── plugin-delivery-design.md    # Plugin 分发架构
@@ -118,5 +118,5 @@ claude-context-templates/            # 仓库根目录
 | 分层架构概述 | CLAUDE.md "分层架构"章节 |
 | 组件格式（SKILL.md frontmatter 等） | `plugin-dev-spec.md` |
 | 文件命名规范 | `common.md` |
-| 设计原则（6 条核心） | `docs/design-principles.md` |
+| 设计原则（6 条核心） | `references/design-principles.md` |
 | 信息架构原则 | `references/ia-principles.md`（按需加载） |
