@@ -39,24 +39,7 @@
 
 ### 2.1 目录结构
 
-```
-plugin/                              # Plugin 根目录（自包含）
-├── .claude-plugin/
-│   ├── plugin.json                  # Plugin 元数据
-│   └── marketplace.json             # 内置 local-dev marketplace
-├── commands/
-│   └── init-context.md              # /init-context 命令定义
-├── skills/
-│   └── context-setup/
-│       └── SKILL.md                 # 自动检测 Skill（模型触发）
-├── presets/                         # Preset 模板（唯一 SSoT）
-│   ├── manifest.json                # 版本清单（轻量版本检查）
-│   ├── _common/{en,zh-CN}/          # 公共模板（root-CLAUDE.md, common-rules.md）
-│   ├── python-fastapi/              # Python + FastAPI 预设（27 文件）
-│   ├── react-typescript/            # React + TypeScript 预设（27 文件）
-│   └── aws-cdk/                     # AWS CDK 预设（25 文件）
-└── README.md                        # Plugin 使用说明
-```
+完整目录树见 `.claude/rules/project-structure.md` §1（SSoT），此处不重复。
 
 ### 2.2 核心组件
 

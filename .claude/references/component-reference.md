@@ -4,7 +4,7 @@
 >
 > 核心开发规范见 `.claude/rules/plugin-dev-spec.md`（始终加载）。
 
-**章节索引**：[Agent 定义](#agent-定义) | [Hooks](#hooks) | [MCP Server 配置](#mcp-server-配置)
+**章节索引**：[Agent 定义](#agent-定义) | [Hooks](#hooks) | [MCP Server 配置](#mcp-server-配置) | [Plugin 开发辅助参考](#plugin-开发辅助参考) | [规范查证方法](#规范查证方法)
 
 ## Agent 定义
 
@@ -114,6 +114,45 @@ Skill 级 Hook 与全局 hooks.json 互补——全局做通用检查，Skill �
 
 Plugin 内部引用路径时使用 `${CLAUDE_PLUGIN_ROOT}`。也可在 `plugin.json` 的 `mcpServers` 字段内联定义。
 
+## Plugin 开发辅助参考
+
+> 低频使用的 Plugin 开发参考信息。高频规范见 `rules/plugin-dev-spec.md`（始终加载）。
+
+### plugin.json 可选字段
+
+当前采用最小格式（`name` + `description` + `version`）。以下为合法可选字段：
+
+`homepage`、`repository`（字符串）、`license`、`keywords`、`commands`、`agents`、`skills`、`hooks`、`mcpServers`、`outputStyles`、`lspServers`。其中 `commands/skills/agents/hooks/mcpServers` 用于声明**额外**路径（补充默认目录的自动发现，不替代）。所有路径必须相对且以 `./` 开头。
+
+### Skill RED-GREEN-REFACTOR 质量验证法
+
+Skill 开发/修改时，推荐使用以下验证方法：
+
+1. **基线观测（RED）**：禁用目标 Skill → 观察 Claude 的默认行为 → 记录与期望行为的具体偏差
+   - 记录格式："无 Skill 时 Claude 做了 [X]，期望行为是 [Y]"
+   - 至少用 2 个不同复杂度的场景观测
+2. **最小规则（GREEN）**：针对观测到的偏差写最小修正规则 → 启用 Skill → 确认偏差被修正
+   - 原则：一条规则修正一个偏差，不做预防性规则
+3. **漏洞补充（REFACTOR）**：用不同复杂度场景（S/M/L）压力测试 → 发现新偏差 → 补充合理化预防表
+   - 重点关注：Claude 在长会话或复杂任务中是否"合理化"跳过规则
+
+### 官方 plugin-dev 工具（推荐）
+
+Anthropic 官方 plugin-dev Plugin 提供综合开发工具：
+
+| 组件 | 用途 | 使用场景 |
+|------|------|---------|
+| **plugin-validator** Agent | 综合验证（Manifest/目录/Skills/Hooks/安全） | Plugin 结构变更后 |
+| **skill-reviewer** Agent | Skill 质量审查（description/内容/渐进披露） | Skill 新增或修改后 |
+| **agent-creator** Agent | AI 辅助 Agent 创建 | 新增 Agent 定义时 |
+| `/plugin validate` | 内置命令，验证 plugin.json 基本结构 | 快速检查 |
+
+安装：`/plugin install plugin-dev@claude-plugins-official`
+
 ## 规范查证方法
 
-> 见 `rules/plugin-dev-spec.md` §6（始终加载）。
+不确定 Claude Code 组件的 API、frontmatter 字段或行为时，按以下优先级查证：
+
+1. **claude-code-guide agent**：`Agent(subagent_type="claude-code-guide", prompt="查询 [具体问题]")`——内置 agent，可访问官方文档
+2. **官方文档**：`https://code.claude.com/docs/en/`（plugins、skills、hooks、mcp、sub-agents、agent-teams）
+3. **调试模式**：`claude --debug` 查看加载日志排查问题

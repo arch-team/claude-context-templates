@@ -56,13 +56,20 @@ claude-context-templates/            # 仓库根目录
 │   │   ├── plugin.json              # Plugin manifest
 │   │   └── marketplace.json         # Marketplace 配置
 │   ├── commands/                    # 命令定义
+│   │   ├── init-context.md          # /init-context 命令
+│   │   └── audit-context.md         # /audit-context 命令
 │   ├── skills/                      # Skill 定义
-│   └── presets/                     # 预设模板（唯一 SSoT）
-│       ├── manifest.json            # 版本清单
-│       ├── _common/                 # 公共模板 + 跨 preset 工程原则
-│       ├── python-fastapi/          # Python + FastAPI 预设
-│       ├── react-typescript/        # React + TypeScript 预设
-│       └── aws-cdk/                 # AWS CDK 预设
+│   │   └── context-setup/           # 自动检测 Skill
+│   │       └── SKILL.md
+│   ├── presets/                     # 预设模板（唯一 SSoT）
+│   │   ├── manifest.json            # 版本清单
+│   │   ├── context-schema.yaml      # Preset 结构 schema
+│   │   ├── _common/                 # 公共模板 + 跨 preset 工程原则
+│   │   ├── generic/                 # 通用预设（无特定技术栈）
+│   │   ├── python-fastapi/          # Python + FastAPI 预设
+│   │   ├── react-typescript/        # React + TypeScript 预设
+│   │   └── aws-cdk/                 # AWS CDK 预设
+│   └── README.md                    # Plugin 使用说明
 ├── examples/                        # 完整示例项目
 │   ├── monorepo-taskmanager/        # Monorepo 示例
 │   └── single-project-python/       # 单项目示例

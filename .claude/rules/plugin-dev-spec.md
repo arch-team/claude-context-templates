@@ -15,9 +15,10 @@
 
 | 组件类型 | 目录 | 当前内容 |
 |---------|------|---------|
-| Commands | `plugin/commands/` | 命令定义 |
-| Skills | `plugin/skills/` | Skill 定义 |
-| Presets | `plugin/presets/` | python-fastapi, react-typescript, aws-cdk |
+| Commands | `plugin/commands/` | init-context, audit-context |
+| Skills | `plugin/skills/` | context-setup |
+| Presets | `plugin/presets/` | generic, python-fastapi, react-typescript, aws-cdk |
+| Schema | `plugin/presets/` | context-schema.yaml |
 
 ### 常见陷阱
 
@@ -33,32 +34,25 @@
 
 1. `claude-code-guide` agent → 2. 官方文档 `code.claude.com/docs/en/` → 3. `claude --debug`
 
-### 完整组件参考
+### 参考文档
 
-Agent / Hook / MCP 详细规格 → `.claude/references/component-reference.md`（按需加载）
+Agent / Hook / MCP 规格 + plugin.json 可选字段 + Skill 质量验证法 + plugin-dev 工具 → `references/component-reference.md`（按需加载）
 
-## §1 Plugin 结构
+## §1 Plugin 结构与版本管理
 
-```
-plugin/
-├── .claude-plugin/
-│   ├── plugin.json          # Plugin manifest（name + description + version）
-│   └── marketplace.json     # Marketplace 配置
-├── commands/                # 命令定义
-├── skills/                  # Skill 定义（每 Skill 一个目录）
-└── presets/                 # 预设模板
-    ├── manifest.json        # 版本清单
-    ├── _common/             # 公共模板 + 跨 preset 工程原则
-    ├── python-fastapi/
-    ├── react-typescript/
-    └── aws-cdk/
-```
+完整目录树见 `rules/project-structure.md` §1（SSoT），此处不重复。
 
 ### plugin.json
 
-当前采用最小格式，仅含 `name`、`description`、`version`。`name` 是唯一必填字段（当 manifest 存在时），同时作为 Skill 的命名空间前缀。
+当前含 `name`、`description`、`version`、`author`。`name` 是唯一必填字段（当 manifest 存在时），同时作为 Skill 的命名空间前缀。可选字段完整列表见 `references/component-reference.md`。
 
-可选字段（均为合法）：`homepage`、`repository`（字符串）、`license`、`keywords`、`commands`、`agents`、`skills`、`hooks`、`mcpServers`、`outputStyles`、`lspServers`。其中 `commands/skills/agents/hooks/mcpServers` 用于声明**额外**路径（补充默认目录的自动发现，不替代）。所有路径必须相对且以 `./` 开头。
+### 版本同步
+
+`plugin/presets/manifest.json` 与 `plugin/.claude-plugin/plugin.json` 的版本号必须保持同步。修改版本时需同时更新两处。
+
+### 分发架构
+
+Plugin 分发的详细架构设计见 `docs/plugin-delivery-design.md`（SSoT），包含分发策略、工具链和 CI 流程。
 
 ## §2 命令开发 Commands
 
@@ -116,17 +110,9 @@ plugin/
 
 SKILL.md 放"做什么"（输入/输出/路由），详细规则超 ~50 行拆出 `*-procedures.md`（"怎么做"）。
 
-### RED-GREEN-REFACTOR 质量验证法
+### 质量验证
 
-Skill 开发/修改时，推荐使用以下验证方法：
-
-1. **基线观测（RED）**：禁用目标 Skill → 观察 Claude 的默认行为 → 记录与期望行为的具体偏差
-   - 记录格式："无 Skill 时 Claude 做了 [X]，期望行为是 [Y]"
-   - 至少用 2 个不同复杂度的场景观测
-2. **最小规则（GREEN）**：针对观测到的偏差写最小修正规则 → 启用 Skill → 确认偏差被修正
-   - 原则：一条规则修正一个偏差，不做预防性规则
-3. **漏洞补充（REFACTOR）**：用不同复杂度场景（S/M/L）压力测试 → 发现新偏差 → 补充合理化预防表
-   - 重点关注：Claude 在长会话或复杂任务中是否"合理化"跳过规则
+Skill 开发/修改时的 RED-GREEN-REFACTOR 验证方法见 `references/component-reference.md`。
 
 ## §4 Preset 模板开发
 
@@ -146,36 +132,3 @@ Preset 创建的完整流程详见 `docs/customization-guide.md`（SSoT）。变
 ### 双语要求
 
 新增 Preset 必须同时提供中文（zh-CN）和英文（en）两个语言版本，确保国际化支持。
-
-## §5 分发与版本管理
-
-### 版本同步
-
-`plugin/presets/manifest.json` 与 `plugin/.claude-plugin/plugin.json` 的版本号必须保持同步。修改版本时需同时更新两处。
-
-### 分发架构
-
-Plugin 分发的详细架构设计见 `docs/plugin-delivery-design.md`（SSoT），包含分发策略、工具链和 CI 流程。
-
-## §6 规范查证方法
-
-不确定 Claude Code 组件的 API、frontmatter 字段或行为时，按以下优先级查证：
-
-1. **claude-code-guide agent**：`Agent(subagent_type="claude-code-guide", prompt="查询 [具体问题]")`——内置 agent，可访问官方文档
-2. **官方文档**：`https://code.claude.com/docs/en/`（plugins、skills、hooks、mcp、sub-agents、agent-teams）
-3. **调试模式**：`claude --debug` 查看加载日志排查问题
-
-完整的 Agent、Hook、MCP Server 规格参考见 `.claude/references/component-reference.md`（按需加载）。
-
-### 官方 plugin-dev 工具（推荐）
-
-Anthropic 官方 plugin-dev Plugin 提供综合开发工具：
-
-| 组件 | 用途 | 使用场景 |
-|------|------|---------|
-| **plugin-validator** Agent | 综合验证（Manifest/目录/Skills/Hooks/安全） | Plugin 结构变更后 |
-| **skill-reviewer** Agent | Skill 质量审查（description/内容/渐进披露） | Skill 新增或修改后 |
-| **agent-creator** Agent | AI 辅助 Agent 创建 | 新增 Agent 定义时 |
-| `/plugin validate` | 内置命令，验证 plugin.json 基本结构 | 快速检查 |
-
-安装：`/plugin install plugin-dev@claude-plugins-official`
