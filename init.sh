@@ -88,6 +88,8 @@ cleanup_on_interrupt() {
     exit 130
 }
 
+trap 'cleanup_on_interrupt' INT TERM
+
 # --- Utility Functions ---
 
 print_header() {
@@ -594,7 +596,6 @@ select_optional_rules() {
 # --- Main Flow ---
 
 main() {
-    trap 'cleanup_on_interrupt' INT TERM
     print_header
 
     # ---- Step 1: Language Selection ----
@@ -781,8 +782,6 @@ main() {
                 ;;
         esac
         echo ""
-    else
-        local overwrite_idx=0
     fi
 
     # ---- Confirmation Summary ----

@@ -123,7 +123,7 @@ feat/{module-name} → main
 | `project.md` | 变更分析 或 用户要求看全景 |
 | `rules/workflow.md` | 推进模式（状态机定义） |
 | `rules/checks.md` | 推进模式（质量检查定义） |
-| `iterations/current.md` | 查进度 或 变更分析 |
+| `context.md` | 查进度 或 变更分析 |
 | `metrics/dashboard.md` | /pace-retro 或 /pace-status metrics |
 
 ## 业务目标

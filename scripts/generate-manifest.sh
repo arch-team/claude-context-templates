@@ -52,7 +52,7 @@ compute_dir_hash() {
         return
     fi
     # 对目录下所有文件内容拼接后计算哈希
-    find "$dir" -type f -not -name '.DS_Store' -not -name 'manifest.json' | sort | xargs cat 2>/dev/null | shasum -a 256 | cut -d' ' -f1
+    find "$dir" -type f -not -name '.DS_Store' -not -name 'manifest.json' -print0 | sort -z | xargs -0 cat 2>/dev/null | shasum -a 256 | cut -d' ' -f1
 }
 
 # 统计目录中的文件数

@@ -51,10 +51,21 @@ claude-context-templates/            # 仓库根目录
 │       ├── component-reference.md   # Agent/Hook/MCP 完整规格参考
 │       ├── design-principles.md     # 设计原则（6 条核心）
 │       └── ia-principles.md         # 11 条通用信息架构原则
+├── .claude-plugin/                  # 根目录 marketplace（本地开发用）
+│   └── marketplace.json
+├── .github/                         # GitHub 配置
+│   ├── ISSUE_TEMPLATE/              # Issue 模板
+│   │   ├── bug-report.yml
+│   │   ├── config.yml
+│   │   ├── feature-request.yml
+│   │   └── usage-report.yml
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/
+│       └── ci.yml
 ├── plugin/                          # Claude Code Plugin（产品层）
 │   ├── .claude-plugin/              # Plugin 元数据
 │   │   ├── plugin.json              # Plugin manifest
-│   │   └── marketplace.json         # Marketplace 配置
+│   │   └── marketplace.json         # Marketplace 配置（本地开发）
 │   ├── commands/                    # 命令定义
 │   │   ├── init-context.md          # /init-context 命令
 │   │   └── audit-context.md         # /audit-context 命令
@@ -74,15 +85,37 @@ claude-context-templates/            # 仓库根目录
 │   ├── monorepo-taskmanager/        # Monorepo 示例
 │   └── single-project-python/       # 单项目示例
 ├── scripts/                         # CI/CD 和验证脚本
+│   ├── lib-yaml.sh                  # 公共 YAML 解析函数（被 validate 脚本 source）
+│   ├── build-plugin.sh              # Plugin 构建（manifest 生成 + 结构验证）
+│   ├── check-links.sh               # 文档链接有效性检查
+│   ├── generate-manifest.sh         # Preset manifest 生成
+│   ├── release-plugin.sh            # Plugin 版本发布
+│   ├── test-init.sh                 # init.sh 功能测试
+│   ├── validate-generated.sh        # 生成结果验证
+│   └── validate-presets.sh          # Preset 结构完整性验证
 ├── docs/                            # 项目文档
+│   ├── blog/                        # 社区文章
+│   │   ├── community-post-en.md
+│   │   ├── community-post-zh.md
+│   │   ├── launch-announcement-en.md
+│   │   └── launch-announcement-zh.md
 │   ├── customization-guide.md       # Preset 定制指南
-│   ├── template-variables.md        # 模板变量说明
+│   ├── customization-guide.zh-CN.md # Preset 定制指南（中文）
 │   ├── plugin-delivery-design.md    # Plugin 分发架构
-│   └── project-strategy.md          # 项目战略与路线图
+│   ├── project-introduction.md      # 项目详细介绍
+│   ├── project-strategy.md          # 项目战略与路线图
+│   ├── template-variables.md        # 模板变量说明
+│   └── template-variables.zh-CN.md  # 模板变量说明（中文）
+├── local-marketplace/               # 本地 marketplace（开发测试用）
+│   └── .claude-plugin/
+│       └── marketplace.json
 ├── init.sh                          # 项目初始化脚本
+├── install.sh                       # 安装脚本
 ├── CONTRIBUTING.md                  # 贡献指南
+├── LICENSE                          # 许可证
 ├── .gitignore
-└── README.md                        # 项目总说明
+├── README.md                        # 项目总说明（英文）
+└── README.zh-CN.md                  # 项目总说明（中文）
 ```
 
 ## §2 分层归属表
@@ -122,8 +155,8 @@ claude-context-templates/            # 仓库根目录
 
 | 内容 | 参见 |
 |------|------|
-| 分层架构概述 | CLAUDE.md "分层架构"章节 |
-| 组件格式（SKILL.md frontmatter 等） | `plugin-dev-spec.md` |
-| 文件命名规范 | `common.md` |
-| 设计原则（6 条核心） | `references/design-principles.md` |
+| 分层架构概述 | `CLAUDE.md` "分层架构"章节 |
+| 组件格式（SKILL.md frontmatter 等） | `rules/plugin-dev-spec.md` |
+| 文件命名规范 | `rules/common.md` |
+| 设计原则（6 条核心） | `references/design-principles.md`（按需加载） |
 | 信息架构原则 | `references/ia-principles.md`（按需加载） |

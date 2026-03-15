@@ -3,8 +3,10 @@
 > **职责**：Claude Context Templates 模板系统的核心设计原则。
 >
 > **理论基础**：实现自 [通用信息架构原则](ia-principles.md)。
+>
+> **跨文档引用**：被 `rules/dev-workflow.md` §2 引用。
 
-## 0. 速查卡片
+## §0 速查卡片
 
 ### 原则概览
 
@@ -68,7 +70,7 @@ IA-3、IA-4、IA-7、IA-10、IA-11 未作为命名设计原则，但在项目中
 
 ---
 
-## 0. 速查卡片
+## §0 速查卡片
 
 ### 依赖矩阵
 | From \ To | shared | entities | features |

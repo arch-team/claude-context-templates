@@ -19,14 +19,15 @@
 
 类型：`feat` | `fix` | `docs` | `style` | `refactor` | `test` | `chore`
 
-范围：`presets` | `plugin` | `examples` | `scripts` | `docs` | `*`
+范围：`presets` | `plugin` | `examples` | `scripts` | `docs` | `.claude` | `devpace` | `config` | `*`
 
 ### 命名规则
 
 | 文件类型 | 规范 | 示例 |
 |---------|------|------|
 | Claude Code 入口 | `CLAUDE.md` | 框架约定 |
-| 项目说明 | `README.md` | GitHub 约定 |
+| 项目说明 | `README.md` / `README.zh-CN.md` | GitHub 约定 |
+| 框架/GitHub 约定 | 大写文件名 | `CONTRIBUTING.md`、`LICENSE`、`SKILL.md` |
 | 其他所有文档 | `kebab-case.md` | `dev-workflow.md` |
 
 ---
@@ -64,6 +65,9 @@
 | `examples` | 示例项目 |
 | `scripts` | 脚本工具 |
 | `docs` | 文档 |
+| `.claude` | 开发规范（rules、references） |
+| `devpace` | 研发管理（迭代、CR） |
+| `config` | 配置文件（settings、gitignore） |
 | `*` | 多个子项目 |
 
 ### 示例
@@ -102,7 +106,7 @@ chore(scripts): 更新验证脚本逻辑
 | 参考文档 | `references/{topic}.md` | `references/component-reference.md` |
 | 项目说明 | `README.md` | 项目根目录说明 |
 
-**命名原则**: 除 `CLAUDE.md`（Claude Code 框架约定）和 `README.md` 外，所有文档统一使用 `kebab-case.md`
+**命名原则**: 除框架/GitHub 约定文件（`CLAUDE.md`、`README.md`、`CONTRIBUTING.md`、`LICENSE`、`SKILL.md`）外，所有文档统一使用 `kebab-case.md`
 
 ### 文档语言
 
@@ -114,3 +118,13 @@ chore(scripts): 更新验证脚本逻辑
 ## 项目结构
 
 > 完整目录树和分层归属详见 `project-structure.md`（单一真实源）。
+
+---
+
+## 跨文档引用
+
+| 引用本文件的文档 | 引用内容 |
+|----------------|---------|
+| `CLAUDE.md` §0 | 开发规范索引 |
+| `dev-workflow.md` §2、§3 | 提交规范、质量检查 |
+| `project-structure.md` §4 | 文件命名规范 |

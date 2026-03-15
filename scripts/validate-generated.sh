@@ -41,6 +41,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PRESETS_DIR="${PROJECT_ROOT}/plugin/presets"
 
+# 加载公共 YAML 解析函数
+source "${SCRIPT_DIR}/lib-yaml.sh"
+
 # ============================================================
 # 工具函数
 # ============================================================
@@ -86,33 +89,9 @@ EOF
   exit 1
 }
 
-# 从 preset.yaml 中提取 files.required 列表（纯 bash 实现）
-# 复用 validate-presets.sh 的解析逻辑
-# 容错: 支持行内注释 (required: # comment) 和行尾注释 (- file.md # desc)
+# parse_required_files 由 lib-yaml.sh 提供（通过 parse_yaml_list）
 parse_required_files() {
-  local yaml_file="$1"
-  local in_required=0
-  while IFS= read -r line; do
-    # 跳过纯注释行和空行
-    [[ "$line" =~ ^[[:space:]]*# ]] && continue
-    [[ -z "${line// /}" ]] && continue
-
-    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*(#.*)?$ ]]; then
-      in_required=1
-      continue
-    fi
-    if [[ $in_required -eq 1 ]]; then
-      if [[ "$line" =~ ^[[:space:]]+-[[:space:]]+(.*) ]]; then
-        local value="${BASH_REMATCH[1]}"
-        # 去除行尾注释和尾部空格
-        value="${value%%#*}"
-        value="${value%"${value##*[![:space:]]}"}"
-        [[ -n "$value" ]] && echo "$value"
-      else
-        break
-      fi
-    fi
-  done < "$yaml_file"
+  parse_yaml_list "$1" "required"
 }
 
 # ============================================================

@@ -34,6 +34,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PRESETS_DIR="${PROJECT_ROOT}/plugin/presets"
 
+# 加载公共 YAML 解析函数
+source "${SCRIPT_DIR}/lib-yaml.sh"
+
 # ============================================================
 # 工具函数
 # ============================================================
@@ -63,48 +66,13 @@ header() {
   printf "\n${BOLD}%s${NC}\n" "$1"
 }
 
-# 从 YAML 中提取 files.required 列表（纯 bash 实现，无需 yq）
-# 解析 preset.yaml 中 required: 下的 "- xxx" 行，直到遇到非列表项
-# 容错: 支持行内注释 (required: # comment) 和行尾注释 (- file.md # desc)
+# parse_required_files 和 check_yaml_field 由 lib-yaml.sh 提供
+# parse_required_files 的适配封装（使用 parse_yaml_list）
 parse_required_files() {
-  local yaml_file="$1"
-  local in_required=0
-  while IFS= read -r line; do
-    # 跳过纯注释行和空行
-    [[ "$line" =~ ^[[:space:]]*# ]] && continue
-    [[ -z "${line// /}" ]] && continue
-
-    # 检测 required: 标记（支持行内注释: "required:" 或 "required: # comment"）
-    if [[ "$line" =~ ^[[:space:]]+required:[[:space:]]*(#.*)?$ ]]; then
-      in_required=1
-      continue
-    fi
-    if [[ $in_required -eq 1 ]]; then
-      # 匹配列表项 "    - xxx"（去除行尾注释）
-      if [[ "$line" =~ ^[[:space:]]+-[[:space:]]+(.*) ]]; then
-        local value="${BASH_REMATCH[1]}"
-        # 去除行尾注释（# 之后的内容）和尾部空格
-        value="${value%%#*}"
-        value="${value%"${value##*[![:space:]]}"}"
-        [[ -n "$value" ]] && echo "$value"
-      else
-        # 遇到非列表项，退出 required 区域
-        break
-      fi
-    fi
-  done < "$yaml_file"
+  parse_yaml_list "$1" "required"
 }
 
-# 检查 YAML 中是否包含关键字段
-check_yaml_field() {
-  local yaml_file="$1"
-  local field="$2"
-  if grep -q "^${field}:" "$yaml_file" 2>/dev/null; then
-    return 0
-  else
-    return 1
-  fi
-}
+# check_yaml_field 已由 lib-yaml.sh 提供
 
 # 获取目录下所有文件的相对路径列表（已排序）
 list_files_relative() {

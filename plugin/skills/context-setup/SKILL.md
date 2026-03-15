@@ -1,10 +1,6 @@
 ---
 name: Claude Context Setup
 description: >
-  Help developers set up or improve .claude/ context directories so Claude Code
-  deeply understands their project's architecture, conventions, and standards —
-  resulting in dramatically better code suggestions, reviews, and generation.
-
   Activate when: the project has no .claude/ directory, the existing .claude/ seems
   incomplete or low-quality, or the user expresses that Claude Code "doesn't understand"
   their project, produces incorrect suggestions, or asks about context setup,

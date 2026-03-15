@@ -48,7 +48,13 @@ Agent / Hook / MCP 规格 + plugin.json 可选字段 + Skill 质量验证法 + p
 
 ### 版本同步
 
-`plugin/presets/manifest.json` 与 `plugin/.claude-plugin/plugin.json` 的版本号必须保持同步。修改版本时需同时更新两处。
+以下三处版本号必须保持同步，修改版本时需同时更新：
+
+| 文件 | 版本字段 |
+|------|---------|
+| `plugin/.claude-plugin/plugin.json` | `version` |
+| `plugin/.claude-plugin/marketplace.json` | `plugins[0].version` |
+| `plugin/presets/manifest.json` | `plugin_version` |
 
 ### 分发架构
 
