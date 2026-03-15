@@ -31,13 +31,7 @@
 ## §2 任务执行
 
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
-2. **遵循设计原则**：实现时参照 `.claude/references/design-principles.md` 的 6 条核心原则：
-   - SSoT：每个概念只在一处定义
-   - Section 0：规则文件以速查卡片开头
-   - 分层架构：开发层 vs 产品层分离
-   - 依赖矩阵：用表格而非段落表达依赖
-   - 双向链接：文档间相互引用形成可导航网络
-   - kebab-case：文件统一使用 kebab-case 命名
+2. **遵循设计原则**：实现时参照 `references/design-principles.md` 的 6 条核心原则（SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case）
 3. **分层约束**：产品层（`plugin/`）不引用开发层（`.claude/`、`docs/`、`scripts/`），详见 `project-structure.md` §3
 4. 每完成一个有意义的工作单元，git commit（遵循 `common.md` 提交规范）
 

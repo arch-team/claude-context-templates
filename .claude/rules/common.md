@@ -89,13 +89,6 @@ chore(scripts): 更新验证脚本逻辑
 - [ ] 新增 preset 包含 zh-CN 和 en 两个语言版本
 - [ ] 示例项目结构与对应 preset 一致
 
-### Plugin 检查项
-
-- [ ] Plugin 命令可正常加载
-- [ ] Skill description 符合 CSO 规则（见 `plugin-dev-spec.md` §3）
-- [ ] plugin.json 与文件系统同步
-- [ ] 新增文件放置位置正确（见 `project-structure.md` §0）
-
 ---
 
 ## 文档规范

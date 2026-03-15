@@ -162,7 +162,7 @@ Plugin 分发的详细架构设计见 `docs/plugin-delivery-design.md`（SSoT）
 不确定 Claude Code 组件的 API、frontmatter 字段或行为时，按以下优先级查证：
 
 1. **claude-code-guide agent**：`Agent(subagent_type="claude-code-guide", prompt="查询 [具体问题]")`——内置 agent，可访问官方文档
-2. **官方文档**：`https://code.claude.com/docs/en/`（plugins、skills、hooks、mcp、sub-agents）
+2. **官方文档**：`https://code.claude.com/docs/en/`（plugins、skills、hooks、mcp、sub-agents、agent-teams）
 3. **调试模式**：`claude --debug` 查看加载日志排查问题
 
 完整的 Agent、Hook、MCP Server 规格参考见 `.claude/references/component-reference.md`（按需加载）。
@@ -173,8 +173,9 @@ Anthropic 官方 plugin-dev Plugin 提供综合开发工具：
 
 | 组件 | 用途 | 使用场景 |
 |------|------|---------|
-| **plugin-validator** Agent | 综合验证（Manifest/目录/Skills） | Plugin 结构变更后 |
-| **skill-reviewer** Agent | Skill 质量审查 | Skill 新增或修改后 |
+| **plugin-validator** Agent | 综合验证（Manifest/目录/Skills/Hooks/安全） | Plugin 结构变更后 |
+| **skill-reviewer** Agent | Skill 质量审查（description/内容/渐进披露） | Skill 新增或修改后 |
+| **agent-creator** Agent | AI 辅助 Agent 创建 | 新增 Agent 定义时 |
 | `/plugin validate` | 内置命令，验证 plugin.json 基本结构 | 快速检查 |
 
 安装：`/plugin install plugin-dev@claude-plugins-official`

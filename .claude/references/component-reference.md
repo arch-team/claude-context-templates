@@ -4,7 +4,7 @@
 >
 > 核心开发规范见 `.claude/rules/plugin-dev-spec.md`（始终加载）。
 
-**章节索引**：[Agent 定义](#agent-定义) | [Hooks](#hooks) | [MCP Server 配置](#mcp-server-配置) | [规范查证方法](#规范查证方法)
+**章节索引**：[Agent 定义](#agent-定义) | [Hooks](#hooks) | [MCP Server 配置](#mcp-server-配置)
 
 ## Agent 定义
 
@@ -116,21 +116,4 @@ Plugin 内部引用路径时使用 `${CLAUDE_PLUGIN_ROOT}`。也可在 `plugin.j
 
 ## 规范查证方法
 
-不确定时，按优先级查证：
-
-1. `Agent(subagent_type="claude-code-guide", prompt="查询 [具体问题]")`——内置 agent，可访问官方文档
-2. 官方文档：`https://code.claude.com/docs/en/`（plugins、skills、hooks、mcp、sub-agents、agent-teams）
-3. `claude --debug` 查看加载日志排查问题
-
-### 官方 plugin-dev 工具（推荐）
-
-Anthropic 官方 plugin-dev Plugin 提供综合开发工具：
-
-| 组件 | 用途 | 使用场景 |
-|------|------|---------|
-| **plugin-validator** Agent | 综合验证（Manifest/目录/Skills/Hooks/安全） | Plugin 结构变更后 |
-| **skill-reviewer** Agent | Skill 质量审查（description/内容/渐进披露） | Skill 新增或修改后 |
-| **agent-creator** Agent | AI 辅助 Agent 创建 | 新增 Agent 定义时 |
-| `/plugin validate` | 内置命令，验证 plugin.json 基本结构 | 快速检查 |
-
-安装：`/plugin install plugin-dev@claude-plugins-official`
+> 见 `rules/plugin-dev-spec.md` §6（始终加载）。

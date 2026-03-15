@@ -13,6 +13,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 | 模板变量占位符 | `docs/template-variables.md` | 变量规范（SSoT） |
 | Plugin 分发架构 | `docs/plugin-delivery-design.md` | 分发策略和工具链 |
 | 项目目录结构 | `.claude/rules/project-structure.md` | 结构 SSoT + 分层归属 |
+| 贡献流程 | `CONTRIBUTING.md` | 项目贡献指南 |
 
 ### 开发规范索引
 
@@ -41,20 +42,9 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## 分层架构
 
-本项目分为两个独立层次，**产品层不得依赖开发层**：
+本项目分为**开发层**（`.claude/`、`docs/`、`scripts/`、`examples/`）和**产品层**（`plugin/`）。产品层不得依赖开发层，必须独立可分发。
 
-| 层次 | 目录 | 职责 | 分发 |
-|------|------|------|------|
-| **开发层** | `.claude/`、`docs/`、`scripts/`、`examples/` | 开发本项目的规范和文档 | 不分发 |
-| **产品层** | `plugin/` | Plugin 运行时资产，分发给用户 | 随 Plugin 分发 |
-
-**硬性约束**：
-
-1. **产品层独立可分发**：`plugin/` 必须作为独立整体分发，不依赖开发层文件
-2. **禁止产品->开发引用**：`plugin/` 内的文件不得引用 `.claude/`、`docs/`、`scripts/`
-3. **开发->产品引用允许**：开发层文件可以引用产品层文件
-
-详细分层规则和检测方法见 `rules/project-structure.md` §3。
+详细分层规则、归属表和检测方法见 `rules/project-structure.md` §3。
 
 ---
 
@@ -112,21 +102,6 @@ feat/{module-name} → main
 | 项目文档 | `docs/` | 设计原则、定制指南、模板变量、分发架构 |
 
 > 完整目录树见 `rules/project-structure.md` §1（单一真实源）。
-
----
-
-## 相关文档
-
-| 文档 | 说明 |
-|------|------|
-| [通用规则](rules/common.md) | 语言、Git 提交、命名、审查 |
-| [开发工作流](rules/dev-workflow.md) | 会话协议、质量检查 |
-| [Plugin 开发规范](rules/plugin-dev-spec.md) | Plugin/Preset 组件规范 |
-| [项目结构](rules/project-structure.md) | 目录结构 SSoT、分层归属 |
-| [设计原则](references/design-principles.md) | 模板系统的 6 条核心设计原则 |
-| [定制指南](../docs/customization-guide.md) | 创建和贡献新预设模板 |
-| [项目战略](../docs/project-strategy.md) | 项目方向和发展规划 |
-| [贡献指南](../CONTRIBUTING.md) | 项目贡献流程和规范 |
 
 ---
 
