@@ -95,13 +95,13 @@ feat/{module-name} → main
 ---
 
 <!-- devpace-start -->
-# Claude Context Templates
+# claude-context-templates
 
-> 为 Claude Code 提供结构化、可复用的上下文管理模板
+> Structured, reusable context management templates for Claude Code
 
 ## 研发协作
 
-本项目使用 `.devpace/` 管理迭代研发。行为规则由 devpace Plugin 的 `rules/devpace-rules.md` 自动注入，此处不重复。小型变更（< 3 个文件）可简化 CR 流程，直接提交无需完整 CR 工作流。
+本项目使用 `.devpace/` 管理迭代研发。行为规则由 devpace Plugin 的 `rules/devpace-rules.md` 自动注入，此处不重复。
 
 ### .devpace/ 文件参考
 
@@ -117,5 +117,5 @@ feat/{module-name} → main
 
 ## 业务目标
 
-（首次 `/pace-retro` 或讨论业务目标时引导定义）
+详见 `.devpace/project.md`。核心目标：提升用户采用率、代码生成质量、建立生态标准。
 <!-- devpace-end -->
