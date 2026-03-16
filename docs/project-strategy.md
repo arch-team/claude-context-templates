@@ -113,20 +113,22 @@ claude-context-templates 的目标是提供**最佳起点**，
 
 ### 7.2 中期目标（v2.0 — 扩展生态）
 
-**目标**：扩展 preset 覆盖和可组合性，建立社区贡献通道。
+**目标**：建立 preset 增量更新和社区生态，扩展覆盖范围。
 
 | 关键结果 | 指标 |
 |----------|------|
-| KR1: Preset 数量达到 5+（新增 Go 和 Next.js/Vue） | ≥ 5 个 presets |
-| KR2: Preset 组合/继承机制实现（rule 级别的 _common 共享） | 技术方案落地 ✓ |
-| KR3: CI/CD 自动化 preset 结构验证 | CI 通过率 100% |
+| KR1: Preset 增量更新机制上线（M2.1） | update 命令可用且通过 CI 验证 |
+| KR2: Preset 数量达到 5+（新增 Go 和 Next.js/Vue） | ≥ 5 个 presets |
+| KR3: 社区贡献通道就绪（贡献指南 + PR 模板 + 验证流程） | 首个社区 preset PR |
+| KR4: Preset 组合/继承机制实现 | _common 共享 + rule 级别继承 |
 
 ### 7.3 长期方向（v3.0+ — 探索性）
 
 > 以下不是承诺的 OKR，而是在 Phase 1-2 成功的前提下可能追求的方向。
 
 - 覆盖更多技术栈（依赖社区贡献或维护者精力）
-- CLI 分发降低使用门槛
+- Cursor Rules / AGENTS.md 跨工具兼容
+- 模板浏览网站或 Awesome List 社区聚合
 - 被 Claude Code 生态中的其他项目/文章引用
 
 ---
@@ -171,23 +173,29 @@ claude-context-templates 的目标是提供**最佳起点**，
 
 ### 9.1 现有替代方案
 
-| 方案 | 优势 | 劣势 | 我们的差异化 |
-|------|------|------|-------------|
-| **手动创建 CLAUDE.md** | 完全自由 | 无结构化指导，质量不稳定 | 提供生产级模板 + 设计原则 |
-| **复制他人的 .claude/ 目录** | 快速 | 技术栈不匹配，缺乏系统性 | 多 preset + 变量替换，精准适配 |
-| **Claude Code 内置模板** | 官方支持 | 目前不存在此功能 | 先发优势 + 社区驱动 |
-| **AI 生成 CLAUDE.md** | 零成本 | 缺乏结构化，无法保证一致性 | 设计原则 + 双向链接 + SSoT |
-| **Claude Code 自身能力演进** | 官方集成 | 可能废弃 .claude/ 当前模式 | 紧跟官方变更，快速适配 |
+> 基于 2026-03-16 GitHub 竞品调研（详见 `.devpace/research/github-competitor-analysis-2026-03-16.md`）
+
+| 方案 | 代表项目 | Stars | 优势 | 劣势 | 我们的差异化 |
+|------|---------|-------|------|------|-------------|
+| **手动创建 CLAUDE.md** | — | — | 完全自由 | 无结构化指导，质量不稳定 | 生产级模板 + 6 条设计原则 |
+| **Claude Code 配置展示** | ChrisWiles/claude-code-showcase | 5.5K | 完整参考 | 展示非工具，无法自动化 | Plugin 自动化分发 + 多技术栈 |
+| **安全导向配置模板** | trailofbits/claude-code-config | 1.6K | 安全加固 | 单一场景，无多栈支持 | 安全作为可选层 + 多 preset |
+| **Context Engineering 模板** | coleam00/context-engineering-intro | 12.7K | PRP 工作流 | 无 preset 系统，无自动初始化 | 结构化 preset + init.sh/Plugin |
+| **Claude Code CLI 工具** | davila7/claude-code-templates | 23K | npx 一键启动，Analytics | 偏监控，模板生成非核心 | 专注模板质量 + 设计原则 |
+| **通用模板生成器** | cookiecutter, copier, plop | 3K-25K | 成熟生态，Copier 支持更新 | 不针对 AI 编码场景 | AI 上下文专用 + Plugin 原生 |
+| **Awesome List** | awesome-claude-skills | 44.6K | 社区聚合效应 | 列表非工具，无法直接使用 | 可执行模板 vs 参考列表 |
+| **AI 生成 CLAUDE.md** | — | — | 零成本 | 缺乏结构化，不可复现 | 设计原则 + SSoT + Schema 验证 |
 
 ### 9.2 护城河策略
 
 ```
 短期：模板质量 + 先发优势 + 双语支持 + Plugin 原生集成
-  → 第一个提供系统化 Claude Code 上下文模板的项目
-  → 第一个通过 Plugin 直接在 Claude Code 内交付的模板工具
+  → 唯一通过 Plugin 直接在 Claude Code 内交付的模板工具
+  → 唯一提供 zh-CN/en 双语的 Claude Code 模板项目
 
-中期：可组合 preset 架构 + 社区 preset 贡献
-  → 越多人贡献 preset，项目价值越大
+中期：可组合 preset 架构 + 增量更新 + 社区贡献
+  → Preset 更新机制（借鉴 Copier）建立用户长期关系
+  → 社区 preset 贡献形成网络效应
 
 长期：承认不确定性
   → 如果 Anthropic 原生实现类似功能，项目可能转为社区扩展层
@@ -238,20 +246,28 @@ claude-context-templates 的目标是提供**最佳起点**，
 
 ### Phase 2: Ecosystem（生态）— v2.0
 
-**主题**：扩展 preset 覆盖，建立可组合架构
+**主题**：扩展 preset 覆盖，建立增量更新和社区生态
 
-| 里程碑 | 内容 |
-|--------|------|
-| M2.1 | Preset 组合机制（rule 级别继承，_common 共享） |
-| M2.2 | 新增 2 个 preset（Go + Next.js/Vue，总计 ≥ 5 个） |
-| M2.3 | 社区贡献工作流（Issue/PR 模板、preset 审核标准） |
-| M2.4 | Preset 版本追踪机制 |
+> 以下功能候选基于 2026-03-16 GitHub 竞品调研（详见 `.devpace/research/github-competitor-analysis-2026-03-16.md`），按优先级排序。
+
+| 里程碑 | 内容 | 优先级 | 灵感来源 |
+|--------|------|--------|---------|
+| M2.1 | **Preset 增量更新机制** — 生成 `.claude/` 后可同步 preset 更新，保留用户自定义。生成时记录 `.claude/.preset-meta.yml`（preset 名称、版本、变量值），`update` 命令对比差异合并 | 高 | Copier (`copier update`)、答案文件持久化 |
+| M2.2 | **社区 Preset 生态** — 建立 preset 贡献流程和质量标准，鼓励社区创建技术栈 preset；维护 Awesome List 扩大传播 | 高 | Cookiecutter (4000+ 社区模板)、awesome-claude-skills (44K Stars) |
+| M2.3 | Preset 组合机制（rule 级别继承，_common 共享） | 高 | 原有规划 |
+| M2.4 | 新增 2+ preset（Go + Next.js/Vue，总计 ≥ 5 个） | 高 | 原有规划 |
+| M2.5 | **GitHub Actions 集成模板** — 为每个 preset 提供可选的 CI 工作流（PR Claude Code 审查、文档同步检查、代码质量审计） | 中 | ChrisWiles/claude-code-showcase |
+| M2.6 | **安全加固 Preset 组件** — 可选安全层：settings.json 安全默认值、Read/Edit deny rules、防敏感文件泄露 Hook、JSON 评估器 Hook | 中 | trailofbits/claude-code-config |
+| M2.7 | **交互式 Preset 配置向导** — 升级 init.sh 为交互式向导，支持 preset 选择 → 变量填写 → 可选组件组合（Hooks/GitHub Actions/安全加固） | 中低 | Cookiecutter/Copier 交互问卷 |
 
 ### Phase 3+: 未来可能方向（探索性）
 
-> 以下方向不是承诺的路线图，而是基于当前认知的探索性选项。是否执行取决于 Phase 1-2 的反馈和维护者资源。
+> 以下方向不是承诺的路线图，而是基于当前认知和竞品调研的探索性选项。是否执行取决于 Phase 2 的反馈和维护者资源。
 
-- Plugin preset 远程热更新（无需重新安装即可获取最新模板）
+- **Plugin preset 远程热更新**（无需重新安装即可获取最新模板）
+- **Cursor Rules / AGENTS.md 兼容**（借鉴 StackOneHQ/cursor-rules-to-claude 的跨工具迁移思路）
+- **模板浏览网站**（借鉴 davila7/claude-code-templates 的 aitmpl.com 模式）
+- **会话级上下文管理**（借鉴 carveragents/flux 的 session-based 学习机制）
 - 社区驱动更多 preset（依赖外部贡献者出现）
 - 更多语言支持（依社区需求）
 
@@ -352,8 +368,8 @@ PATCH: Bug 修复、文案改进、小优化
 | v1.0 | Phase 1 | 首次稳定发布（init.sh + preset 模板） |
 | v1.1 | Phase 1.5 | Claude Code Plugin 交付方式 |
 | v1.x | Phase 1 | 修复和小改进 |
-| v2.0 | Phase 2 | 新 presets + 组合机制 + 社区贡献通道 |
-| v3.0+ | Phase 3+ | 视社区反馈和维护者资源决定 |
+| v2.0 | Phase 2 | Preset 增量更新 + 社区生态 + 新 presets + 组合机制 |
+| v3.0+ | Phase 3+ | 跨工具兼容 + 模板浏览站 + 视社区反馈决定 |
 
 ---
 
