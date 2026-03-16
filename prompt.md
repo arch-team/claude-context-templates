@@ -101,3 +101,62 @@ value-map
 在理解当前项目（claude-context-templates）的基础上将下面devpace项目的Claude code上下文规范：
 /Users/jinhuasu/Project_Workspace/Anker-Projects/ml-platform-research/llm-platform-solution/claude-code-forge/devpace/.claude
 转换为当前项目（claude-context-templates）的Claude code上下文规范
+
+
+通用原则统一整理到ia-principles.md中，design-principles.md作为本项目基于ia-principles.md通用原则的具体说明，design-principles.md可以引用ia-principles.md，ia-principles.md不能引用design-principles.md
+
+
+发现背景
+
+  基于当前项目状态（Phase 1.5 收尾，Phase 2 待启动），以下是我从代码库和策略文档中识别到的 5 个探索方向。
+
+  ---
+  方向 1: 新 Preset 扩展（对齐 M2.2）
+
+  当前 4 个 preset: python-fastapi, react-typescript, aws-cdk, generic。路线图提到 Go 和 Next.js/Vue。
+
+  发现问题：
+  - 你有没有收到过用户反馈要求特定技术栈的 preset？
+  - Go preset 和 Next.js/Vue preset 哪个优先级更高？还是有其他技术栈更紧急（如 Django、Spring Boot、Rust）？
+  - 是否考虑社区贡献 preset 而非自己维护？
+
+  ---
+  方向 2: Preset 可组合性（对齐 M2.1）
+
+  当前 _common/ 已有 4 个跨 preset 工程原则。但 rule 级别的继承/组合机制尚未设计。
+
+  发现问题：
+  - 你设想的"组合"是什么形态？例如：一个 preset 可以 extends: generic 然后只覆盖特定 rules？
+  - 还是更简单的方案 — 多个 preset 共享同一组 rules 文件？
+  - 这对终端用户有什么可见的好处？
+
+  ---
+  方向 3: Plugin 能力增强
+
+  当前 Plugin 有 2 个 command（init-context, audit-context）和 1 个 skill（context-setup）。
+
+  发现问题：
+  - 是否需要新的命令，如 /upgrade-context（从旧版模板升级）或 /add-rule（向已有 .claude/ 添加单个规范）？
+  - context-setup skill 的自动触发效果如何？是否需要调优 description？
+
+  ---
+  方向 4: 社区贡献通道（对齐 M2.3）
+
+  已有 CONTRIBUTING.md、Issue/PR 模板。但缺少 preset 贡献的具体流程。
+
+  发现问题：
+  - 社区贡献 preset 是否需要审核标准？如何保证质量一致性？
+  - 是否需要一个 "preset 创建 CLI 工具" 或脚手架来降低贡献门槛？
+
+  ---
+  方向 5: 用户获取与验证（对齐 OBJ-4 MoS）
+
+  Phase 1 成功标准是 "≥1 个确认的外部使用报告"，这是当前最关键的差距。
+
+  发现问题：
+  - 你目前有收到任何外部使用反馈吗（GitHub Issues、Discussions、邮件、社交媒体）？
+  - 推广计划执行到哪一步了（Hacker News Show HN、掘金、知乎等渠道）？
+  - 是否需要调整推广策略或先聚焦某个特定渠道？
+
+  ---
+  请选择你想深入探索的方向（可多选），或者提出你自己的想法。我会根据你的回答生成候选的 BR→PF 实体。

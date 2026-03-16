@@ -17,15 +17,30 @@
 
 ## 实施路径
 
-（首次 `/pace-plan` 时规划）
+### Phase 1.5 → Phase 2 过渡计划
+
+- **Phase 1.5 收尾**：M1.5.4（端到端外部用户安装测试）— 需外部用户参与
+- **Phase 2 并行启动**：不必等 M1.5.4 完成，可先推进 M2.2 和 M2.3
+- **建议启动顺序**：M2.2（新 preset，快速价值） → M2.3（社区通道） → M2.1（组合机制） → M2.4（版本追踪）
 
 ## 范围
 
-（首次 /pace-change 或讨论项目范围时填充）
+### Phase 2 范围（v2.0）
+
+| 里程碑 | 内容 | 依赖 | 优先级 |
+|--------|------|------|--------|
+| M2.1 | Preset 组合机制（rule 级别继承，_common 共享） | 无 | P1 |
+| M2.2 | 新增 ≥2 个 preset（Go, Next.js/Vue） | 无 | P0 |
+| M2.3 | 社区贡献工作流（审核标准、贡献指南） | 无 | P0 |
+| M2.4 | Preset 版本追踪机制 | M2.1 | P2 |
 
 ## 项目原则
 
-（首次 /pace-retro 或讨论技术/产品决策时积累）
+<!-- source: alignment-review, 2026-03-15 -->
+
+- **lite 模式优先**：Phase 1~2 维持 OBJ→BR→PF 三层结构，不引入 Epic/Opportunity 层。理由：个人维护项目，需求复杂度不足以证明额外管理层的成本。Phase 3+ 如有社区贡献者加入再评估。
+- **并行优于串行**：Phase 过渡期允许并行启动下一阶段独立任务，不必等前一阶段 100% 完成。
+- **外部验证优先**：功能完成度 < 外部使用反馈。北极星指标的核心是"确认使用报告"而非功能数量。
 
 ## 价值功能树
 
@@ -49,7 +64,9 @@ OBJ-2 预设模板生态
 │   ├── PF-007 Python + FastAPI 预设 (27 files, zh-CN/en)
 │   ├── PF-008 React + TypeScript 预设 (27 files, zh-CN/en)
 │   ├── PF-009 AWS CDK 预设 (25 files, zh-CN/en)
-│   └── PF-010 Generic 通用预设 (19 files, zh-CN/en)
+│   ├── PF-010 Generic 通用预设 (19 files, zh-CN/en)
+│   ├── PF-031 Next.js + TypeScript 预设 (zh-CN/en) — Phase 2, P0
+│   └── PF-032 Go 通用预设 (zh-CN/en) — Phase 2, P1
 └── BR-005 公共基础
     ├── PF-011 公共工程原则 _common (4 principles, zh-CN/en)
     └── PF-012 Preset 版本清单 (manifest.json)
