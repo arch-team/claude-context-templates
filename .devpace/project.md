@@ -78,6 +78,50 @@
 
 ## 价值功能树
 
+<!-- source: claude, inferred from codebase -->
+
 ```
-（功能树随工作自动生长 — 开始做第一个功能时自动出现）
+OBJ-1：提升用户采用率
+├─ BR-001：上下文初始化能力
+│  ├─ PF-001：初始化上下文命令（init-context）        [已实现]
+│  ├─ PF-002：项目初始化脚本（init.sh）                [已实现]
+│  └─ PF-003：Plugin 安装脚本（install.sh）            [已实现]
+├─ BR-002：预设模板库                                   [P0] [就绪 85%] → requirements/BR-002.md
+│  ├─ PF-004：通用项目模板（generic）                  [已实现]
+│  ├─ PF-005：Python FastAPI 模板（python-fastapi）    [已实现]
+│  ├─ PF-006：React TypeScript 模板（react-typescript）[已实现]
+│  └─ PF-007：AWS CDK 模板（aws-cdk）                  [已实现]
+└─ BR-003：构建与发布工具
+   ├─ PF-008：Plugin 构建工具（build-plugin.sh）       [已实现]
+   └─ PF-009：Plugin 发布工具（release-plugin.sh）     [已实现]
+
+OBJ-2：提升代码生成质量
+├─ BR-004：质量检查能力
+│  ├─ PF-010：审计上下文质量（audit-context）          [已实现]
+│  ├─ PF-011：自动检测与设置（context-setup）          [已实现]
+│  └─ PF-012：工作区上下文设置（context-setup-workspace）[已实现]
+└─ BR-005：质量保障工具
+   ├─ PF-013：预设模板验证（validate-presets.sh）      [已实现]
+   ├─ PF-014：生成结果验证（validate-generated.sh）    [已实现]
+   └─ PF-015：初始化脚本测试（test-init.sh）           [已实现]
+
+OBJ-3：建立生态标准
+├─ BR-006：项目文档系统
+│  ├─ PF-016：模板变量文档（template-variables.md）    [已实现]
+│  ├─ PF-017：Plugin 分发架构文档（plugin-delivery-design.md）[已实现]
+│  └─ PF-018：定制指南（customization-guide.md）       [已实现]
+├─ BR-007：完整示例项目
+│  ├─ PF-019：Monorepo 示例（monorepo-taskmanager）    [已实现]
+│  └─ PF-020：单项目 Python 示例（single-project-python）[已实现]
+└─ BR-008：公共模板组件
+   └─ PF-021：公共模板组件（_common）                  [已实现]
+
+OBJ-4：扩展技术栈覆盖
+└─ （当前 4 个预设模板已纳入 OBJ-1/BR-002，新增技术栈时在此追加）
+
+OBJ-5：提升上下文规划效率
+└─ BR-009：自动化工具链
+   ├─ PF-022：清单生成工具（generate-manifest.sh）     [已实现]
+   ├─ PF-023：文档链接检查（check-links.sh）           [已实现]
+   └─ PF-024：YAML 解析库（lib-yaml.sh）              [已实现]
 ```
