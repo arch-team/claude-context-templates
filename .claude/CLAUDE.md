@@ -37,6 +37,16 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ---
 
+## 开发守则
+
+1. **Preset 是核心产出**：所有改进最终服务于 Preset 质量和技术栈覆盖
+2. **规范优先不猜测**：组件开发通过 `claude-code-guide` agent 或官方文档查证，不凭记忆猜测 API
+3. **双语同步交付**：新增 Preset/文档时 zh-CN 和 en 版本同时完成
+4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest，完整清单见 `rules/plugin-dev-spec.md` §1 扩展同步清单
+5. **分层不可违反**：产品层独立可分发，检测命令 `grep -r "\.claude/\|docs/\|scripts/" plugin/`，常见绕过见 `rules/project-structure.md` §3
+
+---
+
 ## 项目概述
 
 Claude Context Templates — 为 Claude Code 提供结构化、可复用的上下文管理模板。通过 Claude Code Plugin 分发预设模板，为项目快速生成 `.claude/` 目录。

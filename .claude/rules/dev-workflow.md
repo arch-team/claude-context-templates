@@ -35,6 +35,29 @@
 3. **分层约束**：产品层（`plugin/`）不引用开发层（`.claude/`、`docs/`、`scripts/`），详见 `project-structure.md` §3
 4. 每完成一个有意义的工作单元，git commit（遵循 `common.md` 提交规范）
 
+### 参考加载表
+
+按任务类型加载对应文档，避免全读（浪费 token）或漏读（出错）：
+
+| 任务类型 | 必读 | 按需 |
+|---------|------|------|
+| Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `references/design-principles.md`、`plugin/presets/context-schema.yaml` |
+| Plugin 组件开发 | `rules/plugin-dev-spec.md`（已自动加载）、`references/component-reference.md` | 目标组件现有文件 |
+| 规范文档更新 | 目标文件、`references/design-principles.md` | `references/ia-principles.md` |
+| 项目文档更新 | `docs/project-strategy.md` 对应章节 | `CONTRIBUTING.md` |
+| 脚本工具开发 | 目标脚本、相关验证逻辑 | `scripts/lib-yaml.sh`（公共函数） |
+
+### 反向反馈
+
+实现中发现上游文档（`docs/project-strategy.md`、`docs/customization-guide.md`、`docs/template-variables.md`）存在歧义、缺失或不可行时：
+
+1. **暂停**当前实现
+2. **报告**：向用户说明发现的问题和建议修正
+3. **确认**：等待用户确认修正方向
+4. **修正→继续**：先修正上游文档，再继续实现
+
+原则：不擅自改变上游设计意图。
+
 ## §3 质量检查
 
 任务完成前必须通过以下检查：

@@ -40,6 +40,24 @@
 | IA-10 | 契约隔离 | 数据格式由独立契约层约束 | 模板变量、API 格式等定义在独立的规范文件中，与使用方解耦 |
 | IA-11 | 单一职责 | 每个文件只有一个核心职责 | 在文件头部声明职责，内容超出职责范围时拆分为独立文件 |
 
+## 本项目映射
+
+将通用原则映射为 claude-context-templates 的具体实践和检测方法：
+
+| # | 原则 | 项目映射 | 检测/参照 |
+|---|------|---------|----------|
+| IA-1 | 单向依赖 | 产品层→开发层引用禁止 | `grep -r "\.claude/\|docs/\|scripts/" plugin/`；详见 `project-structure.md` §3 |
+| IA-2 | 抽象分层 | rules（自动加载）→ references（按需）→ docs（深度参考） | CLAUDE.md §0 文件索引"加载方式"列 |
+| IA-3 | 稳定-易变分离 | rules/ 保持稳定（高扇入），docs/ 允许频繁更新 | `git log --oneline <file> \| wc -l` 检查 rules 文件变更频率 |
+| IA-4 | 信息分类 | 规范（rules）、参考（references）、流程（docs）严格分开 | 详见 `project-structure.md` §2 分层归属表 |
+| IA-5 | 按需加载 | references/ 和 docs/ 不自动加载；SKILL description 保持简洁 | CLAUDE.md §0 的"加载方式"列标注 |
+| IA-6 | 单一权威 | 每个概念标注 SSoT 所在文件 | 详见 `design-principles.md` 原则 1 |
+| IA-7 | 确定性分级 | 分层约束有 grep 检测；CSO 有常见陷阱表；关键规则有反合理化清单 | 铁律是否有对应自动化检测或 grep 命令 |
+| IA-8 | 可发现性优先 | CLAUDE.md 作为索引页，§0 速查卡片优先 | 详见 `design-principles.md` 原则 2 |
+| IA-9 | 认知清晰 | 关键规则配反合理化清单（分层约束、CSO） | `project-structure.md` §3 和 `plugin-dev-spec.md` §3 |
+| IA-10 | 契约隔离 | `context-schema.yaml` 独立定义 Preset 结构契约 | Schema 文件不含业务逻辑 |
+| IA-11 | 单一职责 | 每个 rules 文件一个核心职责（见文件头部职责声明） | 文件首行 `> **职责**：...` |
+
 ## 约束分级标记
 
 | 标记 | 含义 | 执行保障 |

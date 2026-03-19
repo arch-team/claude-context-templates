@@ -60,6 +60,31 @@ Agent / Hook / MCP 规格 + plugin.json 可选字段 + Skill 质量验证法 + p
 
 Plugin 分发的详细架构设计见 `docs/plugin-delivery-design.md`（SSoT），包含分发策略、工具链和 CI 流程。
 
+### 扩展同步清单
+
+**新增 Preset 时**须同步：
+
+| # | 文件 | 操作 |
+|---|------|------|
+| 1 | `plugin/presets/<name>/zh-CN/` + `en/` | 创建双语模板 |
+| 2 | `plugin/presets/<name>/preset.yaml` | 填写元数据 |
+| 3 | `plugin/presets/manifest.json` | 新增 preset 条目 |
+| 4 | `plugin/presets/context-schema.yaml` | 确认新 preset 符合 schema |
+| 5 | `plugin/commands/init-context.md` | 同步 preset 列表（如命令中列举了可用 preset） |
+| 6 | `plugin/README.md` | 更新 preset 列表 |
+| 7 | `docs/customization-guide.md` | 若引入新模式，更新指南 |
+| 8 | 运行 `./scripts/validate-presets.sh` | 验证结构完整性 |
+
+**修改 Plugin 组件结构时**须同步：
+
+| # | 文件 | 操作 |
+|---|------|------|
+| 1 | `plugin/.claude-plugin/plugin.json` | 更新组件声明 |
+| 2 | `plugin/.claude-plugin/marketplace.json` | 同步版本号 |
+| 3 | `plugin/presets/manifest.json` | 同步版本号 |
+| 4 | `.claude/rules/project-structure.md` §1 | 更新目录树 |
+| 5 | `.claude/rules/plugin-dev-spec.md` §0 | 更新组件清单表 |
+
 ## §2 命令开发 Commands
 
 命令文件放在 `plugin/commands/` 目录，frontmatter 支持以下字段：
@@ -109,6 +134,14 @@ Plugin 分发的详细架构设计见 `docs/plugin-delivery-design.md`（SSoT）
 | 开头用 "Use when" 或触发条件列表 | `Use when setting up Claude context for a project` | `Project initialization skill for template management` |
 | 包含具体触发关键词 | `Use when user says "初始化/init/setup"` | `Handles initialization tasks` |
 | 避免描述内部步骤 | `Use when user needs a new preset template` | `Validates preset, copies files, runs init script` |
+
+**常见绕过与反驳**：
+
+| 借口 | 反驳 |
+|------|------|
+| "写清楚做什么帮助用户理解" | description 的消费者是 Claude 路由逻辑，不是用户；写了 What 会导致 Claude 跳过读完整 SKILL.md |
+| "description 太短信息不够" | description 的职责是精准触发，不是传递信息；完整信息在 SKILL.md 正文 |
+| "这个 Skill 简单到 description 就够了" | 即使 Skill 简单，description 泄露行为也会破坏 CSO 一致性 |
 
 **字符串替换**：Skill 内容中可使用 `$ARGUMENTS`（全部参数）、`$0`/`$1`（按位参数）、`` !`command` ``（预处理器，执行 shell 命令并替换输出）。
 
