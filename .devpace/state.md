@@ -12,6 +12,7 @@
 - **进行中**：feat/preset-optimization 分支（未合并）
 - **待 Review**：（无）
 - **阻塞**：（无）
+- **最近完成**：代码库推断（/pace-biz infer）→ 功能树已补充 9 BR / 24 PF
 
 ## 下一步
 
