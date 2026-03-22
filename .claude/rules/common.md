@@ -84,14 +84,11 @@ chore(scripts): 更新验证脚本逻辑
 
 ## 代码审查标准
 
-### 通用检查项
+完整质量检查 checklist 见 `dev-workflow.md` §3（SSoT）。以下为本文件职责范围内的核心检查点：
 
-- [ ] 代码符合子项目规范
-- [ ] 文档/注释使用中文
-- [ ] 提交信息格式正确
-- [ ] 预设模板变量使用正确占位符格式（见 `docs/template-variables.md`）
-- [ ] 新增 preset 包含 zh-CN 和 en 两个语言版本
-- [ ] 示例项目结构与对应 preset 一致
+- [ ] 文档/注释使用中文，代码标识符使用英文
+- [ ] Git 提交信息格式正确（见上方提交规范）
+- [ ] 文件命名遵循 kebab-case（见上方命名规则）
 
 ---
 
@@ -99,12 +96,7 @@ chore(scripts): 更新验证脚本逻辑
 
 ### 文件命名
 
-| 类型 | 规范 | 示例 |
-|------|------|------|
-| 主规范 | `CLAUDE.md` | 各子项目入口（Claude Code 框架约定） |
-| 专题规范 | `rules/{topic}.md` | `rules/dev-workflow.md`, `rules/plugin-dev-spec.md` |
-| 参考文档 | `references/{topic}.md` | `references/component-reference.md` |
-| 项目说明 | `README.md` | 项目根目录说明 |
+文件命名速查见 §0 命名规则表。目录组织模式：`rules/{topic}.md`、`references/{topic}.md`。
 
 **命名原则**: 除框架/GitHub 约定文件（`CLAUDE.md`、`README.md`、`CONTRIBUTING.md`、`LICENSE`、`SKILL.md`）外，所有文档统一使用 `kebab-case.md`
 

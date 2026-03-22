@@ -119,6 +119,6 @@ Preset 创建的完整流程详见 `docs/customization-guide.md`（SSoT）。
 
 ## 6. kebab-case 命名
 
-**原则**: 除框架/GitHub 约定文件（`CLAUDE.md`、`README.md`、`CONTRIBUTING.md`、`LICENSE`、`SKILL.md`）外，所有文档统一使用 `kebab-case.md`。
+**原则**: 文件命名统一使用 kebab-case，减少认知负担。
 
-完整命名规则和例外列表见 [`common.md` §0](../rules/common.md)。
+完整命名规则和例外列表见 [`common.md` §文档规范](../rules/common.md)。

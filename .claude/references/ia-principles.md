@@ -46,7 +46,7 @@
 
 | # | 原则 | 项目映射 | 检测/参照 |
 |---|------|---------|----------|
-| IA-1 | 单向依赖 | 产品层→开发层引用禁止 | `grep -r "\.claude/\|docs/\|scripts/" plugin/`；详见 `project-structure.md` §3 |
+| IA-1 | 单向依赖 | 产品层→开发层引用禁止 | 检测命令见 `project-structure.md` §3 |
 | IA-2 | 抽象分层 | rules（自动加载）→ references（按需）→ docs（深度参考） | CLAUDE.md §0 文件索引"加载方式"列 |
 | IA-3 | 稳定-易变分离 | rules/ 保持稳定（高扇入），docs/ 允许频繁更新 | `git log --oneline <file> \| wc -l` 检查 rules 文件变更频率 |
 | IA-4 | 信息分类 | 规范（rules）、参考（references）、流程（docs）严格分开 | 详见 `project-structure.md` §2 分层归属表 |

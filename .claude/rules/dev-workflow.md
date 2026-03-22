@@ -74,15 +74,15 @@
 
 - [ ] 代码/文档符合 `common.md` 规范（语言、Git、命名）
 - [ ] 新增文件放置位置正确（对照 `project-structure.md` §0 决策树）
-- [ ] 分层完整性：`grep -r "\.claude/\|docs/\|scripts/" plugin/` 返回空结果
-- [ ] 设计原则对齐：SSoT、§0 速查卡片、分层、表格、双向链接、kebab-case
+- [ ] 分层完整性通过（检测命令见 `project-structure.md` §3）
+- [ ] 设计原则对齐（对照 `design-principles.md` §0 的 6 条原则）
 - [ ] 模板变量使用正确占位符格式（见 `docs/template-variables.md`）
+- [ ] 示例项目结构与对应 preset 一致
 
 ### Plugin 验证（修改 plugin/ 时）
 
 - [ ] Plugin 命令可正常加载：`claude --plugin-dir ./plugin` 无报错
-- [ ] Skill description 符合 CSO 规则（只写触发条件，不写行为）
-- [ ] plugin.json 与文件系统同步（新增/删除组件后立即更新）
+- [ ] 组件规范合规（CSO、版本同步、双语等，详见 `plugin-dev-spec.md`）
 
 ## §4 会话结束协议
 

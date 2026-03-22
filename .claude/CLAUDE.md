@@ -41,9 +41,9 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 1. **Preset 是核心产出**：所有改进最终服务于 Preset 质量和技术栈覆盖
 2. **规范优先不猜测**：组件开发通过 `claude-code-guide` agent 或官方文档查证，不凭记忆猜测 API
-3. **双语同步交付**：新增 Preset/文档时 zh-CN 和 en 版本同时完成
+3. **双语同步交付**：新增 Preset/文档须双语同时完成，规则详见 `plugin-dev-spec.md` §4
 4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest，完整清单见 `rules/plugin-dev-spec.md` §1 扩展同步清单
-5. **分层不可违反**：产品层独立可分发，检测命令 `grep -r "\.claude/\|docs/\|scripts/" plugin/`，常见绕过见 `rules/project-structure.md` §3
+5. **分层不可违反**：产品层独立可分发，检测方法和常见绕过见 `project-structure.md` §3
 
 ---
 
@@ -75,18 +75,11 @@ feat/{module-name} → main
 ## 常用命令
 
 ```bash
-# 运行初始化脚本（为目标项目生成 .claude/ 目录）
+# 项目初始化（为目标项目生成 .claude/ 目录）
 ./init.sh
-
-# 验证预设模板结构完整性
-./scripts/validate-presets.sh
-
-# 检查文档链接有效性
-./scripts/check-links.sh
-
-# 测试 init.sh 脚本功能
-./scripts/test-init.sh
 ```
+
+验证脚本（validate-presets / check-links / test-init）详见 `dev-workflow.md` §3 自动检查脚本。
 
 ---
 

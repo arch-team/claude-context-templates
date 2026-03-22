@@ -157,16 +157,9 @@ Skill 开发/修改时的 RED-GREEN-REFACTOR 验证方法见 `references/compone
 
 Preset 是本项目的核心产出，每个 Preset 为特定技术栈提供完整的 `.claude/` 目录模板。
 
-### 必需文件
-
-每个 Preset 目录必须包含：
-- `preset.yaml`——Preset 元数据和配置
-- 模板文件——使用变量占位符（详见 `docs/template-variables.md`）
-- zh-CN 和 en 两个语言版本
-
 ### 开发流程
 
-Preset 创建的完整流程详见 `docs/customization-guide.md`（SSoT）。变量占位符规范详见 `docs/template-variables.md`（SSoT）。
+Preset 创建的完整流程（含必需文件列表）详见 `docs/customization-guide.md`（SSoT）。变量占位符规范详见 `docs/template-variables.md`（SSoT）。
 
 ### 双语要求
 
