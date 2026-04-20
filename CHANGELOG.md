@@ -2,6 +2,35 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.1] - 2026-04-20
+
+### 用户体验 Patch 修复
+
+v1.3.0 发布后通过手工端到端测试发现 3 个影响首次使用体验的 UX bug，均已修复。
+
+### Fixed
+
+- **B2 项目名称被错误 lowercase**：所有 preset 的 `project-config.md` 中"项目名称"字段误用 `{{PROJECT_SLUG}}`（kebab-case 标识符），导致用户输入 `MyAwesomeApp` 显示为 `myawesomeapp`。修正为 `{{PROJECT_NAME}}`（用户原文）。
+- **B3 项目描述未填充**：`python-fastapi` / `react-typescript` / `aws-cdk` 三个 preset 的 `project-config.md` 中"项目描述"字段硬编码为 TODO 占位符，用户在交互流程中输入的描述被丢弃。现改为 `{{PROJECT_DESCRIPTION}}` 占位符，init.sh 自动填充。
+- **B4 单项目模式生成 Monorepo 引用路径**：所有 preset 的 `CLAUDE.md` 硬编码"参考根目录 `../.claude/CLAUDE.md`"，在单项目模式下指向不存在的父目录。引入 `{{PARENT_CLAUDE_REF}}` 占位符，init.sh 按模式动态填充（Monorepo=实际引用，单项目=空串）。
+
+### Improved
+
+- `init.sh`：用户未输入项目描述时，自动填充为 `<!-- TODO: 填写项目描述 -->` 占位符，方便用户后续编辑
+- `scripts/test-init.sh`：新增 `assert_file_contains` / `assert_file_not_contains` 辅助函数，并为 B2/B3/B4 三个 bug 加入专门回归断言（共 4 个新断言），防止未来再次引入类似问题
+
+### Housekeeping
+
+- 四处版本号（plugin.json / plugin 内 marketplace.json / 根 marketplace.json / manifest.json）同步升至 1.3.1
+
+### 发现过程
+
+发布 v1.3.0 数分钟后在一个 fresh 项目中手工运行完整 `init.sh` 流程，发现上述 3 个 bug。此前自动化测试全部绿，但因断言只覆盖"通用文件存在"未检测到变量替换错误。本次修复同时加强了断言覆盖面。
+
+教训：**手工端到端体验测试 > 自动化断言覆盖率**——战略文档"evidence-based > assumption"在工程实践中的体现。
+
+---
+
 ## [1.3.0] - 2026-04-20
 
 ### 清理与规范收尾版
@@ -64,5 +93,6 @@
 
 ---
 
-[1.3.0]: https://github.com/your-org/claude-context-templates/releases/tag/v1.3.0
-[1.0.0]: https://github.com/your-org/claude-context-templates/releases/tag/v1.0.0
+[1.3.1]: https://github.com/arch-team/claude-context-templates/releases/tag/v1.3.1
+[1.3.0]: https://github.com/arch-team/claude-context-templates/releases/tag/v1.3.0
+[1.0.0]: https://github.com/arch-team/claude-context-templates/releases/tag/v1.0.0

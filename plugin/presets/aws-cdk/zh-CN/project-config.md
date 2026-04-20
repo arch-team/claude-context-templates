@@ -12,8 +12,9 @@
 
 | 配置项 | 值 |
 |--------|-----|
-| **项目名称** | {{PROJECT_SLUG}}-infra |
-| **项目描述** | <!-- TODO: 填写项目描述 --> |
+| **项目名称** | {{PROJECT_NAME}} |
+| **项目描述** | {{PROJECT_DESCRIPTION}} |
+| **Stack 命名前缀** | {{PROJECT_SLUG}}-infra |
 | **架构模式** | CDK Construct 分层 (L1 → L2 → L3) |
 | **技术栈版本** | 见 [tech-stack.md](rules/tech-stack.md) |
 | **源码根路径** | `lib` |

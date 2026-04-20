@@ -12,7 +12,7 @@
 
 | Configuration | Value |
 |---------------|-------|
-| **Project Name** | {{PROJECT_SLUG}} |
+| **Project Name** | {{PROJECT_NAME}} |
 | **Project Description** | {{PROJECT_DESCRIPTION}} |
 | **Source Root** | <!-- TODO: Fill in source root path, e.g. src/ --> |
 

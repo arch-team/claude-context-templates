@@ -11,8 +11,8 @@
 
 | Configuration | Value |
 |---------------|-------|
-| **Project Name** | <!-- TODO: Please fill in --> |
-| **Project Description** | <!-- TODO: Please fill in --> |
+| **Project Name** | {{PROJECT_NAME}} |
+| **Project Description** | {{PROJECT_DESCRIPTION}} |
 | **Architecture Pattern** | Feature-Sliced Design (FSD) |
 | **Node Version** | >=18.0.0 |
 | **Source Root** | `src` |

@@ -12,8 +12,8 @@
 
 | 配置项 | 值 |
 |--------|-----|
-| **项目名称** | {{PROJECT_SLUG}} |
-| **项目描述** | <!-- TODO: 填写项目描述 --> |
+| **项目名称** | {{PROJECT_NAME}} |
+| **项目描述** | {{PROJECT_DESCRIPTION}} |
 | **架构模式** | DDD + Modular Monolith + Clean Architecture |
 | **Python 版本** | >=3.11 |
 | **源码根路径** | `src` |

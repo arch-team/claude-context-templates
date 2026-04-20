@@ -696,8 +696,10 @@ main() {
     if [[ -z "$project_description" ]]; then
         if [[ "$lang" == "zh-CN" ]]; then
             warn "项目描述为空，建议后续在 CLAUDE.md 中补充"
+            project_description="<!-- TODO: 填写项目描述 -->"
         else
             warn "Project description is empty. Consider adding one later in CLAUDE.md"
+            project_description="<!-- TODO: Please fill in project description -->"
         fi
     fi
     echo ""
@@ -920,6 +922,16 @@ main() {
                 coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
 
                 # Replace placeholders in all generated .md files
+                # Monorepo 子项目：指向根 CLAUDE.md 的引用有意义，填充实际提示
+                local parent_ref_zhcn="> **注意**: 通用规范（响应语言、项目概述）请参考根目录 [../.claude/CLAUDE.md](../../.claude/CLAUDE.md)"
+                local parent_ref_en="> **Note**: For common standards (response language, project overview), refer to the root [../.claude/CLAUDE.md](../../.claude/CLAUDE.md)"
+                local parent_ref
+                if [[ "$lang" == "zh-CN" ]]; then
+                    parent_ref="$parent_ref_zhcn"
+                else
+                    parent_ref="$parent_ref_en"
+                fi
+
                 while IFS= read -r -d '' md_file; do
                     replace_placeholders "$md_file" \
                         "PROJECT_NAME=${project_name}" \
@@ -928,7 +940,8 @@ main() {
                         "SUBPROJECT_NAME=${sub_name}" \
                         "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
                         "COVERAGE_MIN=${coverage_min:-85}" \
-                        "DATE=$(date +%Y-%m-%d)"
+                        "DATE=$(date +%Y-%m-%d)" \
+                        "PARENT_CLAUDE_REF=${parent_ref}"
                 done < <(find "${sub_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
                 # Track generated files
@@ -957,6 +970,7 @@ main() {
             coverage_min=$(get_preset_default "$preset_id" "coverage_minimum")
 
             # Replace placeholders
+            # 单项目模式：无根 CLAUDE.md，父目录引用清空避免 404
             while IFS= read -r -d '' md_file; do
                 replace_placeholders "$md_file" \
                     "PROJECT_NAME=${project_name}" \
@@ -965,7 +979,8 @@ main() {
                     "SUBPROJECT_NAME=${project_slug}" \
                     "PACKAGE_MANAGER=${pkg_mgr:-uv}" \
                     "COVERAGE_MIN=${coverage_min:-85}" \
-                    "DATE=$(date +%Y-%m-%d)"
+                    "DATE=$(date +%Y-%m-%d)" \
+                    "PARENT_CLAUDE_REF="
             done < <(find "${target_dir}/.claude" -name "*.md" -print0 2>/dev/null)
 
             # Track generated files

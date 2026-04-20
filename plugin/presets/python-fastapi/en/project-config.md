@@ -12,8 +12,8 @@
 
 | Configuration | Value |
 |---------------|-------|
-| **Project Name** | {{PROJECT_SLUG}} |
-| **Project Description** | <!-- TODO: Please fill in --> |
+| **Project Name** | {{PROJECT_NAME}} |
+| **Project Description** | {{PROJECT_DESCRIPTION}} |
 | **Architecture Pattern** | DDD + Modular Monolith + Clean Architecture |
 | **Python Version** | >=3.11 |
 | **Source Root** | `src` |

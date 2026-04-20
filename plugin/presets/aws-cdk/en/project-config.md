@@ -12,8 +12,9 @@
 
 | Configuration | Value |
 |---------------|-------|
-| **Project name** | {{PROJECT_SLUG}}-infra |
-| **Project description** | <!-- TODO: Fill in project description --> |
+| **Project name** | {{PROJECT_NAME}} |
+| **Project description** | {{PROJECT_DESCRIPTION}} |
+| **Stack naming prefix** | {{PROJECT_SLUG}}-infra |
 | **Architecture pattern** | CDK Construct layering (L1 → L2 → L3) |
 | **Tech stack versions** | See [tech-stack.md](rules/tech-stack.md) |
 | **Source root path** | `lib` |

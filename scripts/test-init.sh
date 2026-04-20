@@ -133,6 +133,38 @@ assert_exit_code() {
     fi
 }
 
+# 验证: 文件包含期望字符串（用于验证模板变量替换结果）
+assert_file_contains() {
+    local filepath="$1"
+    local pattern="$2"
+    local label="${3:-$filepath contains $pattern}"
+    if [[ ! -f "$filepath" ]]; then
+        log_fail "文件不存在: $filepath"
+        return
+    fi
+    if grep -qF "$pattern" "$filepath"; then
+        log_pass "$label"
+    else
+        log_fail "$label"
+    fi
+}
+
+# 验证: 文件不包含指定字符串（用于检测 bug 回归）
+assert_file_not_contains() {
+    local filepath="$1"
+    local pattern="$2"
+    local label="${3:-$filepath NOT contains $pattern}"
+    if [[ ! -f "$filepath" ]]; then
+        log_fail "文件不存在: $filepath"
+        return
+    fi
+    if ! grep -qF "$pattern" "$filepath"; then
+        log_pass "$label"
+    else
+        log_fail "$label"
+    fi
+}
+
 # ============================================================================
 # 场景 1: 单项目 Python+FastAPI 中文
 # ============================================================================
@@ -184,6 +216,13 @@ test_single_python_zhcn() {
     assert_file_exists "${tmpdir}/.claude/rules/sdk-first.md" ".claude/rules/sdk-first.md (python-fastapi 专有)"
     assert_no_placeholders "$tmpdir"
     assert_md_file_count "$tmpdir"
+    # v1.3.1 回归防护：
+    # B2: 项目名称字段应使用 PROJECT_NAME（原文）而非 PROJECT_SLUG（lowercase）
+    assert_file_contains "${tmpdir}/.claude/project-config.md" "TestFastAPI" "project-config.md 包含原始项目名 TestFastAPI (B2 回归防护)"
+    # B3: 项目描述字段应被填充而非保留 TODO 占位符
+    assert_file_contains "${tmpdir}/.claude/project-config.md" "测试项目描述" "project-config.md 包含用户输入的项目描述 (B3 回归防护)"
+    # B4: 单项目模式下 CLAUDE.md 不应出现 ../.claude/ 错误引用
+    assert_file_not_contains "${tmpdir}/.claude/CLAUDE.md" "../.claude/CLAUDE.md" "单项目 CLAUDE.md 无错误的父目录引用 (B4 回归防护)"
 
     cleanup_temp_dir "$tmpdir"
     log_info "临时目录已清理"
@@ -267,6 +306,8 @@ test_monorepo_english() {
     assert_file_exists "${tmpdir}/backend/.claude/rules/api-design.md" "backend/.claude/rules/api-design.md (python-fastapi 专有)"
     assert_no_placeholders "$tmpdir" "backend/.claude"
     assert_md_file_count "$tmpdir" "backend/.claude"
+    # v1.3.1: Monorepo 子项目应保留父引用（指向根 .claude/）
+    assert_file_contains "${tmpdir}/backend/.claude/CLAUDE.md" "../.claude/CLAUDE.md" "Monorepo 子项目保留父目录引用"
 
     # 子项目 2: frontend (react-typescript)
     assert_claude_dir_exists "$tmpdir" "frontend/.claude"
