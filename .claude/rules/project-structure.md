@@ -83,11 +83,6 @@ claude-context-templates/            # 仓库根目录
 │   ├── validate-generated.sh        # 生成结果验证
 │   └── validate-presets.sh          # Preset 结构完整性验证
 ├── docs/                            # 项目文档
-│   ├── blog/                        # 社区文章
-│   │   ├── community-post-en.md
-│   │   ├── community-post-zh.md
-│   │   ├── launch-announcement-en.md
-│   │   └── launch-announcement-zh.md
 │   ├── customization-guide.md       # Preset 定制指南
 │   ├── customization-guide.zh-CN.md # Preset 定制指南（中文）
 │   ├── plugin-delivery-design.md    # Plugin 分发架构
