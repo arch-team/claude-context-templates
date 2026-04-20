@@ -150,7 +150,7 @@ test_single_python_zhcn() {
     # 3. 项目名称: "测试FastAPI项目"
     # 4. 项目标识符: 按回车接受默认值 (从项目名称自动生成)
     # 5. 项目描述: "一个用于测试的Python FastAPI项目"
-    # 6. 技术栈选择: 1 (Python + FastAPI)
+    # 6. 技术栈选择: 2 (Python + FastAPI，按字母序：1=aws-cdk, 2=python-fastapi, 3=react-typescript)
     # 7. 目标目录: tmpdir 的绝对路径
     # 8. 可选规范 (python-fastapi 有 4 个可选):
     #    - api-design: y
@@ -163,7 +163,7 @@ test_single_python_zhcn() {
     input+="TestFastAPI\n"              # 项目名称
     input+="\n"                         # 项目标识符: 接受默认
     input+="测试项目描述\n"               # 项目描述
-    input+="1\n"                        # 技术栈: Python + FastAPI
+    input+="2\n"                        # 技术栈: Python + FastAPI
     input+="${tmpdir}\n"                # 目标目录
     input+="y\n"                        # 确认生成
     input+="y\n"                        # 可选: api-design
@@ -179,6 +179,9 @@ test_single_python_zhcn() {
     assert_file_exists "${tmpdir}/.claude/CLAUDE.md" ".claude/CLAUDE.md"
     assert_file_exists "${tmpdir}/.claude/project-config.md" ".claude/project-config.md"
     assert_file_exists "${tmpdir}/.claude/rules/architecture.md" ".claude/rules/architecture.md"
+    # python-fastapi 专有文件断言（防止 preset 错位的假绿）
+    assert_file_exists "${tmpdir}/.claude/rules/api-design.md" ".claude/rules/api-design.md (python-fastapi 专有)"
+    assert_file_exists "${tmpdir}/.claude/rules/sdk-first.md" ".claude/rules/sdk-first.md (python-fastapi 专有)"
     assert_no_placeholders "$tmpdir"
     assert_md_file_count "$tmpdir"
 
@@ -205,11 +208,11 @@ test_monorepo_english() {
     # 5. 项目描述: "A test monorepo project"
     # 6. 子项目 1:
     #    - 名称: "backend"
-    #    - 技术栈: 1 (Python + FastAPI)
+    #    - 技术栈: 2 (Python + FastAPI，字母序：1=aws-cdk, 2=python-fastapi, 3=react-typescript)
     #    - 继续添加子项目? y
     # 7. 子项目 2:
     #    - 名称: "frontend"
-    #    - 技术栈: 2 (React + TypeScript)
+    #    - 技术栈: 3 (React + TypeScript)
     #    - 继续添加子项目? n (默认)
     # 8. 目标目录: tmpdir 的绝对路径
     # 9. 子项目 1 可选规范 (python-fastapi 有 4 个可选):
@@ -229,10 +232,10 @@ test_monorepo_english() {
     input+="\n"                         # 项目标识符: 接受默认
     input+="A test monorepo project\n"  # 项目描述
     input+="backend\n"                  # 子项目 1 名称
-    input+="1\n"                        # 子项目 1 技术栈: Python + FastAPI
+    input+="2\n"                        # 子项目 1 技术栈: Python + FastAPI
     input+="y\n"                        # 继续添加子项目? y
     input+="frontend\n"                 # 子项目 2 名称
-    input+="2\n"                        # 子项目 2 技术栈: React + TypeScript
+    input+="3\n"                        # 子项目 2 技术栈: React + TypeScript
     input+="\n"                         # 继续添加子项目? n (默认)
     input+="${tmpdir}\n"                # 目标目录
     input+="y\n"                        # 确认生成
@@ -258,15 +261,17 @@ test_monorepo_english() {
     assert_file_exists "${tmpdir}/.claude/rules/common.md" ".claude/rules/common.md (根级)"
     assert_no_placeholders "$tmpdir" ".claude"
 
-    # 子项目 1: backend
+    # 子项目 1: backend (python-fastapi)
     assert_claude_dir_exists "$tmpdir" "backend/.claude"
     assert_file_exists "${tmpdir}/backend/.claude/CLAUDE.md" "backend/.claude/CLAUDE.md"
+    assert_file_exists "${tmpdir}/backend/.claude/rules/api-design.md" "backend/.claude/rules/api-design.md (python-fastapi 专有)"
     assert_no_placeholders "$tmpdir" "backend/.claude"
     assert_md_file_count "$tmpdir" "backend/.claude"
 
-    # 子项目 2: frontend
+    # 子项目 2: frontend (react-typescript)
     assert_claude_dir_exists "$tmpdir" "frontend/.claude"
     assert_file_exists "${tmpdir}/frontend/.claude/CLAUDE.md" "frontend/.claude/CLAUDE.md"
+    assert_file_exists "${tmpdir}/frontend/.claude/rules/component-design.md" "frontend/.claude/rules/component-design.md (react-typescript 专有)"
     assert_no_placeholders "$tmpdir" "frontend/.claude"
     assert_md_file_count "$tmpdir" "frontend/.claude"
 
@@ -291,7 +296,7 @@ test_single_react_english() {
     # 3. 项目名称: "MyReactApp"
     # 4. 项目标识符: 按回车接受默认值
     # 5. 项目描述: "A React TypeScript application"
-    # 6. 技术栈选择: 2 (React + TypeScript)
+    # 6. 技术栈选择: 3 (React + TypeScript，字母序：1=aws-cdk, 2=python-fastapi, 3=react-typescript)
     # 7. 目标目录: tmpdir 的绝对路径
     # 8. 可选规范 (react-typescript 有 4 个可选):
     #    - component-design: y
@@ -304,7 +309,7 @@ test_single_react_english() {
     input+="MyReactApp\n"                       # 项目名称
     input+="\n"                                 # 项目标识符: 接受默认
     input+="A React TypeScript application\n"   # 项目描述
-    input+="2\n"                                # 技术栈: React + TypeScript
+    input+="3\n"                                # 技术栈: React + TypeScript
     input+="${tmpdir}\n"                         # 目标目录
     input+="y\n"                                # 确认生成
     input+="y\n"                                # 可选: component-design
@@ -321,6 +326,9 @@ test_single_react_english() {
     assert_file_exists "${tmpdir}/.claude/project-config.md" ".claude/project-config.md"
     assert_file_exists "${tmpdir}/.claude/rules/architecture.md" ".claude/rules/architecture.md"
     assert_file_exists "${tmpdir}/.claude/rules/testing.md" ".claude/rules/testing.md"
+    # react-typescript 专有文件断言（防止 preset 错位的假绿）
+    assert_file_exists "${tmpdir}/.claude/rules/component-design.md" ".claude/rules/component-design.md (react-typescript 专有)"
+    assert_file_exists "${tmpdir}/.claude/rules/accessibility.md" ".claude/rules/accessibility.md (react-typescript 专有)"
     assert_no_placeholders "$tmpdir"
     assert_md_file_count "$tmpdir"
 
@@ -345,7 +353,7 @@ test_single_awscdk_zhcn() {
     # 3. 项目名称: "TestCDK"
     # 4. 项目标识符: 按回车接受默认值
     # 5. 项目描述: "AWS CDK 测试项目"
-    # 6. 技术栈选择: 3 (AWS CDK)
+    # 6. 技术栈选择: 1 (AWS CDK，字母序：1=aws-cdk, 2=python-fastapi, 3=react-typescript)
     # 7. 目标目录: tmpdir 的绝对路径
     # 8. 可选规范 (aws-cdk 有 3 个可选):
     #    - construct-design: y
@@ -357,7 +365,7 @@ test_single_awscdk_zhcn() {
     input+="TestCDK\n"                  # 项目名称
     input+="\n"                         # 项目标识符: 接受默认
     input+="AWS CDK 测试项目\n"          # 项目描述
-    input+="3\n"                        # 技术栈: AWS CDK
+    input+="1\n"                        # 技术栈: AWS CDK
     input+="${tmpdir}\n"                # 目标目录
     input+="y\n"                        # 确认生成
     input+="y\n"                        # 可选: construct-design
