@@ -6,26 +6,33 @@
 
 ## 1. 愿景 (Vision)
 
-**让每个 Claude Code 用户都能在几分钟内获得经过生产验证的上下文管理体系。**
+**成为 AI Coding 工具上下文规范协作治理的事实标准——从项目起点持续守护到生命周期终点。**
 
-正如 `.editorconfig` 标准化了编辑器配置、ESLint shared configs 标准化了代码风格，
-claude-context-templates 的目标是提供**最佳起点**，
-让"从零搭建 `.claude/` 目录"成为例外而非常态，从而显著提升 AI 辅助开发的效果。
+claude-context-templates 不仅是 Claude Code 的"模板起点"，更是**持续上下文守护者 (Continuous Context Guardian)**：在项目的每一次会话、每一次迭代、每一次结构变更中，保持 AI 行为与团队约定的对齐。
+
+类比：
+- `.editorconfig` / ESLint 解决了**代码层**的规范协作
+- claude-context-templates 解决**上下文层**的规范协作——从 init 时的"结构铺设"，延伸到日常开发中的"漂移检测"、版本演进中的"升级路径"、团队协作中的"质量门禁"
 
 ---
 
 ## 2. 使命 (Mission)
 
-**降低 Claude Code 上下文管理的门槛，让高质量的 AI 辅助开发体验对每个项目可及。**
+**为 AI 辅助开发的全生命周期提供行为护栏，让"AI 按项目约定工作"从偶然变为必然。**
 
 我们通过以下方式实现：
-- 提供**生产级模板**，而非示例代码
-- 沉淀**社区最佳实践**，而非个人偏好
-- 构建**可扩展的 preset 生态**，而非单一方案
+- **起点守护**：提供生产级 preset，让项目从第一天就有高质量上下文结构
+- **过程守护**：通过审计、漂移检测、会话提醒，在日常开发中持续对齐
+- **演进守护**：通过增量更新机制，让项目在 preset 迭代中保留自定义、获取改进
+- **生态守护**：沉淀社区最佳实践，构建可扩展的 preset 与规范治理生态
 
 ---
 
 ## 3. 核心问题 (Problem Statement)
+
+> **问题演进**：v1.x 聚焦"起点问题"（没有好的模板），v2.x 起扩展到"生命周期问题"（起点之后没有守护）。
+
+### 3.1 起点问题（v1.x 已部分解决）
 
 | 问题 | 影响 |
 |------|------|
@@ -34,19 +41,32 @@ claude-context-templates 的目标是提供**最佳起点**，
 | 不同技术栈需要不同的规范，但共性模式未被抽取 | 重复劳动，无法复用 |
 | 上下文管理的知识分散在个人经验中 | 团队间无法共享和协作 |
 
+### 3.2 生命周期问题（v2.x+ 新增战略重点）
+
+| 问题 | 影响 |
+|------|------|
+| init 后 `.claude/` 与项目实际演进脱节（结构漂移） | AI 按过时约定工作，规则形同虚设 |
+| Preset 迭代改进无法下发到已存量用户 | 用户装完即走，无长期价值捕获 |
+| 团队协作中 `.claude/` 质量退化（规则冲突、SSoT 被破坏）无感知 | 规范腐化速度超过维护速度 |
+| 缺乏 AI 行为与项目约定对齐的质量门禁 | 约定成摆设，违规无提示 |
+
 ---
 
 ## 4. 价值主张 (Value Proposition)
 
 ```
 对于：使用 Claude Code 进行 AI 辅助开发的开发者和团队
-痛点：搭建高质量的 .claude/ 上下文管理体系耗时且缺乏参考
-我们提供：经过生产验证的模板系统 + 交互式生成工具
+痛点：AI 辅助开发的上下文约定在起点、过程、演进中都缺乏守护手段
+我们提供：项目全生命周期的 AI 行为护栏工具链
+  = 生产级 Preset（起点）
+  + 审计/漂移检测（过程）
+  + 增量更新机制（演进）
+  + 质量门禁组件（协作）
 与众不同之处：
-  1. 基于真实 Monorepo 项目提炼，非理论模板
-  2. 6 大设计原则（SSoT、双向链接、Section 0 模式等）确保结构化和可维护
-  3. 多技术栈 preset 生态，通过 init.sh 一键适配
-  4. 中英双语支持
+  1. 唯一覆盖"起点 → 过程 → 演进"全生命周期的上下文治理方案
+  2. 基于真实 Monorepo 项目提炼的 6 大设计原则（SSoT、双向链接、Section 0 等）
+  3. 多技术栈 preset 生态，通过 Plugin/init.sh 双通道分发
+  4. 中英双语 + 可组合的护栏层级（建议/引导/强制）
 ```
 
 ---
@@ -62,15 +82,19 @@ claude-context-templates 的目标是提供**最佳起点**，
 
 > 其他潜在用户（开源项目维护者、企业 DevOps）留待有真实需求证据时再扩展。
 
-### 5.2 用户旅程（简化三步）
+### 5.2 用户旅程（全生命周期五步）
 
 ```
-发现 → 初始化 → 定制
- │        │        │
- │        │        └─ 修改模板适配项目/团队约定，日常开发中受益
- │        └─ 运行 init.sh 生成 .claude/ 目录
+发现 → 初始化 → 定制 → 守护 → 演进
+ │        │        │       │       │
+ │        │        │       │       └─ preset 更新时增量合并，保留自定义、获取改进
+ │        │        │       └─ 日常会话中 SessionStart 提示 + /audit-context 审计漂移
+ │        │        └─ 修改模板适配项目/团队约定
+ │        └─ 运行 init.sh 或 /init-context 生成 .claude/ 目录
  └─ 通过 GitHub 搜索 / 社区推荐 / 博客文章发现项目
 ```
+
+> **注**：v1.x 只覆盖"发现 → 定制"三步，v2.x 起扩展"守护"和"演进"两步，形成完整生命周期闭环。
 
 ---
 
@@ -111,16 +135,24 @@ claude-context-templates 的目标是提供**最佳起点**，
 | KR3: 成功发布到 GitHub 并启用 Template Repository | 发布完成 | ✅ 已完成 |
 | KR4: 发布公告并获得首批外部反馈 | ≥ 5 条外部反馈 | ✅ 已完成 |
 
-### 7.2 中期目标（v2.0 — 扩展生态）
+### 7.2 中期目标（v2.0 — 从"一次性生成器"升级为"生命周期护栏"）
 
-**目标**：建立 preset 增量更新和社区生态，扩展覆盖范围。
+**战略重定位**：v2.0 是本项目的战略分水岭——从"init 时的模板工具"升级为"项目全生命周期的 AI 行为护栏"。围绕三大支柱推进：
+
+| 支柱 | 关键问题 | 核心能力 |
+|------|---------|---------|
+| **A. 漂移检测** | init 后结构与约定腐化 | 强化 `/audit-context` → 漂移检测、SessionStart 提示 |
+| **B. 升级路径** | Preset 迭代无法下发 | Preset 增量更新机制（详见 BR-003） |
+| **C. 质量门禁** | 违规约定无感知、无阻断 | hooks 模板（建议/引导/强制三档，默认 opt-in） |
 
 | 关键结果 | 指标 |
 |----------|------|
-| KR1: Preset 增量更新机制上线（M2.1） | update 命令可用且通过 CI 验证 |
-| KR2: Preset 数量达到 5+（新增 Go 和 Next.js/Vue） | ≥ 5 个 presets |
-| KR3: 社区贡献通道就绪（贡献指南 + PR 模板 + 验证流程） | 首个社区 preset PR |
-| KR4: Preset 组合/继承机制实现 | _common 共享 + rule 级别继承 |
+| KR1: 支柱 A — `/audit-context` 扩展为漂移检测，至少识别 3 类漂移模式 | 3 类漂移检测规则 + CI 验证 |
+| KR2: 支柱 B — Preset 增量更新机制上线（BR-003） | update 命令可用且通过 CI 验证 |
+| KR3: 支柱 C — 质量门禁 Hook 模板发布（opt-in） | 至少 2 个 hook 模板（pre-commit / SessionStart） |
+| KR4: Preset 数量达到 5+（新增 Go 和 Next.js/Vue） | ≥ 5 个 presets |
+| KR5: 社区贡献通道就绪（贡献指南 + PR 模板 + 验证流程） | 首个社区 preset PR |
+| KR6: Preset 组合/继承机制实现 | _common 共享 + rule 级别继承 |
 
 ### 7.3 长期方向（v3.0+ — 探索性）
 
@@ -189,17 +221,20 @@ claude-context-templates 的目标是提供**最佳起点**，
 ### 9.2 护城河策略
 
 ```
-短期：模板质量 + 先发优势 + 双语支持 + Plugin 原生集成
+短期（v1.x）：模板质量 + 先发优势 + 双语支持 + Plugin 原生集成
   → 唯一通过 Plugin 直接在 Claude Code 内交付的模板工具
   → 唯一提供 zh-CN/en 双语的 Claude Code 模板项目
 
-中期：可组合 preset 架构 + 增量更新 + 社区贡献
-  → Preset 更新机制（借鉴 Copier）建立用户长期关系
+中期（v2.x）：从"一次性生成器"升级为"持续上下文守护者"
+  → 漂移检测（支柱 A）：init 后持续对齐,竞品的"一次性模板"无法复制此能力
+  → 增量更新（支柱 B）:Preset 更新机制(借鉴 Copier)建立用户长期关系
+  → 质量门禁(支柱 C):opt-in 的 hook 层,形成团队级标准协作
   → 社区 preset 贡献形成网络效应
 
 长期：承认不确定性
-  → 如果 Anthropic 原生实现类似功能，项目可能转为社区扩展层
-  → 保持架构灵活性，以便快速适配官方变更
+  → 如果 Anthropic 原生实现类似功能,项目可能转为社区扩展层
+  → 保持架构灵活性,以便快速适配官方变更
+  → 持续上下文守护的能力边界可能延伸到 Cursor/AGENTS.md 等其他 AI Coding 工具
 ```
 
 ---
@@ -244,21 +279,42 @@ claude-context-templates 的目标是提供**最佳起点**，
 | M1.5.5 | /audit-context 命令（.claude/ 目录质量审计） | ✅ 完成 |
 | M1.5.4 | 端到端外部用户安装测试 | 进行中 |
 
-### Phase 2: Ecosystem（生态）— v2.0
+### Phase 2: Lifecycle Guardian（生命周期护栏）— v2.0
 
-**主题**：扩展 preset 覆盖，建立增量更新和社区生态
+**主题**：从"一次性生成器"升级为"持续上下文守护者"——围绕三大支柱（漂移检测 / 升级路径 / 质量门禁）建立生命周期治理能力，同时扩展 preset 生态。
 
-> 以下功能候选基于 2026-03-16 GitHub 竞品调研（详见 `.devpace/research/github-competitor-analysis-2026-03-16.md`），按优先级排序。
+> 以下里程碑按三支柱分组。基础能力建设（支柱 A/B/C）优先级高于生态扩展（M2.E.x）。
+
+#### 支柱 A：漂移检测（Drift Detection）
+
+| 里程碑 | 内容 | 优先级 |
+|--------|------|--------|
+| M2.A.1 | **`/audit-context` 漂移检测升级** — 识别至少 3 类漂移：SSoT 被破坏、双向链接失效、Section 0 速查卡片与实际内容脱节 | 高 |
+| M2.A.2 | **SessionStart Hook 模板** — Plugin 可选注入到生成的 `.claude/settings.json`,会话启动时 <1s 内完成结构完整性提示（建议层,默认开启） | 中 |
+
+#### 支柱 B：升级路径（Evolution Path）
 
 | 里程碑 | 内容 | 优先级 | 灵感来源 |
 |--------|------|--------|---------|
-| M2.1 | **Preset 增量更新机制** — 生成 `.claude/` 后可同步 preset 更新，保留用户自定义。生成时记录 `.claude/.preset-meta.yml`（preset 名称、版本、变量值），`update` 命令对比差异合并 | 高 | Copier (`copier update`)、答案文件持久化 |
-| M2.2 | **社区 Preset 生态** — 建立 preset 贡献流程和质量标准，鼓励社区创建技术栈 preset；维护 Awesome List 扩大传播 | 高 | Cookiecutter (4000+ 社区模板)、awesome-claude-skills (44K Stars) |
-| M2.3 | Preset 组合机制（rule 级别继承，_common 共享） | 高 | 原有规划 |
-| M2.4 | 新增 2+ preset（Go + Next.js/Vue，总计 ≥ 5 个） | 高 | 原有规划 |
-| M2.5 | **GitHub Actions 集成模板** — 为每个 preset 提供可选的 CI 工作流（PR Claude Code 审查、文档同步检查、代码质量审计） | 中 | ChrisWiles/claude-code-showcase |
-| M2.6 | **安全加固 Preset 组件** — 可选安全层：settings.json 安全默认值、Read/Edit deny rules、防敏感文件泄露 Hook、JSON 评估器 Hook | 中 | trailofbits/claude-code-config |
-| M2.7 | **交互式 Preset 配置向导** — 升级 init.sh 为交互式向导，支持 preset 选择 → 变量填写 → 可选组件组合（Hooks/GitHub Actions/安全加固） | 中低 | Cookiecutter/Copier 交互问卷 |
+| M2.B.1 | **Preset 增量更新机制** — 详见 BR-003。生成 `.claude/` 时记录 `.preset-meta.yml`,`/update-context` 命令执行三向合并 | 高 | Copier (`copier update`) |
+| M2.B.2 | **跨大版本迁移脚本框架** — Preset 结构破坏性变更时提供迁移脚本模板 | 中 | — |
+
+#### 支柱 C:质量门禁(Quality Gates)
+
+| 里程碑 | 内容 | 优先级 | 灵感来源 |
+|--------|------|--------|---------|
+| M2.C.1 | **Hook 模板库(opt-in)** — pre-commit / pre-push hook 模板,检查 CLAUDE.md 与项目约定一致性 | 中 | trailofbits/claude-code-config |
+| M2.C.2 | **安全加固 Preset 组件** — 可选安全层:settings.json 安全默认值、Read/Edit deny rules、防敏感文件泄露 Hook | 中 | trailofbits/claude-code-config |
+| M2.C.3 | **GitHub Actions 集成模板** — 为每个 preset 提供可选 CI(PR Claude Code 审查、文档同步检查、代码质量审计) | 中 | ChrisWiles/claude-code-showcase |
+
+#### 生态扩展(E - Ecosystem)
+
+| 里程碑 | 内容 | 优先级 |
+|--------|------|--------|
+| M2.E.1 | 新增 2+ preset(Go + Next.js/Vue,总计 ≥ 5 个) | 高 |
+| M2.E.2 | Preset 组合机制(rule 级别继承,_common 共享) | 高 |
+| M2.E.3 | **社区 Preset 生态** — 建立贡献流程和质量标准;维护 Awesome List 扩大传播 | 高 |
+| M2.E.4 | **交互式 Preset 配置向导** — 升级 init.sh 为交互式向导,支持 preset 选择 → 变量填写 → 可选组件组合 | 中低 |
 
 ### Phase 3+: 未来可能方向（探索性）
 
@@ -368,7 +424,7 @@ PATCH: Bug 修复、文案改进、小优化
 | v1.0 | Phase 1 | 首次稳定发布（init.sh + preset 模板） |
 | v1.1 | Phase 1.5 | Claude Code Plugin 交付方式 |
 | v1.x | Phase 1 | 修复和小改进 |
-| v2.0 | Phase 2 | Preset 增量更新 + 社区生态 + 新 presets + 组合机制 |
+| v2.0 | Phase 2 | 生命周期护栏三支柱（漂移检测 / 升级路径 / 质量门禁）+ 新 presets + 组合机制 + 社区生态 |
 | v3.0+ | Phase 3+ | 跨工具兼容 + 模板浏览站 + 视社区反馈决定 |
 
 ---

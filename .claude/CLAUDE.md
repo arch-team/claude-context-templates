@@ -49,9 +49,11 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## 项目概述
 
-Claude Context Templates — 为 Claude Code 提供结构化、可复用的上下文管理模板。通过 Claude Code Plugin 分发预设模板，为项目快速生成 `.claude/` 目录。
+Claude Context Templates — **AI Coding 工具上下文规范协作治理**的持续守护者。从项目 init 时的结构铺设，延伸到日常开发中的漂移检测、版本演进中的升级路径、团队协作中的质量门禁，为 AI 辅助开发的全生命周期提供行为护栏。
 
-- **核心产出**: Plugin（预设模板 presets + 命令 commands + Skill）
+- **战略定位**: 项目全生命周期的 AI 行为护栏（详见 `docs/project-strategy.md` §1-§2）
+- **三支柱能力**（v2.x 演进方向）: 漂移检测（支柱 A） / 升级路径（支柱 B，BR-003） / 质量门禁（支柱 C）
+- **核心产出**: Plugin（预设模板 presets + 命令 commands + Skill + 可选 Hooks）
 - **支持模式**: Monorepo 多子项目 | 单项目 | 双语 (zh-CN / en)
 
 ---
