@@ -23,12 +23,6 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ---
 
-## 响应语言
-
-**所有对话和文档必须使用中文。** 详细语言规则见 `rules/common.md` §0。
-
----
-
 ## 分层架构
 
 本项目分为**开发层**（`.claude/`、`docs/`、`scripts/`、`examples/`）和**产品层**（`plugin/`）。产品层不得依赖开发层，必须独立可分发。
