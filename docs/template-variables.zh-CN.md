@@ -78,11 +78,102 @@ my-awesome-app/                  # Monorepo 根目录
 
 ## 变量语法
 
-变量使用双花括号：`{{VARIABLE_NAME}}`
+### 标准变量：`{{VARIABLE_NAME}}`
+
+标准变量使用双花括号，变量名采用 UPPER_SNAKE_CASE 格式。
 
 - 变量名采用 UPPER_SNAKE_CASE 格式
-- 变量在初始化时由 `sed` 替换
+- 变量在初始化时由 `sed`（init.sh）或 AI（init-context 命令）替换
 - 未替换的变量保持原样输出（便于手动定制）
+
+### AI 生成占位符：`{{AI_GENERATED:xxx}}`
+
+> **仅用于 generic preset 模板**。内置 preset（python-fastapi 等）不使用此占位符。
+
+AI 生成占位符标记需由 `/init-context` 命令的 AI 引擎根据项目分析结果动态生成的内容区域。
+
+**CLAUDE.md**（6 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:tech_stack_summary}}` | 基于检测依赖的技术栈概览 |
+| `{{AI_GENERATED:dev_commands}}` | 开发命令（lint、test、run） |
+| `{{AI_GENERATED:core_principles}}` | 对应技术栈的核心开发原则 |
+| `{{AI_GENERATED:coverage_table}}` | 按架构层级的覆盖率要求表 |
+| `{{AI_GENERATED:pre_commit_one_liner}}` | 单行预提交命令（lint + typecheck + test） |
+| `{{AI_GENERATED:gotchas}}` | 常见坑和注意事项 |
+
+**rules/architecture.md**（5 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:architecture_pattern}}` | 架构模式描述 |
+| `{{AI_GENERATED:layer_structure}}` | 各层职责表 |
+| `{{AI_GENERATED:dependency_direction}}` | 依赖方向 ASCII 图 |
+| `{{AI_GENERATED:module_principles}}` | 模块设计原则表 |
+| `{{AI_GENERATED:communication_pattern}}` | 模块间通信模式 |
+
+**rules/tech-stack.md**（4 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:version_matrix}}` | 版本矩阵表 |
+| `{{AI_GENERATED:key_constraints}}` | 关键技术约束 |
+| `{{AI_GENERATED:version_check_commands}}` | 版本快速校验命令 |
+| `{{AI_GENERATED:toolchain_config}}` | 工具链配置表 |
+
+**rules/code-style.md**（5 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:code_style_quick_ref}}` | 代码风格速查卡片 |
+| `{{AI_GENERATED:naming_conventions}}` | 命名规范 |
+| `{{AI_GENERATED:import_rules}}` | Import 排序规则 |
+| `{{AI_GENERATED:type_annotations}}` | 类型标注要求 |
+| `{{AI_GENERATED:do_dont_examples}}` | DO / DON'T 代码示例 |
+
+**rules/testing.md**（3 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:test_layering}}` | 测试分层表 |
+| `{{AI_GENERATED:coverage_requirements}}` | 覆盖率要求 |
+| `{{AI_GENERATED:test_commands}}` | 测试命令速查 |
+
+**rules/security.md**（3 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:security_quick_ref}}` | 安全速查卡片 |
+| `{{AI_GENERATED:security_scanning}}` | 安全扫描命令 |
+| `{{AI_GENERATED:auth_guidelines}}` | 认证/鉴权规范 |
+
+**rules/checklist.md**（6 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:checklist_architecture}}` | 架构检查项 |
+| `{{AI_GENERATED:checklist_code_style}}` | 代码风格检查项 |
+| `{{AI_GENERATED:checklist_security_extra}}` | 附加安全检查项 |
+| `{{AI_GENERATED:checklist_testing_extra}}` | 附加测试检查项 |
+| `{{AI_GENERATED:checklist_structure_extra}}` | 附加项目结构检查项 |
+| `{{AI_GENERATED:pre_commit_command}}` | 完整预提交校验命令 |
+
+**rules/project-structure.md**（4 个占位符）：
+
+| 占位符 | 说明 |
+|--------|------|
+| `{{AI_GENERATED:directory_tree}}` | 项目目录树 |
+| `{{AI_GENERATED:config_files}}` | 配置文件速查表 |
+| `{{AI_GENERATED:naming_rules}}` | 文件命名规范 |
+| `{{AI_GENERATED:new_module_template}}` | 新模块模板 |
+
+**合计：9 个文件中共 36 个独立占位符。**
+
+**行为**：
+- `/init-context` 走 generic 路径时，AI 读取 `context-schema.yaml` 的生成提示，为每个占位符生成对应技术栈的内容
+- 使用 `context-schema.yaml` 中的质量标准对生成内容进行自检
+- 生成内容遵循内置 preset 的同等格式风格（表格、代码块、Section 0 速查卡片）
 
 ## 添加自定义变量
 
