@@ -1032,11 +1032,19 @@ main() {
         echo -e "    1. 编辑 ${CYAN}project-config.md${RESET} 填写项目特定信息"
         echo -e "    2. 检查生成的规范文件，按需自定义"
         echo -e "    3. 使用 Claude Code 开始开发！"
+        echo ""
+        echo -e "  ${DIM}👋 如果这对你有用，请提交使用报告（1 分钟填写）：${RESET}"
+        echo -e "     ${CYAN}https://github.com/arch-team/claude-context-templates/issues/new?template=usage-report.yml${RESET}"
+        echo -e "  ${DIM}   真实使用反馈是项目继续的唯一依据。${RESET}"
     else
         echo -e "${BOLD}  Next steps:${RESET}"
         echo -e "    1. Edit ${CYAN}project-config.md${RESET} to fill in project-specific information"
         echo -e "    2. Review generated rules and customize as needed"
         echo -e "    3. Start using Claude Code with your new context!"
+        echo ""
+        echo -e "  ${DIM}👋 If this helped you, please share a quick usage report (1 minute):${RESET}"
+        echo -e "     ${CYAN}https://github.com/arch-team/claude-context-templates/issues/new?template=usage-report.yml${RESET}"
+        echo -e "  ${DIM}   Real usage feedback is the only signal that keeps this project alive.${RESET}"
     fi
     echo ""
 }

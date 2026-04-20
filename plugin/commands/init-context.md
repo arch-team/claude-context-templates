@@ -499,6 +499,13 @@ analysis_result = {
    3. 运行 /audit-context 获取详细质量报告
    ```
 
+4. **使用反馈邀请**（所有路径均输出）：
+   ```
+   👋 如果这对你有用，请提交使用报告（1 分钟填写）：
+      https://github.com/arch-team/claude-context-templates/issues/new?template=usage-report.yml
+      真实使用反馈是项目继续的唯一依据。
+   ```
+
 ## 重要约束
 
 1. **不修改项目已有文件** — 只在 `.claude/` 目录（和 Monorepo 子项目的 `.claude/`）下操作
