@@ -1,0 +1,68 @@
+# Changelog
+
+本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+
+## [1.3.0] - 2026-04-20
+
+### 清理与规范收尾版
+
+本版本聚焦自 v1.0.0 以来累积变更的正式发布，重点是代码清理、规范体系完善和项目状态归档。
+
+### Added
+
+- 新增 `CHANGELOG.md`，正式建立版本变更追踪
+- 新增 Skills 开发进阶指导手册（`docs/skills-development-guide.md`）
+- `.claude/rules/` 新增分层架构规范（产品层 / 开发层分离）
+- `.claude/references/` 新增设计原则与 IA 原则参考文档
+- 新增 `generic` preset，提供无特定技术栈的通用模板
+
+### Changed
+
+- **Plugin Skill 双 ID 重构**：`context-setup` skill 的触发和内容结构优化（见 v1.2 内部迭代）
+- `init-context` / `audit-context` 命令增强，支持 `generic` preset 和 `context-schema.yaml`
+- Preset 统一存储至 `plugin/presets/`，引入轻量版本感知机制
+- Preset 模板格式统一，新增 `_common` 跨 preset 工程原则
+- 规范体系精简：消除跨文件重复，强化 SSoT 合规
+- 融合 devpace 成熟设计实践到项目规范
+
+### Fixed
+
+- 对齐 `plugin.json` 与 `manifest.json` 版本号
+- 修复 `context-setup` skill 的 scenario 编号和缺失引用
+- 工程质量审计修复（H1-H6, M1-M5, L1-L5 共 16 项问题）
+
+### Housekeeping
+
+- 归档项目初始需求草稿至 `.devpace/requirements/archive/initial-drafts.md`
+- `.devpace/state.md` 版本信息与实际产物同步
+- `.gitignore` 增加 skill eval workspace 目录
+
+### 版本号说明
+
+**v1.1.0 / v1.2.0 未作为正式 release 发布**：这两个版本号在演进过程中先出现在 `manifest.json`，后由 commit `3a27d29` 同步到 `plugin.json`，属于内部版本号对齐操作，未打 git tag、未对外发布。v1.3.0 是 v1.0.0 之后的首次正式 release，累计包含上述所有变更。
+
+---
+
+## [1.0.0] - 2026-03（首发）
+
+### 🎉 首次公开发布
+
+**MVP 范围**：
+- 3 个核心 preset：`python-fastapi`、`react-typescript`、`aws-cdk`
+- 双语支持：zh-CN / en 完整覆盖
+- `init.sh` 交互式生成工具（macOS / Linux）
+- 完整示例项目：`examples/monorepo-taskmanager`、`examples/single-project-python`
+- GitHub Template Repository 配置
+- CI 体系：preset 结构验证 + init.sh 烟雾测试（macOS + Ubuntu 矩阵）
+- 6 大设计原则：SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case
+
+### Added
+
+- Claude Code Plugin 交付方式（`/init-context` 命令、`context-setup` Skill）
+- `/audit-context` 命令：`.claude/` 目录质量审计（ABCD 五维评级）
+- marketplace.json 分发配置
+
+---
+
+[1.3.0]: https://github.com/your-org/claude-context-templates/releases/tag/v1.3.0
+[1.0.0]: https://github.com/your-org/claude-context-templates/releases/tag/v1.0.0

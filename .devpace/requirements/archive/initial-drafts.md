@@ -1,3 +1,11 @@
+# 初始需求草稿归档
+
+> 归档于 2026-04-20。这些是项目启动阶段与 Claude 对话时的原始需求陈述，
+> 已被 `.claude/rules/` 和 `docs/customization-guide.md` 完整取代。
+> 保留作为需求演进的历史参考。
+
+---
+
 当前的claude-code-dev-guide 项目定义Claude Code 组件包括 plugin、hooks、skills、mcp、subagent的一些规范，分散在当前目录下。
 这些规范有些是适用于Claude Code 组件所有组件的通用原则、有些是适用具体某个Claude Code 组件的规范。需要按照如下格式进行组织。
 ┌─────────────────────────────────────────┐    
@@ -160,3 +168,14 @@ value-map
 
   ---
   请选择你想深入探索的方向（可多选），或者提出你自己的想法。我会根据你的回答生成候选的 BR→PF 实体。
+
+    1. /pace-biz refine BR-002 - 精炼预设模板库（核心产品能力）
+  2. /pace-biz refine BR-001 - 精炼上下文初始化能力（用户入口）
+  3. /pace-biz refine BR-005 - 精炼质量保障工具（质量关键路径）
+
+如下是devpace这个项目的Claude Code 的上下文规范文件。
+  /Users/jinhuasu/Project_Workspace/Anker-Projects/ml-platform-research/llm-platform-solution/claude-code-forge/devpace/.claude
+devpace跟当前项目（claude-context-templates）具有一定的相似性，以devpace这个项目的Claude Code 的上下文规范文件为参考。
+分析看devpace这个项目的Claude Code有哪些可以内容、优秀规范、设计可以融入到claude-context-template的Claude code上下文规范中：/Users/jinhuasu/Project_Workspace/AI-Forge-Workspace/claude-context-templates/.claude
+
+深度思考与分析

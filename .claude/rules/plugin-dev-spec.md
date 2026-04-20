@@ -48,13 +48,14 @@ Agent / Hook / MCP 规格 + plugin.json 可选字段 + Skill 质量验证法 + p
 
 ### 版本同步
 
-以下三处版本号必须保持同步，修改版本时需同时更新：
+以下四处版本号必须保持同步，修改版本时需同时更新（`scripts/validate-presets.sh` 会自动校验）：
 
-| 文件 | 版本字段 |
-|------|---------|
-| `plugin/.claude-plugin/plugin.json` | `version` |
-| `plugin/.claude-plugin/marketplace.json` | `plugins[0].version` |
-| `plugin/presets/manifest.json` | `plugin_version` |
+| 文件 | 版本字段 | 用途 |
+|------|---------|------|
+| `plugin/.claude-plugin/plugin.json` | `version` | Plugin manifest 主版本 |
+| `plugin/.claude-plugin/marketplace.json` | `plugins[0].version` | Plugin 包内 marketplace |
+| `plugin/presets/manifest.json` | `plugin_version` | Preset 版本清单（由 `scripts/generate-manifest.sh` 生成） |
+| `.claude-plugin/marketplace.json` | `plugins[0].version` | 仓库根 marketplace（本地开发分发入口） |
 
 ### 分发架构
 
