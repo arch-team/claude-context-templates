@@ -4,16 +4,19 @@
 
 ## 版本信息
 
-- **当前版本**: v1.2.0（plugin.json / manifest.json / marketplace.json 三处已同步）
-- **最近发布 tag**: v1.0.0（v1.1 / v1.2 为内部版本号演进，未作为正式 release）
-- **下个版本**: v1.3.0（清理 + 规范收尾版，准备中）
+- **当前版本**: v1.3.0（已发布，四处版本号已同步）
+- **最近发布 tag**: v1.3.0（2026-04-20，https://github.com/arch-team/claude-context-templates/releases/tag/v1.3.0）
+- **下个版本**: v1.4.0（规划中，候选主题：BR-003 Preset 增量更新机制）
 
 ## 当前工作
 
-- **进行中**：feat/preset-optimization 分支（v1.3 清理：归档 prompt.md、补 CHANGELOG、同步 state.md）
-- **待 Review**：（无）
+- **进行中**：（v1.3 已完成，v1.4 待启动）
+- **待 Review**：BR-003.md（Preset 增量更新机制 — Phase 2 首要里程碑）
 - **阻塞**：（无）
-- **最近完成**：归档项目初始需求草稿至 `.devpace/requirements/archive/initial-drafts.md`
+- **最近完成**：
+  - v1.3.0 发布（清理 + 规范收尾 + 测试回归修复 + 使用反馈入口）
+  - 修复历史测试回归：test-init.sh preset 编号错位（commit 0e8bd2c）
+  - 新增使用报告邀请入口（commit eedb0bc）
 
 ## 下一步
 
