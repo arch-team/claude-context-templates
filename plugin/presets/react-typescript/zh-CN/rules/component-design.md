@@ -1,4 +1,6 @@
 > **职责**: 组件设计规范 - 组件类型、Props 设计、复合组件模式
+>
+> **相关规范**: [architecture.md](architecture.md) (FSD 层级定义) | [state-management.md](state-management.md) (组件状态选型)
 
 # 组件设计规范 (Component Design Standards)
 

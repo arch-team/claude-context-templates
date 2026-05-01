@@ -1,4 +1,6 @@
 > **Purpose**: State management standards - React Query (server), Zustand (client), form state
+>
+> **Related**: [architecture.md](architecture.md) (FSD layers & data flow) | [component-design.md](component-design.md) (component state selection)
 
 # State Management Standards
 

@@ -180,3 +180,4 @@ describe('CDK Nag Compliance', () => {
 
 - [project-structure.md](project-structure.md) - Test file locations
 - [construct-design.md](construct-design.md) - Construct design patterns
+- [tech-stack.md](tech-stack.md) - Test framework version constraints

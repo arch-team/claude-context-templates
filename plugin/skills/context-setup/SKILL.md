@@ -1,14 +1,14 @@
 ---
 name: Claude Context Setup
 description: >
-  Activate when: the project has no .claude/ directory, the existing .claude/ seems
-  incomplete or low-quality, or the user expresses that Claude Code "doesn't understand"
-  their project, produces incorrect suggestions, or asks about context setup,
-  CLAUDE.md, project rules, coding standards for AI, or how to make Claude work better.
+  Use when user wants to: set up Claude Code context for their project, initialize
+  .claude/ directory, create CLAUDE.md or project rules, improve Claude's understanding
+  of project architecture, or expresses that Claude repeatedly produces incorrect code
+  across multiple files.
 
-  Also activate for Chinese-speaking users who mention: 初始化上下文, 配置 Claude,
-  Claude 不理解项目, 提升 AI 代码质量, 项目规范, 上下文管理, CLAUDE.md 配置,
-  让 Claude 更懂我的项目, Claude 老是写错代码.
+  Also activate for Chinese-speaking users who mention: 初始化 Claude 上下文, 创建 .claude 目录,
+  生成 CLAUDE.md, 配置 Claude 项目规范, Claude 持续不理解项目架构, 提升 AI 代码生成质量,
+  上下文管理, 让 Claude 更懂项目, Claude 总是写错代码需要重复修改.
 ---
 
 # Claude Context Setup
@@ -21,7 +21,10 @@ When activated, follow this decision flow:
 2. Check for project type indicators: `package.json`, `pyproject.toml`, `setup.py`, `cdk.json`, `go.mod`, `Cargo.toml`, `pom.xml`, etc.
 3. Route to the appropriate path:
    - **No `.claude/`** → Path A
-   - **`.claude/` exists** → Path B
+   - **`.claude/` exists BUT empty or no files inside** → Path A (with warning: "Found empty .claude/ directory, will initialize from scratch")
+   - **`.claude/` exists BUT no `rules/` directory** → Path A (suggest overwrite: "Found .claude/ without rules/, recommend re-initialization")
+   - **`.claude/` exists with proper structure** → Path B
+   - **User explicitly requests re-initialization** (keywords: "重新初始化", "re-init", "overwrite", "覆盖") → Path A with overwrite option
    - **User asks about optimization** → Path C
 
 ## Path A: No .claude/ Directory
@@ -92,12 +95,31 @@ The full rule type taxonomy, quality criteria, and AI generation hints are defin
 
 > Your project already has a `.claude/` directory — that's a great start. The issues you're experiencing might come from incomplete or outdated context rules.
 >
-> I recommend running `/audit-context` to check your `.claude/` quality. It evaluates 5 dimensions (structure, content, best practices, coverage, maintainability) and gives you a prioritized list of improvements.
+> I recommend running `/audit-context` to identify specific issues causing incorrect suggestions. It will give you a prioritized list of actionable fixes.
 >
 > Want me to run the audit now?
+
+## Example Responses (continued)
+
+**Scenario 4 — Monorepo detected:**
+
+> I noticed your project has a Monorepo structure with multiple subprojects (`backend/`, `frontend/`, `infra/`).
+>
+> `/init-context` supports Monorepo mode — it will create a root `.claude/` with shared rules, plus separate `.claude/` directories for each subproject with tech stack-specific configurations.
+>
+> Want me to set it up now?
 
 ## Important
 
 - **Never generate `.claude/` files without explicit user consent** — always suggest the command, let the user decide
 - **Match the user's language** — respond in Chinese if the user writes in Chinese, English if in English
 - **Route to the right command**: no `.claude/` → `/init-context`; has `.claude/` → `/audit-context`
+- **If user declines**, acknowledge their choice and offer: "No problem. If you change your mind, just ask me to 'initialize Claude context'."
+
+## Parameter Pre-filling
+
+When routing to `/init-context`, leverage detected context to reduce user interaction:
+
+- **Detected preset match** (e.g., FastAPI in dependencies): mention the matching preset by name so the user knows it will be auto-selected
+- **Detected Monorepo structure**: mention that `/init-context` will auto-detect the Monorepo layout
+- **User says "re-initialize" or "overwrite"**: inform that `/init-context` will handle the existing `.claude/` conflict gracefully

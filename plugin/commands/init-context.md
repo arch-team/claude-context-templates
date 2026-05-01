@@ -18,28 +18,6 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
 
 严格按照以下步骤执行，不要跳过或合并步骤。
 
-### Step 0: 版本检查（轻量）
-
-在开始之前，尝试检查本 Plugin 的 preset 是否为最新版本：
-
-1. 读取本 Plugin 内的 `presets/manifest.json`，获取 `plugin_version`
-2. 尝试从远程获取最新 manifest（静默失败，不阻塞流程）：
-   ```
-   https://raw.githubusercontent.com/arch-team/claude-context-templates/main/plugin/presets/manifest.json
-   ```
-3. 对比版本号：
-   - 如果远程版本 > 本地版本，**提示用户**（但不强制）：
-     ```
-     ⚠️ 检测到新版本 preset 模板可用（本地 v1.2.0 → 远程 vX.Y.Z）。
-     建议运行以下命令更新 Plugin：
-       /plugin install claude-context-templates@claude-context-templates
-     是否继续使用当前版本？(y/n)
-     ```
-   - 如果版本一致或无法获取远程 manifest，**静默继续**
-4. 用户确认继续后，进入 Step 1
-
-> **注意**：版本检查失败（网络问题等）不应阻止正常流程。
-
 ### Step 1: 深度项目探测
 
 在开始交互之前，对当前工作目录进行全面分析。
@@ -57,7 +35,9 @@ description: 为当前项目生成生产级 .claude/ 上下文目录，提升 Cl
    - 多个子目录各有上述文件 → 可能是 Monorepo
 3. 从配置文件中提取项目名称、描述等信息作为默认值
 
-#### 1b. 深度分析（新增）
+#### 1b. 深度分析（延迟执行）
+
+**执行时机**：仅在 Step 2 路由决策确定为路径 A/B 时触发。空项目（路径 C）和 Monorepo 子项目（路径 D3）可跳过此步骤，由后续阶段的用户输入或子项目级检测替代。
 
 按照 `presets/context-schema.yaml` 的 `analysis_probes` 执行深度扫描：
 
@@ -123,18 +103,87 @@ analysis_result = {
 - 检测到 Django + Python + poetry → 无 preset_hint → confidence = 0（走 generic）
 - 检测到 React + TypeScript + pnpm → react-typescript confidence = 0.5 + 0.2 + 0.1 = 0.8
 
+### Step 1.5: 加载 preset.yaml（单一真实源）
+
+**强制要求**：确定目标 preset 后，**必须读取其 `preset.yaml`**。该文件是可选规范、默认值、变量定义的**唯一真实源**。命令文档中任何硬编码的文件列表/默认值仅为**示例**，实际行为必须以 `preset.yaml` 为准。
+
+**加载时机**：
+- 路径 A/C-preset：用户确认 preset 后立即加载
+- 路径 B/C-generic：加载 `presets/generic/preset.yaml`
+- 路径 D：在 D3 对每个子项目循环前，加载每个子项目对应的 `preset.yaml`
+
+**读取流程**：
+```
+1. Read presets/{preset_id}/preset.yaml
+2. 解析以下字段，存入内部状态：
+   - defaults.{package_manager, linter, test_runner, source_root, architecture_pattern, coverage_minimum}
+   - files.required: List[str]                     # 必选文件路径
+   - files.optional: List[OptionalRule]            # 可选文件，详见下方 schema
+   - variables: List[Variable]                     # 占位符变量定义
+```
+
+**OptionalRule Schema**（兼容两种格式）：
+
+```yaml
+# 旧格式（字符串，兼容保留）：
+optional:
+  - rules/logging.md
+
+# 新格式（对象，推荐）：
+optional:
+  - path: rules/logging.md           # 文件路径（必填）
+    description: "日志规范 ..."       # 用户友好说明（用于展示）
+    recommended_when: "always"       # 推荐条件（自由文本或简单表达式）
+    default_include: true            # "推荐全部"时是否默认勾选
+```
+
+**展示给用户的规则**（所有路径统一）：
+
+1. 遍历 `files.optional`
+2. 对每项展示 `description`（或退化为文件名）
+3. `default_include: true` 显示为 `✓ 推荐`，否则 `○ 可选`
+4. "推荐全部"模式下，仅包含 `default_include: true` 的文件
+5. "全部包含"模式下，包含所有 optional 文件
+6. "逐一确认"模式下，对每项询问用户
+
+**默认值的使用**：
+- 路径 A 的"确认/修改项目基本信息"：`package_manager` 从 `defaults.package_manager` 读取
+- 所有路径的覆盖率默认值：从 `defaults.coverage_minimum` 读取
+- 架构模式展示：从 `defaults.architecture_pattern` 读取
+
+**校验规则**：
+- `files.optional` 中每个 `path` 必须存在于 `presets/{preset_id}/{lang}/` 下
+- 若文件缺失，警告用户并跳过该项（避免本次会话中 `iam.md` 曾经出现的问题）
+
 ### Step 2: 路由决策
 
 根据分析结果选择执行路径：
 
 ```
-┌─ 已有项目 + 最高 confidence >= 0.8  → 路径 A: preset 快车道
-├─ 已有项目 + 最高 confidence < 0.8   → 路径 B: generic 路径
-├─ 空项目（无配置文件）               → 路径 C: 结构化问卷
-└─ 路径 C 问卷结果匹配 preset          → 切换到路径 A
+┌─ 检测到 Monorepo 特征（多个子目录各有配置文件）→ 路径 D: Monorepo 引导
+├─ 路径 C 问卷中用户选择 Monorepo 模式          → 路径 D: Monorepo 引导
+├─ 已有项目 + 最高 confidence >= 0.8            → 路径 A: preset 快车道
+├─ 已有项目 + 最高 confidence < 0.8             → 路径 B: generic 路径
+├─ 空项目（无配置文件）                         → 路径 C: 结构化问卷
+└─ 路径 C 问卷结果匹配 preset                    → 切换到路径 A
 ```
 
 **判定"空项目"**：工作目录下不存在任何 `analysis_probes.language_detection.indicators` 中的配置文件。
+
+**判定"Monorepo 特征"**：工作目录下存在 2+ 个子目录，每个子目录包含 `language_detection.indicators` 中的配置文件（例如 `backend/pyproject.toml` + `frontend/package.json`）。
+
+**排除目录（不视为子项目）**：以下目录即使包含配置文件也不计入 Monorepo 判定：
+- 工具目录：`scripts`, `tools`, `bin`, `util`, `helpers`
+- 测试目录：`tests`, `test`, `e2e`, `integration`, `__tests__`
+- 文档目录：`docs`, `documentation`, `examples`, `demo`
+- 构建产物：`dist`, `build`, `out`, `target`
+- 依赖目录：`node_modules`, `.venv`, `vendor`
+
+**子项目验证规则**：仅当目录同时满足以下条件时才视为业务子项目：
+1. 包含 `language_detection.indicators` 中的配置文件
+2. 包含源码目录（`src/`、`app/`、`lib/`）或框架特征文件（`next.config.*`、`vite.config.*`、`main.go`、`manage.py` 等）
+
+**Monorepo 优先级**：如果同时满足 Monorepo 特征和单项目匹配条件，**优先走路径 D**（需用户确认，以免误判）。
 
 将选择的路径告知用户（简要说明原因），然后进入 Step 3。
 
@@ -169,14 +218,22 @@ analysis_result = {
    ```
 
 4. **确认可选规范**：
-   读取所选 preset 的 `preset.yaml`，展示可选规则列表：
+   按 Step 1.5 加载的 `files.optional` 展示（以 python-fastapi 为例）：
    ```
-   以下可选规范可以包含（根据项目特征推荐）：
-   ✓ api-design.md (API 设计规范) — 推荐，检测到 Web 框架
-   ✓ logging.md (日志规范) — 推荐，后端服务项目
-   ○ observability.md (可观测性) — 可选
-   包含推荐项？(y/n) 或逐一确认？(l)
+   以下可选规范可以包含（从 preset.yaml 动态读取）：
+   ✓ api-design.md    API 设计规范 (RESTful 路由、HTTP 状态码、错误响应格式)
+   ✓ logging.md       日志规范 (structlog、Correlation ID、脱敏)
+   ○ observability.md 可观测性 (Metrics、Tracing、Health Check)
+   ✓ sdk-first.md     SDK-First 原则
+
+   选择模式：
+   1) 推荐全部（默认，包含所有 ✓）
+   2) 全部包含（含 ○）
+   3) 仅核心（跳过全部可选）
+   4) 逐一确认
    ```
+
+   > **注意**：上方为示例。实际列表由所选 preset 的 `preset.yaml:files.optional` 决定。
 
 #### 路径 B: generic 路径（已有项目 + 不匹配 preset）
 
@@ -212,18 +269,21 @@ analysis_result = {
    | 检测到 Monorepo 特征 | 确认 Monorepo 模式并列出子项目 |
 
 5. **确认规范范围**：
-   基于 `context-schema.yaml` 的 rule_types，展示推荐列表：
+   `files.required` 和 `files.optional` 从 `presets/generic/preset.yaml` 读取（见 Step 1.5）。因 generic preset 的 `files.optional` 列表可能为空，实际可选规范由 `context-schema.yaml` 的 `rule_types` 补充（AI 动态生成）。
+
+   展示格式：
    ```
    将生成以下规范文件：
-   [核心 - 必选]
+   [核心 - 必选]  （来自 preset.yaml:files.required）
    ✓ architecture.md, tech-stack.md, code-style.md, testing.md,
      security.md, checklist.md, project-structure.md
 
-   [可选 - 根据项目特征推荐]
+   [可选 - 根据项目特征推荐]  （来自 preset.yaml:files.optional + context-schema.yaml）
    ✓ api-design.md — 推荐（检测到 Web 框架）
    ○ deployment.md — 可选（检测到 Dockerfile）
 
-   包含推荐项？(y/n) 或逐一确认？(l)
+   选择模式：
+   1) 推荐全部  2) 全部包含  3) 仅核心  4) 逐一确认
    ```
 
 #### 路径 C: 结构化问卷（空项目）
@@ -240,6 +300,7 @@ analysis_result = {
 2. 项目模式：
    1) 单项目 (Single project)
    2) Monorepo (多个子项目)
+   >>> 如果选 2 → 切换到路径 D (Monorepo 引导)，跳过本路径后续阶段
 
 3. 项目名称: ___
 4. 项目标识 (kebab-case): ___ [自动从名称生成]
@@ -301,9 +362,157 @@ analysis_result = {
 3. CI/CD 工具: ___
 ```
 
+#### 路径 D: Monorepo 引导
+
+**触发条件**：
+- Step 2 检测到 Monorepo 特征（多个子目录各有配置文件）
+- 路径 C 阶段 1 用户选择 Monorepo 模式
+- 用户通过命令参数显式指定 `--monorepo`（如有支持）
+
+**核心特征**：Monorepo 生成两级 `.claude/`：
+- 根级 `.claude/` 使用 `_common/{lang}/` 模板（通用规范、跨项目契约）
+- 每个子项目独立使用对应 preset 模板
+
+**阶段 D1: 项目基础**（4 问）
+
+```
+1. 模板语言：
+   1) 中文 (zh-CN)
+   2) English
+
+2. Monorepo 根名称（显示名）: ___
+3. 项目标识 (kebab-case): ___ [自动从名称生成]
+4. 项目描述 (可选): ___
+```
+
+> 若从检测路径进入（而非路径 C 切换），先展示分析结果：
+> ```
+> ✅ 检测到 Monorepo 结构
+> 发现子目录: backend/ (Python), frontend/ (TypeScript), infra/ (TypeScript)
+> ```
+
+**阶段 D2: 子项目清单**（1 问，多行输入）
+
+```
+请列出子项目清单，格式为每行一条：
+
+  <子项目目录名> | <preset> | <简短说明>
+
+可选 preset（从 manifest.json 动态读取）：
+┌────────────────────┬──────────────────────────────────────┐
+│ preset             │ 说明                                  │
+├────────────────────┼──────────────────────────────────────┤
+│ python-fastapi     │ Python 后端 API 项目                  │
+│ react-typescript   │ React 前端项目                        │
+│ aws-cdk            │ AWS CDK (TypeScript) 基础设施         │
+│ generic            │ 其他技术栈（AI 智能生成）             │
+└────────────────────┴──────────────────────────────────────┘
+
+示例：
+  backend   | python-fastapi   | AI Agent 编排服务
+  frontend  | react-typescript | 管理控制台
+  infra     | aws-cdk          | AWS 基础设施
+```
+
+**校验规则**：
+- 至少 2 个子项目（否则建议改用路径 A/B/C 的单项目模式）
+- 目录名唯一
+- preset ID 必须在 `manifest.json` 中存在
+- 目录名符合 kebab-case（推荐）
+
+**检测路径进入时**：自动预填检测到的子项目 + 推荐的 preset，用户只需确认或修改。
+
+**阶段 D3: 子项目配置（智能推荐 + 一键确认）**
+
+加载每个子项目的 `preset.yaml`（按 Step 1.5 流程），生成**统一推荐表格**展示给用户：
+
+```
+===== 子项目配置推荐 =====
+
+基于各 preset 的推荐默认值，为每个子项目生成以下配置：
+
+┌────────────┬────────────────┬────────────────────────────────────────────────┐
+│ 子项目     │ 包管理器       │ 可选规范                                        │
+├────────────┼────────────────┼────────────────────────────────────────────────┤
+│ backend    │ uv             │ ✓ api-design ✓ logging ✓ sdk-first ○ observ.    │
+│ frontend   │ pnpm           │ ✓ component ✓ state-mgmt ✓ perf ○ a11y         │
+│ infra      │ npm            │ ✓ construct ✓ deployment ○ cost ○ iam           │
+└────────────┴────────────────┴────────────────────────────────────────────────┘
+
+✓ = 推荐包含 (default_include: true)    ○ = 可选
+
+选择：
+1) 全部采用推荐（默认，含所有 ✓）
+2) 全部包含（含所有 ○）
+3) 仅核心（跳过全部可选）
+4) 部分自定义（选择子项目编号单独配置）
+```
+
+> 上方表格为示例展示。实际内容由各 preset 的 `preset.yaml:files.optional` 和 `defaults.package_manager` 决定。
+
+**推荐策略生成规则**：
+- `✓`（推荐）= `files.optional` 中 `default_include: true` 的项
+- `○`（可选）= `default_include: false` 或未设置 `default_include` 的项
+- 包管理器 = `preset.yaml:defaults.package_manager`
+
+**用户选择 "4) 部分自定义" 时**：
+1. 用户输入子项目编号（如 "2" 表示 frontend）
+2. 仅对该子项目展示完整可选规范列表（格式同路径 A 第 4 步）
+3. 配置完成后返回推荐表格，用户可继续选择其他子项目或确认
+
+> **关键**：必须完整读取对应 preset 的 `preset.yaml`，**禁止硬编码任何文件名或默认值**。
+
+**阶段 D4: 全局规范范围**（2 问）
+
+```
+1. 测试覆盖率最低要求: ___% (默认: 80)
+
+2. 根级跨项目规范（生成到 .claude/rules/）：
+   ┌──────────────────────┬──────────┬──────────────────────────────┐
+   │ 规范文件              │ 推荐状态  │ 说明                          │
+   ├──────────────────────┼──────────┼──────────────────────────────┤
+   │ common.md             │ ✓ 必选    │ Git 提交规范、代码审查标准    │
+   │ principles/*.md       │ ✓ 必选    │ 跨 preset 工程原则 (4 个文件) │
+   │ api-contracts.md      │ ○ 可选    │ 跨项目 API 契约（依赖 #13）   │
+   │ shared-types.md       │ ○ 可选    │ 共享类型生成策略（依赖 #13）  │
+   │ env-matrix.md         │ ○ 可选    │ 环境变量矩阵（依赖 #13）      │
+   │ local-dev.md          │ ○ 可选    │ 本地开发启动（依赖 #13）      │
+   └──────────────────────┴──────────┴──────────────────────────────┘
+
+   包含哪些可选规范？(all / none / 手动选择)
+```
+
+> **注意**：api-contracts / shared-types / env-matrix / local-dev 依赖 **#13** 完成后才可启用。如果对应模板文件不存在于 `_common/{lang}/rules/`，**静默跳过**不报错。
+
+**阶段 D5: 确认与生成策略**
+
+展示完整生成计划后进入 Step 4。
+
+```
+===== Monorepo 生成计划 =====
+
+根目录:
+  .claude/CLAUDE.md               [_common/{lang}/root-CLAUDE.md]
+  .claude/rules/common.md         [_common/{lang}/common-rules.md]
+  .claude/rules/principles/*.md   [_common/{lang}/rules/principles/ × 4]
+  {可选: api-contracts.md / shared-types.md / env-matrix.md / local-dev.md}
+
+子项目:
+  backend/.claude/      [python-fastapi/{lang}/ 全量]
+  frontend/.claude/     [react-typescript/{lang}/ 全量]
+  infra/.claude/        [aws-cdk/{lang}/ 全量]
+
+特殊占位符替换:
+  {{SUBPROJECT_TABLE}}     → 子项目表格
+  {{MONOREPO_STRUCTURE}}   → 目录结构树
+  {{PARENT_CLAUDE_REF}}    → 指向根 .claude/CLAUDE.md 的引用（子项目专用）
+```
+
 ### Step 4: 确认摘要
 
 生成文件前，展示完整摘要供用户确认：
+
+**单项目模式摘要**（路径 A / B / C 单项目）：
 
 ```
 ========== 生成摘要 ==========
@@ -346,34 +555,200 @@ analysis_result = {
 ==============================
 ```
 
+**Monorepo 模式摘要**（路径 D）：
+
+```
+========== 生成摘要 (Monorepo) ==========
+路径:        D - Monorepo 引导
+Monorepo 名: claude-context-templates-test
+项目标识:    claude-context-templates-test
+描述:        ai agent 平台项目
+模板语言:    中文
+测试覆盖率:  80%
+
+子项目清单:
+  backend  → python-fastapi   (AI Agent 编排服务)
+  frontend → react-typescript (管理控制台)
+  infra    → aws-cdk          (AWS 基础设施)
+
+将生成的文件结构:
+  .claude/CLAUDE.md                       # 根级入口（含子项目表格）
+  .claude/rules/common.md                 # 跨项目通用规则
+  .claude/rules/principles/*.md           # 通用工程原则 (4 files)
+  {路径 D4 选中的可选文件}
+
+  backend/.claude/
+    CLAUDE.md
+    project-config.md
+    rules/ (N 核心 + M 可选)
+
+  frontend/.claude/
+    CLAUDE.md
+    project-config.md
+    rules/ (N 核心 + M 可选)
+
+  infra/.claude/
+    CLAUDE.md
+    project-config.md
+    rules/ (N 核心 + M 可选)
+
+  预计共 N 个文件
+
+ℹ️ Monorepo 模式：子项目间共享根级规范，避免重复。
+
+确认生成？(y/n)
+==========================================
+```
+
 用户确认后，进入 Step 5。
 
 ### Step 5: 读取模板并生成文件
 
 根据路径选择不同的文件生成策略。
 
+#### 统一渲染工具（所有路径共用）
+
+**强烈推荐**使用 Plugin 提供的标准化渲染脚本 `scripts/render-template.sh`，它保证：
+- 占位符正则严格匹配 `{{UPPER_SNAKE_CASE}}`，**不会误替换 JSX 的 `{{ foo }}` 或 YAML 的 `{{ expr }}`**
+- 支持多行占位符（如 `PARENT_CLAUDE_REF`），通过 JSON 字符串传入
+- 未提供值的占位符自动替换为空字符串并警告
+- 未使用的变量产生警告（便于发现模板遗漏）
+- 有完整单元测试（`scripts/tests/test-render.sh`）
+
+**调用方式**：
+
+```bash
+bash scripts/render-template.sh \
+  --preset python-fastapi \
+  --lang zh-CN \
+  --target backend/.claude \
+  --vars '{
+    "PROJECT_NAME": "my-app",
+    "PROJECT_SLUG": "my-app",
+    "PROJECT_DESCRIPTION": "...",
+    "SUBPROJECT_NAME": "backend",
+    "PACKAGE_MANAGER": "uv",
+    "COVERAGE_MIN": "80",
+    "PARENT_CLAUDE_REF": "> **父级 Monorepo 规范**: ..."
+  }'
+```
+
+**参数说明**：
+- `--preset` + `--lang`：自动定位 `plugin/presets/{preset}/{lang}/`
+- `--source`（替代 --preset/--lang）：直接指定源目录（用于 `_common/`）
+- `--target`：目标目录（会自动创建）
+- `--vars`：JSON 字符串或 `@/path/to/vars.json`
+- `--dry-run`：仅打印操作，不写文件
+- `--verbose`：显示每处替换详情
+
+**环境要求**：
+- bash ≥ 4.0
+- jq ≥ 1.5
+- awk（任意版本）
+
+如果环境检测缺少 jq：
+- macOS: 提示用户 `brew install jq`
+- Linux: 提示用户 `sudo apt-get install jq` 或 `sudo yum install jq`
+- Windows: 提示用户安装 Git Bash 或 WSL
+
+环境不满足时报错中止命令，不执行低效的替代流程。
+
 #### 路径 A / 路径 C-preset: preset 模板复制
 
-与现有逻辑一致，原样复制模板内容，只做占位符替换。
+**推荐**：直接调用 `render-template.sh`（见上方统一渲染工具）。
+
+**原样复制约束**：
+- **不要**根据自己的知识修改、增删或重写模板内容
+- **只替换 `{{VARIABLE}}` 格式的占位符**
+
+**生成流程（使用 render-template.sh）**：
+
+```bash
+# 1. 渲染 preset 本体
+bash scripts/render-template.sh \
+  --preset <preset_id> --lang <lang> \
+  --target .claude \
+  --vars '{...}'
+
+# 2. 复制 principles (不需要替换)
+cp -r plugin/presets/_common/<lang>/rules/principles .claude/rules/
+```
+
+**注意**：单项目模式下，`{{PARENT_CLAUDE_REF}}` 会被 render-template.sh 自动替换为空字符串（合法行为，单项目无父级引用）。
+
+#### 路径 D: Monorepo 模板组合
 
 **重要约束**：
-- **原样复制模板内容**，不要根据自己的知识修改、增删或重写模板内容
-- **只替换 `{{VARIABLE}}` 格式的占位符**，其余内容保持不变
-- 使用 Read 工具读取 preset 文件，使用 Write 工具创建目标文件
+- 根级 `.claude/` 使用 `_common/{lang}/` 模板
+- 每个子项目 `.claude/` 使用对应 preset 模板（与路径 A 相同）
+- **占位符替换分层**：根级用 Monorepo 级变量，子项目级用自己的变量
 
-**单项目模式**：
-1. 读取 `presets/{preset-id}/{lang}/CLAUDE.md` → 写入 `.claude/CLAUDE.md`
-2. 读取 `presets/{preset-id}/{lang}/project-config.md` → 写入 `.claude/project-config.md`
-3. 读取 `presets/{preset-id}/{lang}/rules/*.md` → 写入 `.claude/rules/*.md`
-4. 在每个文件中替换占位符变量
+**推荐流程（两步 render-template）**：
 
-**Monorepo 模式**：
-1. 读取 `presets/_common/{lang}/root-CLAUDE.md` → 写入 `.claude/CLAUDE.md`
-2. 读取 `presets/_common/{lang}/common-rules.md` → 写入 `.claude/rules/common.md`
-3. 对每个子项目：
-   - 读取对应 preset 模板 → 写入 `{subproject}/.claude/` 下
-4. 在所有文件中替换占位符变量
-5. 在根 `CLAUDE.md` 中生成子项目表格和目录结构
+```bash
+# 步骤 1: 渲染根级 _common/
+bash scripts/render-template.sh \
+  --source plugin/presets/_common/<lang> \
+  --target .claude \
+  --vars '{
+    "PROJECT_NAME": "monorepo-root-name",
+    "PROJECT_DESCRIPTION": "...",
+    "SUBPROJECT_TABLE": "| 子项目 | 路径 | 说明 |\n|...|...|...|\n| backend | `backend/` | ... |",
+    "MONOREPO_STRUCTURE": "```\nroot/\n├── .claude/\n└── backend/\n```"
+  }'
+
+# 步骤 2: 对每个子项目单独渲染
+for subproject in backend frontend infra; do
+  bash scripts/render-template.sh \
+    --preset <preset_id> --lang <lang> \
+    --target "${subproject}/.claude" \
+    --vars "{... 含 PARENT_CLAUDE_REF ...}"
+done
+```
+
+**生成流程（详细步骤）**：
+
+1. **根目录生成**：
+   - 渲染 `_common/{lang}/root-CLAUDE.md` → `.claude/CLAUDE.md`
+   - 渲染 `_common/{lang}/common-rules.md` → `.claude/rules/common.md`
+   - 复制 `_common/{lang}/rules/principles/*.md` → `.claude/rules/principles/*.md`（原样，不渲染）
+   - D4 中用户选中的可选规范（api-contracts/shared-types/env-matrix/local-dev）：
+     - 若对应模板存在于 `_common/{lang}/rules/`，则渲染
+     - 若不存在（#13 未完成），则**静默跳过**
+
+2. **根级占位符（Monorepo 特有）**：由 agent **预生成字符串** 传给 `render-template.sh`：
+
+   - `{{SUBPROJECT_TABLE}}` — `## Monorepo 结构` 下的主表格
+     - 格式（中文）：
+       ```markdown
+       | 子项目 | 路径 | 说明 |
+       |--------|------|------|
+       | backend | `backend/` | AI Agent 编排服务 (Python + FastAPI) |
+       | frontend | `frontend/` | 管理控制台 (React + TypeScript) |
+       ```
+
+   - `{{MONOREPO_STRUCTURE}}` — `common.md` 中的目录结构树代码块
+     - 格式：Markdown 代码块（\`\`\`...\`\`\`）
+
+   - `{{SUBPROJECT_LINK_TABLE}}` — `## 相关文档` 表格中的子项目导航行（追加在"通用规则"行之后）
+     - **路径约定**：`.claude/CLAUDE.md` → `../{子项目}/.claude/CLAUDE.md`（相对本文件所在目录）
+     - 格式：每个子项目一行 Markdown 表格行（无表头，直接拼在"通用规则"行下）：
+       ```markdown
+       | backend | [backend/.claude/CLAUDE.md](../backend/.claude/CLAUDE.md) |
+       | frontend | [frontend/.claude/CLAUDE.md](../frontend/.claude/CLAUDE.md) |
+       | infra | [infra/.claude/CLAUDE.md](../infra/.claude/CLAUDE.md) |
+       ```
+     - **禁止**写成 `[backend/.claude/CLAUDE.md](backend/.claude/CLAUDE.md)`（少 `../`，错误路径）
+
+3. **子项目生成**（对 D2 清单中每个子项目）：
+   - 调用 `render-template.sh --preset <id> --lang <lang> --target <sub>/.claude`
+   - `PARENT_CLAUDE_REF` 值为 `"> **父级 Monorepo 规范**: 请参考根目录 [../../.claude/CLAUDE.md](../../.claude/CLAUDE.md) 获取跨项目通用规则和 Monorepo 结构概览。"`
+   - **Monorepo 模式下不在子项目内重复放置 `principles/*.md`**（仅在根级存在，避免重复）
+
+4. **路径 D 专属校验**（生成前）：
+   - 子项目目录名必须唯一
+   - 每个子项目的 preset ID 必须在 `manifest.json` 中存在
+   - `_common/{lang}/` 必须存在 `root-CLAUDE.md` 和 `common-rules.md`
 
 #### 路径 B / 路径 C-generic: generic 智能生成
 
@@ -421,6 +796,8 @@ analysis_result = {
 3. 检查文件间 Markdown 链接对称性（A 链接到 B，B 应能找到）
 4. 确认每个文件长度在 100-300 行之间
 5. 确认包含 Section 0 速查卡片
+
+> **自动化兜底**：以上自检在 Step 7.5 由 `audit-context.sh` 程序化执行，不依赖 agent 自觉。
 
 ### Step 6: 占位符替换
 
@@ -480,6 +857,60 @@ analysis_result = {
    - **取消**：中止操作
 3. 按用户选择执行
 
+### Step 7.5: 强制审计（所有路径必经）
+
+**目的**：程序化兜底 Step 5 中列出的质量自检项，防止残留占位符、断链、过短/过长文件流入用户项目。
+
+**执行**：
+
+```bash
+bash <plugin_root>/scripts/audit-context.sh \
+  --target <project_root> \
+  --json <project_root>/.claude/audit-report.json
+```
+
+**严重度策略**：
+
+| 严重度 | 触发条件 | 处理 |
+|--------|---------|------|
+| ERROR  | 残留 `{{AI_GENERATED:...}}` 或其他 `{{UPPER_CASE}}` 占位符；核心必选文件缺失 | **阻断**：告知用户具体问题, 询问是否仍要继续（修复/忽略/取消） |
+| WARN   | 断链、文件过短 (<30 行) 或过长 (>500 行) | 列出警告, 不阻断, 建议用户后续处理 |
+| INFO   | 缺少 Section 0 速查卡片、`<!-- TODO -->` 标记数量 | 仅提示, 不阻断 |
+
+**对路径 A/C-preset（preset 快车道）**：
+- 仅残留占位符和文件缺失是 ERROR（理论上 preset 已预先验证过）
+- WARN/INFO 多数为正常（preset 模板里本就有 TODO）
+
+**对路径 B/C-generic（AI 生成）**：
+- **推荐追加 `--strict`**：所有 WARN 提升为 ERROR
+- AI 生成的内容必须通过质量自检才能交付
+
+**用户可视化输出**：
+- 终端彩色报告（ERROR/WARN/INFO）
+- `.claude/audit-report.json` 供后续 `/audit-context` 二次查阅
+
+**失败处理**：
+- 若 ERROR ≥1, 列出问题清单后问用户：
+  - 1) 现在修复（返回 Step 5 对应路径重新生成）
+  - 2) 保留已生成文件，手工修复（继续 Step 8）
+  - 3) 取消并回滚（删除已写入文件）
+
+### Step 7.6: 错误恢复机制
+
+**AI 生成失败处理**（仅路径 B/C-generic）：
+
+当 AI 生成的内容不符合 `context-schema.yaml:quality_criteria`（如文件过短、缺少必需结构）时：
+1. 报告具体失败原因（哪个文件、哪个 quality_criteria 不满足）
+2. 提供 3 个选项：
+   - 1) 重试生成（重新执行 Step 5 阶段 2/3）
+   - 2) 使用 generic 骨架保留，用户手工补充（继续 Step 8）
+   - 3) 取消并回滚已生成文件
+
+**占位符残留修复**（Step 7.5 审计发现 ERROR 后的自动修复流程）：
+- 对每个残留的 `{{AI_GENERATED:xxx}}`：重新触发对应区域的 AI 生成
+- 对每个残留的 `{{USER_VAR}}`（如 `{{PROJECT_NAME}}`）：询问用户提供值
+- 修复后自动重跑 `audit-context.sh` 验证
+
 ### Step 8: 完成提示
 
 生成完成后，输出以下信息：
@@ -489,6 +920,7 @@ analysis_result = {
    - 编辑 `project-config.md` 填写项目特定信息
    - 检查生成的规范文件，按需自定义
    - 推荐运行 `/audit-context` 检查生成质量
+   - 若长期未更新 Plugin，可运行 `/plugin update` 获取最新 preset 模板
    - 开始使用 Claude Code 进行开发
 
 3. **路径 B/C-generic 特有提示**：
