@@ -10,6 +10,29 @@ description: 审计当前项目的 .claude/ 上下文目录，评估质量并给
 
 如果当前项目不存在 `.claude/` 目录，告知用户并建议使用 `/init-context` 命令生成。
 
+## Step 0: 运行程序化审计脚本
+
+**强烈推荐**先调用 Plugin 提供的审计脚本获取客观的机械检查结果：
+
+```bash
+bash <plugin_root>/scripts/audit-context.sh \
+  --target <project_root> \
+  --json <project_root>/.claude/audit-report.json
+```
+
+脚本覆盖以下检查（详见 `scripts/audit-context.sh` 头部注释）：
+- 残留占位符 (`{{AI_GENERATED:...}}`, `{{UPPER_SNAKE_CASE}}`) — ERROR
+- 文件行数范围 (30-500 行) — WARN
+- Section 0 速查卡片缺失 — INFO
+- Markdown 链接有效性 — WARN
+- `<!-- TODO -->` 标记数量 — INFO
+- 核心必选文件缺失 — ERROR
+
+**使用方式**：
+- 先跑脚本获取客观结果
+- 然后在下方 5 个维度评估中**引用脚本发现**作为具体证据
+- JSON 报告可长期保留在 `.claude/audit-report.json`
+
 ## 审计维度
 
 按以下 5 个维度逐一检查，每个维度给出 A/B/C/D 评级。

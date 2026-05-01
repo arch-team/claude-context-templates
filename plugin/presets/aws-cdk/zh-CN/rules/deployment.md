@@ -6,6 +6,8 @@
 
 > **职责边界**: 本文档关注**部署执行**（环境矩阵、CI/CD、部署流程）。环境配置的**架构设计**（CDK Context 结构）详见 [architecture.md §4](architecture.md#4-环境配置)
 
+> **CI/CD IAM 角色**: 部署角色权限设计和 OIDC 配置详见 [iam.md §4.3](iam.md#43-cicd-pipeline-iam-role)
+
 ---
 
 ## 0. 速查卡片

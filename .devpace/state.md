@@ -1,24 +1,29 @@
 # 项目状态
 
-> 目标：为 Claude Code 提供结构化、可复用的上下文管理模板 → 成效指标：GitHub Stars + Forks / 使用报告数 / Plugin 安装量
-
-## 版本信息
-
-- **当前版本**: v1.3.1（已发布，四处版本号已同步）
-- **最近发布 tag**: v1.3.1（2026-04-20，UX bug 修复 patch）
-- **下个版本**: v1.4.0（规划中，候选主题：BR-003 Preset 增量更新机制）
+> 目标：为 Claude Code 提供生产就绪的上下文管理模板 → 成效指标：（待定义）
 
 ## 当前工作
 
-- **进行中**：（v1.3.x 已完成，v1.4 待启动）
-- **待 Review**：BR-003.md（Preset 增量更新机制 — Phase 2 首要里程碑）
+- **进行中**：feat/preset-optimization — Plugin 全面优化（Phase 1-2 已完成，Phase 3 部分完成）
+- **待 Review**：（无）
 - **阻塞**：（无）
-- **最近完成**：
-  - v1.3.1 patch：修复 3 个 UX bug（项目名/描述/父引用）+ 加入回归断言
-  - v1.3.0 发布（清理 + 规范收尾 + 测试回归修复 + 使用反馈入口）
+
+## 本次完成
+
+- context-setup Skill CSO 重构（description 修正 + 路由边界情况 + Example 优化 + 参数预填）
+- init-context Monorepo D3 智能推荐表格（替代循环配置）
+- init-context Monorepo 误判修正（排除列表 + 验证规则）
+- init-context Step 1b 延迟执行（空项目跳过深度扫描）
+- init-context 移除 Read+Edit Fallback（仅保留 render-template.sh）
+- init-context 错误恢复机制（Step 7.6）
+- render-template.sh 占位符验证注释增强
+- audit-context.sh 新增 3 个审计规则（空值痕迹 + 空表格 + 双向链接）
+- react-typescript component-design.md 双向链接补充（zh-CN + en）
 
 ## 下一步
 
-说"帮我继续 preset-optimization"可继续该分支的工作，或说"准备发布 v1.1.0"开始新版本规划。
+- Phase 3 剩余：其余 preset 双向链接修复、占位符格式统一
+- 运行端到端测试验证所有路径
+- Git commit 并考虑 PR
 
-<!-- devpace-version: 1.6.3 -->
+<!-- devpace-version: 1.7.0 -->

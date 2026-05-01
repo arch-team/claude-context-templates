@@ -1,6 +1,5 @@
 {
   "enabledPlugins": {
-    "devpace@devpace": true,
     "oss-promote@devpace-promotion-plugins": true,
     "superpowers@claude-plugins-official": true,
     "everything-claude-code@everything-claude-code": true

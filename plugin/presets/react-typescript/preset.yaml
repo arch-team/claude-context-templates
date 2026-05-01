@@ -21,10 +21,22 @@ files:
     - rules/checklist.md
     - rules/project-structure.md
   optional:
-    - rules/component-design.md
-    - rules/state-management.md
-    - rules/performance.md
-    - rules/accessibility.md
+    - path: rules/component-design.md
+      description: "组件设计规范 (组合、Props、受控/非受控模式)"
+      recommended_when: "always"
+      default_include: true
+    - path: rules/state-management.md
+      description: "状态管理规范 (Zustand、React Query、Context)"
+      recommended_when: "always"
+      default_include: true
+    - path: rules/performance.md
+      description: "性能优化 (Memoization、Code Splitting、Bundle 分析)"
+      recommended_when: "production_grade or user_facing"
+      default_include: false
+    - path: rules/accessibility.md
+      description: "无障碍规范 (WCAG、ARIA、键盘导航)"
+      recommended_when: "public_facing or compliance_required"
+      default_include: false
 variables:
   - name: PROJECT_NAME
     prompt: "项目名称"

@@ -49,3 +49,59 @@ check_yaml_field() {
   local field="$2"
   grep -q "^${field}:" "$yaml_file" 2>/dev/null
 }
+
+# 从 files.optional 中提取文件路径列表（兼容新旧两种格式）
+# 旧格式: "- rules/foo.md"  → 提取 "rules/foo.md"
+# 新格式: "- path: rules/foo.md" → 提取 "rules/foo.md"
+# 用法: parse_optional_paths <yaml_file>
+parse_optional_paths() {
+  local yaml_file="$1"
+  local in_files=0
+  local in_optional=0
+
+  [[ ! -f "$yaml_file" ]] && return
+
+  while IFS= read -r line; do
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line// /}" ]] && continue
+
+    # 进入 files: 块（顶级键）
+    if [[ "$line" =~ ^files:[[:space:]]*$ ]]; then
+      in_files=1
+      in_optional=0
+      continue
+    fi
+
+    # 在 files: 块内检测 optional:
+    if [[ $in_files -eq 1 ]] && [[ "$line" =~ ^[[:space:]]{2}optional:[[:space:]]*$ ]]; then
+      in_optional=1
+      continue
+    fi
+
+    # 在 files: 块内遇到其他二级键 → 退出 optional
+    if [[ $in_files -eq 1 ]] && [[ "$line" =~ ^[[:space:]]{2}[a-z] ]] && ! [[ "$line" =~ ^[[:space:]]{2}optional: ]]; then
+      in_optional=0
+    fi
+
+    # 遇到新的顶级键 → 完全退出
+    if [[ "$line" =~ ^[a-z] ]] && ! [[ "$line" =~ ^files: ]]; then
+      in_files=0
+      in_optional=0
+      continue
+    fi
+
+    if [[ $in_optional -eq 1 ]]; then
+      # 新格式: "    - path: rules/foo.md"
+      if [[ "$line" =~ ^[[:space:]]*-[[:space:]]+path:[[:space:]]*([^#[:space:]]+) ]]; then
+        echo "${BASH_REMATCH[1]}"
+      # 旧格式: "    - rules/foo.md" （不以 path: 开头）
+      elif [[ "$line" =~ ^[[:space:]]*-[[:space:]]+([^#[:space:]]+)$ ]]; then
+        local value="${BASH_REMATCH[1]}"
+        # 排除已被新格式匹配的情况
+        if ! [[ "$value" =~ ^path: ]]; then
+          echo "$value"
+        fi
+      fi
+    fi
+  done < "$yaml_file"
+}

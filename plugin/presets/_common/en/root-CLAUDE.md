@@ -42,6 +42,9 @@ When entering a sub-project directory, Claude Code automatically loads that sub-
 
 ## Related Documentation
 
+> **Path convention**: This file lives at `.claude/CLAUDE.md`. The relative path to each sub-project is `../{subproject}/.claude/CLAUDE.md`.
+
 | Sub-project | Specification |
 |-------------|--------------|
 | Common Rules | [.claude/rules/common.md](.claude/rules/common.md) |
+{{SUBPROJECT_LINK_TABLE}}

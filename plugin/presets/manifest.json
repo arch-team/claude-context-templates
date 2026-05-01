@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
   "plugin_version": "1.3.1",
-  "generated_at": "2026-04-20T10:56:58Z",
+  "generated_at": "2026-04-27T03:25:10Z",
   "presets": {
     "aws-cdk": {
       "version": "1.0.0",
       "display_name": "AWS CDK (TypeScript)",
       "description": "AWS CDK 基础设施项目模板 (TypeScript, CDK v2, CDK Nag)",
-      "files_hash": "e187985bb8424fd2a0404e53be8c33f0ce830be542e3274469af37d72088c28c",
-      "file_count": 25
+      "files_hash": "816ef9e7c4016c543c715121a3d5a14de4c1bb638c892db2747786262a1bcfe6",
+      "file_count": 27
     },
     "generic": {
       "version": "1.0.0",
@@ -21,14 +21,14 @@
       "version": "1.0.0",
       "display_name": "Python + FastAPI",
       "description": "Python 后端 API 项目模板 (FastAPI, SQLAlchemy, Pydantic)",
-      "files_hash": "529633211cbebed7fc602f1cbd9a4a288e16c70b4fece5d9ab194ff267f9f85e",
+      "files_hash": "0de0bf0a893d033f63f4588ed94c6d5d02294658e6a7b9f71ecc955ea05aeba8",
       "file_count": 27
     },
     "react-typescript": {
       "version": "1.0.0",
       "display_name": "React + TypeScript",
       "description": "React 前端项目模板 (TypeScript, Vite, React Query, Zustand)",
-      "files_hash": "ac9d7f7e7e9ca92714083f24797d6107734c31262624a0e0f4c297705fcd6b35",
+      "files_hash": "f41c57a2ca8c4382769ed9219646fc3dad02ba64aaa95d071db34c301e008112",
       "file_count": 27
     }
   },

@@ -6,6 +6,8 @@
 
 > **Responsibility boundary**: This document focuses on **deployment execution** (environment matrix, CI/CD, deployment processes). For the **architectural design** of environment configuration (CDK Context structure), see [architecture.md §4](architecture.md#4-environment-configuration)
 
+> **CI/CD IAM roles**: For deployment role permission design and OIDC configuration, see [iam.md §4.3](iam.md#43-cicd-pipeline-iam-role)
+
 ---
 
 ## 0. Quick Reference Card

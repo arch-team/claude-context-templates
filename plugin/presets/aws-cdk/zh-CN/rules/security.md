@@ -4,6 +4,8 @@
 
 > 安全配置的**代码模板**详见 [construct-design.md §3](construct-design.md#3-安全默认配置)
 
+> **IAM 专项**: 身份与权限的设计准则、反模式和检测详见 [iam.md](iam.md)
+
 ---
 
 ## 0. 速查卡片

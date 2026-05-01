@@ -1,4 +1,6 @@
 > **职责**: 状态管理规范 - React Query (服务端)、Zustand (客户端)、表单状态
+>
+> **相关规范**: [architecture.md](architecture.md) (FSD 层级与数据流) | [component-design.md](component-design.md) (组件状态选型)
 
 # 状态管理规范 (State Management Standards)
 
