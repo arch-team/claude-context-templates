@@ -183,7 +183,27 @@ validate_preset() {
     fi
   done
 
-  # --- 7. zh-CN/ 和 en/ 文件结构对称 ---
+  # --- 7. files.optional 中列出的文件在 zh-CN/ 和 en/ 下都存在 ---
+  local optional_files
+  optional_files="$(parse_optional_paths "$yaml_file")"
+
+  if [[ -n "$optional_files" ]]; then
+    while IFS= read -r opt_file; do
+      [[ -z "$opt_file" ]] && continue
+      if [[ -f "${preset_dir}/zh-CN/${opt_file}" ]]; then
+        pass "zh-CN/${opt_file} 存在 (optional)"
+      else
+        fail "zh-CN/${opt_file} 缺失（在 files.optional 中声明）"
+      fi
+      if [[ -f "${preset_dir}/en/${opt_file}" ]]; then
+        pass "en/${opt_file} 存在 (optional)"
+      else
+        fail "en/${opt_file} 缺失（在 files.optional 中声明）"
+      fi
+    done <<< "$optional_files"
+  fi
+
+  # --- 8. zh-CN/ 和 en/ 文件结构对称 ---
   validate_bilingual_symmetry "$preset_dir"
 }
 
@@ -202,6 +222,35 @@ validate_common() {
   fi
 
   pass "_common 目录存在"
+
+  # root-CLAUDE.md 必须包含 {{SUBPROJECT_LINK_TABLE}} 占位符（用于 Monorepo 子项目导航）
+  for lang in zh-CN en; do
+    local root_file="${common_dir}/${lang}/root-CLAUDE.md"
+    if [[ -f "$root_file" ]]; then
+      if grep -q '{{SUBPROJECT_LINK_TABLE}}' "$root_file"; then
+        pass "${lang}/root-CLAUDE.md 包含 {{SUBPROJECT_LINK_TABLE}} 占位符"
+      else
+        fail "${lang}/root-CLAUDE.md 缺少 {{SUBPROJECT_LINK_TABLE}} 占位符"
+      fi
+      if grep -q '{{SUBPROJECT_TABLE}}' "$root_file"; then
+        pass "${lang}/root-CLAUDE.md 包含 {{SUBPROJECT_TABLE}} 占位符"
+      else
+        fail "${lang}/root-CLAUDE.md 缺少 {{SUBPROJECT_TABLE}} 占位符"
+      fi
+    fi
+  done
+
+  # common-rules.md 必须包含 {{MONOREPO_STRUCTURE}} 占位符
+  for lang in zh-CN en; do
+    local cr_file="${common_dir}/${lang}/common-rules.md"
+    if [[ -f "$cr_file" ]]; then
+      if grep -q '{{MONOREPO_STRUCTURE}}' "$cr_file"; then
+        pass "${lang}/common-rules.md 包含 {{MONOREPO_STRUCTURE}} 占位符"
+      else
+        fail "${lang}/common-rules.md 缺少 {{MONOREPO_STRUCTURE}} 占位符"
+      fi
+    fi
+  done
 
   # zh-CN/ 和 en/ 文件结构对称
   validate_bilingual_symmetry "$common_dir"

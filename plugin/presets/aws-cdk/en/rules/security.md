@@ -4,6 +4,8 @@
 
 > For security configuration **code templates**, see [construct-design.md §3](construct-design.md#3-secure-default-configurations)
 
+> **IAM specifics**: For identity and permission design guidelines, anti-patterns, and detection, see [iam.md](iam.md)
+
 ---
 
 ## 0. Quick Reference Card

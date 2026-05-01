@@ -21,9 +21,22 @@ files:
     - rules/code-style.md
     - rules/project-structure.md
   optional:
-    - rules/construct-design.md
-    - rules/deployment.md
-    - rules/cost-optimization.md
+    - path: rules/construct-design.md
+      description: "Construct 设计模式 (L1/L2/L3、安全默认配置代码模板)"
+      recommended_when: "always"
+      default_include: true
+    - path: rules/deployment.md
+      description: "部署规范 (环境矩阵、CI/CD Pipeline、蓝绿部署)"
+      recommended_when: "always"
+      default_include: true
+    - path: rules/cost-optimization.md
+      description: "成本优化 (实例选型、Auto Scaling、存储分层)"
+      recommended_when: "production_grade"
+      default_include: false
+    - path: rules/iam.md
+      description: "IAM 权限规范 (最小权限、Grant 方法、反模式)"
+      recommended_when: "always"
+      default_include: true
 variables:
   - name: PROJECT_NAME
     prompt: "项目名称"

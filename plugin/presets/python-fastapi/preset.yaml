@@ -21,10 +21,22 @@ files:
     - rules/checklist.md
     - rules/project-structure.md
   optional:
-    - rules/api-design.md
-    - rules/logging.md
-    - rules/observability.md
-    - rules/sdk-first.md
+    - path: rules/api-design.md
+      description: "API 设计规范 (RESTful 路由、HTTP 状态码、错误响应格式)"
+      recommended_when: "framework in ['FastAPI', 'Flask', 'Django']"
+      default_include: true
+    - path: rules/logging.md
+      description: "日志规范 (structlog、Correlation ID、脱敏)"
+      recommended_when: "always"
+      default_include: true
+    - path: rules/observability.md
+      description: "可观测性 (Metrics、Tracing、Health Check)"
+      recommended_when: "production_grade or deployment_detected"
+      default_include: false
+    - path: rules/sdk-first.md
+      description: "SDK-First 原则 (优先使用 SDK 简化实现)"
+      recommended_when: "always"
+      default_include: true
 variables:
   - name: PROJECT_NAME
     prompt: "项目名称"

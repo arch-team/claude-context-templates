@@ -42,6 +42,9 @@
 
 ## 相关文档
 
+> **路径约定**: 本文件位于 `.claude/CLAUDE.md`，到子项目 `.claude/` 的相对路径为 `../{子项目}/.claude/CLAUDE.md`
+
 | 子项目 | 规范文档 |
 |--------|---------|
 | 通用规则 | [.claude/rules/common.md](.claude/rules/common.md) |
+{{SUBPROJECT_LINK_TABLE}}
