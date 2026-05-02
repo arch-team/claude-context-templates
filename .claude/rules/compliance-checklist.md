@@ -48,7 +48,7 @@ P0 项优先 Hook/Script 验收。
 | Step 1 L1 | roles.md 和 context-schema.md 已定义；context-schema 含 progress + resume_hint；各 Skill 专属 schema 在 Step 3 中随 Skill 创建 |
 | Step 2 L2 | 每文件 ≤150 行；被 2+ Skill 引用的知识已提取；L2 共享模板 + L3 `references/templates/` 专属模板合计覆盖所有必须产出 |
 | Step 3 L3 | 每个 SKILL.md 8 段式；≥2 条 HARD RULES + ANTI-RATIONALIZATION（英文）；知识通过路径引用（内嵌 ≤10 行，见 `core-constraints.md` IA-3） |
-| Step 4 L4 | 通过泄漏检测测试；实现 3 个标准流程；frontmatter 含 ≥2 个 example |
+| Step 4 L4 | **仅适用于有 agents/ 目录的插件**。详见 `references/orchestrator-writing.md` |
 | Step 5 L5 | 每个 Command ≤5 行执行流（本架构约束，非官方限制）；Hook 注册完整；update-context.py 是唯一写入者；plugin.json 含 name/version/description/keywords |
 | Step 6 Eval | 端到端走通一个完整流程；跨会话恢复测试通过；关键指标已度量（见评估指标） |
 

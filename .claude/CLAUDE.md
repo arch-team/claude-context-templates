@@ -8,17 +8,15 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 **agent-platform 共享规范（自动加载）**：
 
-| 文件 | 职责 | 来源 |
-|------|------|------|
-| `.claude/rules/core-constraints.md` | IA 11 原则铁律 | agent-platform |
-| `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 | agent-platform |
-| `.claude/rules/plugin-design.md` | Plugin 五层架构 | agent-platform |
-| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform |
-| `.claude/rules/token-optimization.md` | Token 利用率优化 | agent-platform |
-| `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 | agent-platform（适配） |
-| `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 | agent-platform（适配） |
-| `.claude/rules/orchestrator-writing.md` | 编排器编写规范 | agent-platform（v2.0 备用） |
-| `.claude/rules/subagent-writing.md` | Sub Agent 编写规范 | agent-platform（v2.0 备用） |
+| 文件 | 职责 | 来源 | 当前适用 |
+|------|------|------|---------|
+| `.claude/rules/core-constraints.md` | IA 11 原则铁律 | agent-platform | ✅ 适用 |
+| `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 | agent-platform | ✅ 适用 |
+| `.claude/rules/plugin-design.md` | Plugin 五层架构 | agent-platform | ⚠️ 部分适用 |
+| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform | ⚠️ 部分适用 |
+| `.claude/rules/token-optimization.md` | Token 利用率优化 | agent-platform | ✅ 适用 |
+| `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 | agent-platform（适配） | ✅ 适用 |
+| `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 | agent-platform（适配） | ✅ 适用 |
 
 **claude-context-templates 特化规范（自动加载）**：
 
@@ -29,15 +27,42 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 **按需加载文档**：
 
-| 文件 | 职责 | 加载方式 |
+| 文件 | 职责 | 加载时机 |
 |------|------|---------|
+| `.claude/references/orchestrator-writing.md` | 编排器编写规范 | **仅在创建 agents/ 时**（v2.0 可能需要） |
+| `.claude/references/subagent-writing.md` | Sub Agent 编写规范 | **仅在创建 agents/ 时**（v2.0 可能需要） |
+| `.claude/references/component-reference.md` | Plugin 组件规格补充 | 开发组件时 |
+| `.claude/references/design-principles.md` | 6 条设计原则（IA 原则快速索引） | 创建规范时 |
 | `docs/project-strategy.md` | 项目方向与路线图 | 按需 |
 | `docs/customization-guide.md` | Preset 创建流程（SSoT） | 按需 |
 | `docs/template-variables.md` | 模板变量占位符（SSoT） | 按需 |
 | `docs/plugin-delivery-design.md` | Plugin 分发策略和工具链 | 按需 |
 | `CONTRIBUTING.md` | 项目贡献指南 | 按需 |
-| `.claude/references/component-reference.md` | Plugin 组件规格补充 | 按需（开发组件时） |
-| `.claude/references/design-principles.md` | 6 条设计原则（IA 原则快速索引） | 按需（创建规范时） |
+
+---
+
+## 规范适用性说明
+
+**当前项目状态**：MVP 级别 Plugin（1 Skill + 2 Commands）
+
+本项目实际使用五层架构中的 **L3（Skill）和 L5（Entry）两层**：
+- L5: `plugin/commands/` — 命令触发
+- L3: `plugin/skills/context-setup/` — 模板初始化逻辑
+
+**暂未使用的架构层**（为未来扩展预留）：
+- L1 (Contract): `contracts/` — 角色定义、状态 Schema（需要 ≥2 角色时引入）
+- L2 (Knowledge): `knowledge/` — 跨 Skill 共享知识（需要 ≥2 Skill 共享内容时提取）
+- L4 (Agent): `agents/` — 编排器（需要自动流转/角色路由时引入）
+
+**开发指引**：
+- **日常开发**：重点关注 `skill-writing.md`、`hook-command-script.md`、`conventions.md`、`dev-workflow.md`
+- **v2.0 开发**：根据实际需求决定是否引入 L1/L2/L4 层
+- **忽略内容**：`orchestrator-writing.md`、`subagent-writing.md`（仅在创建 agents/ 时阅读）
+
+**何时升级到完整架构**（参考 `compliance-checklist.md` 升级矩阵）：
+- 出现第 2 个 Skill → 考虑引入 L1 `contracts/`
+- 2+ Skill 共享知识 → 提取到 L2 `knowledge/`
+- Skill 数 ≥5 且需要自动流转 → 考虑引入 L4 `agents/`
 
 ---
 
