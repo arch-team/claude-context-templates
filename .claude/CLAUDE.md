@@ -29,7 +29,6 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 | 文件 | 职责 | 加载时机 |
 |------|------|---------|
-| `.claude/references/design-principles.md` | 6 条设计原则（IA 原则快速索引） | 创建规范时 |
 | `docs/project-strategy.md` | 项目方向与路线图 | 按需 |
 | `docs/customization-guide.md` | Preset 创建流程（SSoT） | 按需 |
 | `docs/template-variables.md` | 模板变量占位符（SSoT） | 按需 |

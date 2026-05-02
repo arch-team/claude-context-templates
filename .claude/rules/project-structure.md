@@ -41,8 +41,7 @@ claude-context-templates/            # 仓库根目录
 │   │   ├── project-structure.md     # 项目结构 SSoT（本文件，本项目特化）
 │   │   ├── skill-writing.md         # SKILL.md 8 段式规范（来源：agent-platform）
 │   │   └── token-optimization.md    # Token 利用率优化（来源：agent-platform）
-│   └── references/                  # 按需加载的参考文档
-│       └── design-principles.md     # 6 条设计原则（IA 原则快速索引）
+│   └── references/                  # 按需加载的参考文档（当前为空）
 ├── .claude-plugin/                  # 根目录 marketplace（本地开发用）
 │   └── marketplace.json
 ├── .github/                         # GitHub 配置
@@ -154,5 +153,5 @@ claude-context-templates/            # 仓库根目录
 | 分层架构概述 | `CLAUDE.md` "分层架构"章节 |
 | 组件格式（SKILL.md frontmatter 等） | `rules/skill-writing.md`、`rules/hook-command-script.md` |
 | 文件命名规范 | `rules/conventions.md` |
-| 设计原则（6 条核心） | `references/design-principles.md`（按需加载） |
+| 设计原则（6 条核心） | `rules/dev-workflow.md` §3 质量 checklist（内联） |
 | Plugin 组件规格查证 | `claude-code-guide` agent 或官方文档 |

@@ -31,7 +31,7 @@
 ## §2 任务执行
 
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
-2. **遵循设计原则**：实现时参照 `references/design-principles.md` 的 6 条核心原则（SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case）
+2. **遵循设计原则**：实现时遵守 6 条核心原则（SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case），详见质量 checklist
 3. **分层约束**：产品层（`plugin/`）不引用开发层（`.claude/`、`docs/`、`scripts/`），详见 `project-structure.md` §3
 4. 每完成一个有意义的工作单元，git commit（遵循 `conventions.md` 提交规范）
 
@@ -41,9 +41,9 @@
 
 | 任务类型 | 必读 | 按需 |
 |---------|------|------|
-| Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `references/design-principles.md`、`plugin/presets/context-schema.yaml` |
+| Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `plugin/presets/context-schema.yaml` |
 | Plugin 组件开发 | `rules/plugin-design.md`、`rules/skill-writing.md`（已自动加载） | 目标组件现有文件、`claude-code-guide` agent 查证 |
-| 规范文档更新 | 目标文件、`references/design-principles.md` | `rules/core-constraints.md` |
+| 规范文档更新 | 目标文件、`rules/core-constraints.md` | — |
 | 项目文档更新 | `docs/project-strategy.md` 对应章节 | `CONTRIBUTING.md` |
 | 脚本工具开发 | 目标脚本、相关验证逻辑 | `scripts/lib-yaml.sh`（公共函数） |
 
@@ -75,7 +75,13 @@
 - [ ] 代码/文档符合 `conventions.md` 规范（语言、Git、命名）
 - [ ] 新增文件放置位置正确（对照 `project-structure.md` §0 决策树）
 - [ ] 分层完整性通过（检测命令见 `project-structure.md` §3）
-- [ ] 设计原则对齐（对照 `design-principles.md` §0 的 6 条原则）
+- [ ] 设计原则对齐（6 条核心原则）：
+  - [ ] SSoT：每个概念只在一个文件定义，其他文件通过链接引用（IA-6）
+  - [ ] Section 0：规范文件以速查卡片（表格/决策树）开头（IA-8 + IA-2）
+  - [ ] 分层架构：上下文按层级组织，单向依赖（IA-1）
+  - [ ] 依赖矩阵：用表格而非散文表达层间允许/禁止关系（IA-1 + IA-9）
+  - [ ] 双向链接：文档通过相对链接互引，确保双向可达（IA-8）
+  - [ ] kebab-case：文件命名统一 kebab-case，例外见 `plugin-design.md`（IA-9）
 - [ ] 模板变量使用正确占位符格式（见 `docs/template-variables.md`）
 - [ ] 示例项目结构与对应 preset 一致
 
