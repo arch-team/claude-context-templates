@@ -37,14 +37,11 @@ claude-context-templates/            # 仓库根目录
 │   │   ├── core-constraints.md      # IA 11 原则铁律（来源：agent-platform）
 │   │   ├── dev-workflow.md          # 会话协议、质量检查（本项目特化）
 │   │   ├── hook-command-script.md   # Command/Hook/Script 规范（来源：agent-platform，适配）
-│   │   ├── orchestrator-writing.md  # 编排器编写规范（来源：agent-platform，v2.0 备用）
 │   │   ├── plugin-design.md         # Plugin 五层架构（来源：agent-platform）
 │   │   ├── project-structure.md     # 项目结构 SSoT（本文件，本项目特化）
 │   │   ├── skill-writing.md         # SKILL.md 8 段式规范（来源：agent-platform）
-│   │   ├── subagent-writing.md      # Sub Agent 编写规范（来源：agent-platform，v2.0 备用）
 │   │   └── token-optimization.md    # Token 利用率优化（来源：agent-platform）
 │   └── references/                  # 按需加载的参考文档
-│       ├── component-reference.md   # Plugin 组件规格补充
 │       └── design-principles.md     # 6 条设计原则（IA 原则快速索引）
 ├── .claude-plugin/                  # 根目录 marketplace（本地开发用）
 │   └── marketplace.json
@@ -155,7 +152,7 @@ claude-context-templates/            # 仓库根目录
 | 内容 | 参见 |
 |------|------|
 | 分层架构概述 | `CLAUDE.md` "分层架构"章节 |
-| 组件格式（SKILL.md frontmatter 等） | `rules/plugin-dev-spec.md` |
-| 文件命名规范 | `rules/common.md` |
+| 组件格式（SKILL.md frontmatter 等） | `rules/skill-writing.md`、`rules/hook-command-script.md` |
+| 文件命名规范 | `rules/conventions.md` |
 | 设计原则（6 条核心） | `references/design-principles.md`（按需加载） |
-| 信息架构原则 | `references/ia-principles.md`（按需加载） |
+| Plugin 组件规格查证 | `claude-code-guide` agent 或官方文档 |

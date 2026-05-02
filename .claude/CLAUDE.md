@@ -29,9 +29,6 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 | 文件 | 职责 | 加载时机 |
 |------|------|---------|
-| `.claude/references/orchestrator-writing.md` | 编排器编写规范 | **仅在创建 agents/ 时**（v2.0 可能需要） |
-| `.claude/references/subagent-writing.md` | Sub Agent 编写规范 | **仅在创建 agents/ 时**（v2.0 可能需要） |
-| `.claude/references/component-reference.md` | Plugin 组件规格补充 | 开发组件时 |
 | `.claude/references/design-principles.md` | 6 条设计原则（IA 原则快速索引） | 创建规范时 |
 | `docs/project-strategy.md` | 项目方向与路线图 | 按需 |
 | `docs/customization-guide.md` | Preset 创建流程（SSoT） | 按需 |
@@ -57,7 +54,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 **开发指引**：
 - **日常开发**：重点关注 `skill-writing.md`、`hook-command-script.md`、`conventions.md`、`dev-workflow.md`
 - **v2.0 开发**：根据实际需求决定是否引入 L1/L2/L4 层
-- **忽略内容**：`orchestrator-writing.md`、`subagent-writing.md`（仅在创建 agents/ 时阅读）
+- **组件规格查证**：通过 `claude-code-guide` agent 或官方文档查证（不依赖本地参考文件）
 
 **何时升级到完整架构**（参考 `compliance-checklist.md` 升级矩阵）：
 - 出现第 2 个 Skill → 考虑引入 L1 `contracts/`

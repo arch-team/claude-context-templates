@@ -51,7 +51,7 @@ paths:
 
 **适用范围**：仅当插件创建了 `agents/` 目录时生效。
 
-> 本项目当前无 `agents/` 目录，此章节暂不适用。详细的编排器规范见 `references/orchestrator-writing.md`（按需加载）。
+> 本项目当前无 `agents/` 目录，此章节暂不适用。如需引入编排器，通过 `claude-code-guide` agent 查证规范。
 
 ## 约束执行分级
 

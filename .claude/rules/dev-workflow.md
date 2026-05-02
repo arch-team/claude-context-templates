@@ -42,7 +42,7 @@
 | 任务类型 | 必读 | 按需 |
 |---------|------|------|
 | Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `references/design-principles.md`、`plugin/presets/context-schema.yaml` |
-| Plugin 组件开发 | `rules/plugin-design.md`、`rules/skill-writing.md`（已自动加载）、`references/component-reference.md` | 目标组件现有文件 |
+| Plugin 组件开发 | `rules/plugin-design.md`、`rules/skill-writing.md`（已自动加载） | 目标组件现有文件、`claude-code-guide` agent 查证 |
 | 规范文档更新 | 目标文件、`references/design-principles.md` | `rules/core-constraints.md` |
 | 项目文档更新 | `docs/project-strategy.md` 对应章节 | `CONTRIBUTING.md` |
 | 脚本工具开发 | 目标脚本、相关验证逻辑 | `scripts/lib-yaml.sh`（公共函数） |
