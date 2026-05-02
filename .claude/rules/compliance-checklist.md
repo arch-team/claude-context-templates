@@ -24,7 +24,7 @@ P0 项优先 Hook/Script 验收。
 
 ## MVP → 正式插件升级矩阵（单一权威）
 
-> 本表是 MVP 升级触发条件的唯一权威定义。`plugin-design.md` 和 `core-constraints.md` 中与升级相关的描述均以本表为准。
+> 本表是 MVP 升级触发条件的唯一权威定义。`project-structure.md` 和 `core-constraints.md` 中与升级相关的描述均以本表为准。
 
 | 触发条件 | 需补齐的组件 | 依据 |
 |---------|------------|------|
@@ -34,7 +34,7 @@ P0 项优先 Hook/Script 验收。
 | 角色数 ≥2 | `contracts/roles.md`（P1） | IA-6 单一权威 |
 | 角色数 ≥3 | `contracts/roles.md`（P0） | IA-6 强制 |
 | Skill 数 ≥5 | 审查是否存在共享知识，有则提取 | 阈值：2+ Skill 共享内容即提取到 `knowledge/` 或 `contracts/` |
-| 满足「L4 编排器启用判据」任一项 | `agents/<domain>-orchestrator.md` | 见 `plugin-design.md` 「L4 编排器启用判据」节 |
+| 满足「L4 编排器启用判据」任一项 | `agents/<domain>-orchestrator.md` | 见 `project-structure.md` §4 架构现状 |
 | 上线前 | `evals/` 端到端评估 | 见下方 Step 6 评估指标 |
 
 **升级时机**：触发条件满足时**即时升级**，不要攒到一起重构（避免大规模返工）。

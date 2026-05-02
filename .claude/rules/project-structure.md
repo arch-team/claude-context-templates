@@ -1,6 +1,12 @@
-# 项目目录结构
+---
+paths:
+  - "**/plugin.json"
+  - "**/.claude-plugin/**"
+---
 
-> **职责**：文件放置规则与分层归属。新建文件时查此文件确定目标位置。
+# 项目结构与组件设计
+
+> **职责**：文件放置规则、分层归属、新组件选型。新建文件或添加组件时查此文件。
 
 ## §0 速查卡片
 
@@ -14,13 +20,28 @@
 │  ├─ Skill → plugin/skills/<name>/
 │  └─ Preset 模板 → plugin/presets/<preset-name>/
 ├─ 开发规范？
-│  ├─ 自动加载规则 → .claude/rules/
-│  └─ 按需参考 → .claude/references/
+│  └─ 自动加载规则 → .claude/rules/
 ├─ 项目文档？ → docs/
 ├─ 完整示例？ → examples/
 ├─ 脚本工具？ → scripts/
 └─ 不确定 → 先问，不要放项目根目录
 ```
+
+### 组件选型速查
+
+```
+需要多步交互引导完成某个方法论阶段？       → Skill（L3）
+仅是概念/模式/案例/模板等参考信息？       → Knowledge（L2）或 references/
+需要在产出前/后自动校验质量？             → Hook（L5）
+只是简单触发某个 Skill？                 → Command（L5）
+需要维护持久化状态（上下文文件）？          → Script（辅助）
+```
+
+| 粒度 | 对应组件 |
+|------|---------|
+| 微粒度（高风险单次操作） | Hook Script、独立 Command |
+| 中粒度（常见读写循环） | Skill |
+| 宏粒度（完整流程编排） | Sub Agent（通过 `claude-code-guide` agent 查证） |
 
 ## §1 完整目录树
 
@@ -31,17 +52,15 @@ claude-context-templates/            # 仓库根目录
 ├── .claude/                         # Claude Code 开发规范
 │   ├── CLAUDE.md                    # 全局入口（速查卡片、分层架构、项目概述）
 │   ├── settings.json                # Claude Code 设置
-│   ├── rules/                       # 自动加载的开发规则
-│   │   ├── compliance-checklist.md  # MVP → 正式插件升级矩阵（来源：agent-platform）
-│   │   ├── conventions.md           # 语言约定 + Git 提交规范（来源：agent-platform，适配）
-│   │   ├── core-constraints.md      # IA 11 原则铁律（来源：agent-platform）
-│   │   ├── dev-workflow.md          # 会话协议、质量检查（本项目特化）
-│   │   ├── hook-command-script.md   # Command/Hook/Script 规范（来源：agent-platform，适配）
-│   │   ├── plugin-design.md         # Plugin 五层架构（来源：agent-platform）
-│   │   ├── project-structure.md     # 项目结构 SSoT（本文件，本项目特化）
-│   │   ├── skill-writing.md         # SKILL.md 8 段式规范（来源：agent-platform）
-│   │   └── token-optimization.md    # Token 利用率优化（来源：agent-platform）
-│   └── references/                  # 按需加载的参考文档（当前为空）
+│   └── rules/                       # 自动加载的开发规则
+│       ├── compliance-checklist.md  # MVP → 正式插件升级矩阵（来源：agent-platform）
+│       ├── conventions.md           # 语言约定 + Git 提交规范（来源：agent-platform，适配）
+│       ├── core-constraints.md      # IA 11 原则铁律（来源：agent-platform）
+│       ├── dev-workflow.md          # 会话协议、质量检查（本项目特化）
+│       ├── hook-command-script.md   # Command/Hook/Script 规范（来源：agent-platform，适配）
+│       ├── project-structure.md     # 项目结构与组件设计 SSoT（本文件）
+│       ├── skill-writing.md         # SKILL.md 8 段式规范（来源：agent-platform）
+│       └── token-optimization.md    # Token 利用率优化（来源：agent-platform）
 ├── .claude-plugin/                  # 根目录 marketplace（本地开发用）
 │   └── marketplace.json
 ├── .github/                         # GitHub 配置
@@ -115,7 +134,6 @@ claude-context-templates/            # 仓库根目录
 | `plugin/presets/` | 产品 | 否 | 是 | 预设模板（init.sh 读取） |
 | `.claude/CLAUDE.md` | 开发 | 是 | 否 | 项目入口 |
 | `.claude/rules/` | 开发 | 是（Rules） | 否 | 开发规范 |
-| `.claude/references/` | 开发 | 按需读取 | 否 | 参考文档 |
 | `docs/` | 开发 | 否 | 否 | 设计文档、指南 |
 | `scripts/` | 开发 | 否 | 否 | 验证和 CI 脚本 |
 | `examples/` | 开发 | 否 | 否 | 完整示例项目 |
@@ -134,19 +152,39 @@ claude-context-templates/            # 仓库根目录
 
 1. **产品层独立可分发**：`plugin/` 必须作为独立整体分发，不依赖 `.claude/`、`docs/`、`scripts/` 中的任何文件
 2. **禁止产品->开发引用**：`plugin/` 内的文件不得出现指向 `.claude/`、`docs/`、`scripts/` 的路径引用
-3. **开发->产品引用允许**：开发层文件可以引用产品层文件（如 `.claude/rules/plugin-dev-spec.md` 引用 `plugin/` 结构）
+3. **开发->产品引用允许**：开发层文件可以引用产品层文件
 
-**检测方法**：`plugin/` 内的文件不应有对本仓库 `.claude/`、`docs/`、`scripts/` 的运行时依赖（如 `import`、`source`、文件读取路径）。注意：Plugin 命令和文档中提及 `.claude/` 作为功能描述（Plugin 为用户生成 `.claude/` 目录）是正常的，不算违反此约束。
+**检测方法**：`plugin/` 内的文件不应有对本仓库 `.claude/`、`docs/`、`scripts/` 的运行时依赖（如 `import`、`source`、文件读取路径）。Plugin 命令和文档中提及 `.claude/` 作为功能描述（Plugin 为用户生成 `.claude/` 目录）是正常的，不算违反此约束。
 
-**常见绕过与反驳**：
+## §4 组件设计
 
-| 借口 | 反驳 |
-|------|------|
-| "只是在 Plugin 中引用一下开发层路径" | 产品层必须独立可分发，任何运行时路径依赖都破坏此约束 |
-| "Plugin README 描述 .claude/ 不算引用" | 功能描述合法（已在检测方法中说明），但 `source`/`import`/读取路径不合法 |
-| "开发层工具对 Plugin 用户也有用" | 用户通过 `plugin/` 获取模板，开发工具属于贡献者而非用户 |
+### Agent 质量模型
 
-## §4 跨文档引用
+Agent 产出质量由四个维度约束：
+
+| 维度 | 含义 | 正向优化方向 | 红线（P0 禁止） |
+|------|------|-------------|---------------|
+| Action Space | 工具定义的精确性和粒度 | Command、Hook、Script 的接口设计 | 删除工具选择分支、角色识别逻辑 |
+| Observation | 工具返回结果的可操作性 | Hook 脚本输出格式、Skill 产出结构 | 删除产出 Schema、模板结构锚点 |
+| Recovery | 错误路径的可恢复性 | Hook 异常降级、跨会话恢复 | 删除 ANTI-RATIONALIZATION、错误恢复分支 |
+| Context Budget | 上下文窗口的利用效率 | 知识按需加载、Skill 自包含 | — 正向维度，精简的唯一合法目标 |
+
+**使用场景**：
+- **设计时**：按"正向优化方向"评估组件是否完整覆盖四维
+- **精简时**：按"红线"判断优化动作是否合法（见 `token-optimization.md`）
+
+### 本项目架构现状
+
+使用 MVP 结构（L3 + L5 两层）：
+- L5: `plugin/commands/`（init-context、audit-context）
+- L3: `plugin/skills/context-setup/`
+- L5: `plugin/hooks/`（v2.0 计划）
+- 资产: `plugin/presets/`（核心模板，非标准 Plugin 组件）
+
+升级触发条件见 `compliance-checklist.md` 升级矩阵。
+五层架构完整定义和编排器规范通过 `claude-code-guide` agent 查证。
+
+## §5 跨文档引用
 
 | 内容 | 参见 |
 |------|------|

@@ -42,7 +42,7 @@
 | 任务类型 | 必读 | 按需 |
 |---------|------|------|
 | Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `plugin/presets/context-schema.yaml` |
-| Plugin 组件开发 | `rules/plugin-design.md`、`rules/skill-writing.md`（已自动加载） | 目标组件现有文件、`claude-code-guide` agent 查证 |
+| Plugin 组件开发 | `rules/project-structure.md` §4、`rules/skill-writing.md`（已自动加载） | 目标组件现有文件、`claude-code-guide` agent 查证 |
 | 规范文档更新 | 目标文件、`rules/core-constraints.md` | — |
 | 项目文档更新 | `docs/project-strategy.md` 对应章节 | `CONTRIBUTING.md` |
 | 脚本工具开发 | 目标脚本、相关验证逻辑 | `scripts/lib-yaml.sh`（公共函数） |
@@ -81,7 +81,7 @@
   - [ ] 分层架构：上下文按层级组织，单向依赖（IA-1）
   - [ ] 依赖矩阵：用表格而非散文表达层间允许/禁止关系（IA-1 + IA-9）
   - [ ] 双向链接：文档通过相对链接互引，确保双向可达（IA-8）
-  - [ ] kebab-case：文件命名统一 kebab-case，例外见 `plugin-design.md`（IA-9）
+  - [ ] kebab-case：文件命名统一 kebab-case，例外见 `conventions.md`（IA-9）
 - [ ] 模板变量使用正确占位符格式（见 `docs/template-variables.md`）
 - [ ] 示例项目结构与对应 preset 一致
 

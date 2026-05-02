@@ -12,8 +12,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 |------|------|------|---------|
 | `.claude/rules/core-constraints.md` | IA 11 原则铁律 | agent-platform | ✅ 适用 |
 | `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 | agent-platform | ✅ 适用 |
-| `.claude/rules/plugin-design.md` | Plugin 五层架构 | agent-platform | ⚠️ 部分适用 |
-| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform | ⚠️ 部分适用 |
+| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform | ✅ 适用 |
 | `.claude/rules/token-optimization.md` | Token 利用率优化 | agent-platform | ✅ 适用 |
 | `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 | agent-platform（适配） | ✅ 适用 |
 | `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 | agent-platform（适配） | ✅ 适用 |
@@ -115,7 +114,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 3. **双语同步交付**：新增 Preset/文档须双语同时完成
 4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest
 5. **分层不可违反**：产品层独立可分发，检测方法和常见绕过见 `project-structure.md` §3
-6. **agent-platform 规范体系**：Plugin 开发遵循 `rules/plugin-design.md` 五层架构 + `rules/skill-writing.md` 8 段式规范
+6. **agent-platform 规范体系**：组件设计见 `rules/project-structure.md` §4 + Skill 编写见 `rules/skill-writing.md`
 
 ---
 
