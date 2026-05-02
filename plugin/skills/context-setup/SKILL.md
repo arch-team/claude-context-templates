@@ -1,5 +1,5 @@
 ---
-name: Claude Context Setup
+name: context-setup
 description: >
   Use when user wants to: set up Claude Code context for their project, initialize
   .claude/ directory, create CLAUDE.md or project rules, improve Claude's understanding
@@ -13,113 +13,125 @@ description: >
 
 # Claude Context Setup
 
-## Core Logic
+> **Skill 模式**: Inversion + Generator（信息采集 → 路由 → 产出引导）
+> **方法论阶段**: 项目上下文初始化与质量提升
 
-When activated, follow this decision flow:
+## HARD RULES
 
-1. Check if `.claude/` directory exists in the current project
-2. Check for project type indicators: `package.json`, `pyproject.toml`, `setup.py`, `cdk.json`, `go.mod`, `Cargo.toml`, `pom.xml`, etc.
-3. Route to the appropriate path:
-   - **No `.claude/`** → Path A
-   - **`.claude/` exists BUT empty or no files inside** → Path A (with warning: "Found empty .claude/ directory, will initialize from scratch")
-   - **`.claude/` exists BUT no `rules/` directory** → Path A (suggest overwrite: "Found .claude/ without rules/, recommend re-initialization")
-   - **`.claude/` exists with proper structure** → Path B
-   - **User explicitly requests re-initialization** (keywords: "重新初始化", "re-init", "overwrite", "覆盖") → Path A with overwrite option
-   - **User asks about optimization** → Path C
+1. ALWAYS verify project structure before selecting initialization mode (Monorepo vs Single).
+2. NEVER skip deep project scan when files exist in target directory — empty check is NOT sufficient.
+3. ALWAYS read `presets/manifest.json` to get available preset list. DO NOT hardcode preset names.
+4. NEVER write to `.claude/` directory without explicit user consent.
+5. ALWAYS attempt existing project detection (language/framework/toolchain) before falling back to interactive selection.
+6. NEVER recommend a preset that does not exist in `manifest.json`.
+7. ALWAYS prefer built-in preset over generic when framework matches (e.g., FastAPI → python-fastapi, NOT generic).
+8. ALWAYS use `scripts/render-template.sh` for variable substitution. DO NOT implement custom replacement logic.
+9. NEVER leave `{{VARIABLE}}` or `<!-- TODO -->` placeholders unprocessed in final output.
+10. ALWAYS validate rendered output against `context-schema.yaml` before declaring success.
+11. ALWAYS suggest `/audit-context` after initialization to verify structure integrity.
+12. NEVER report "initialization complete" without confirming target directory structure matches expected schema.
 
-## Path A: No .claude/ Directory
+## ANTI-RATIONALIZATION
 
-The project lacks a `.claude/` directory. Guide the user to create one.
+**Do not rationalize skipping project scan by claiming the directory is empty.** A directory with hidden files (like `.git/`) is NOT empty and requires deep scan to detect Monorepo structure. ALWAYS execute full project structure analysis.
 
-1. **Explain the value**: `.claude/` contains `CLAUDE.md` and `rules/*.md` files that teach Claude Code your project's architecture, conventions, and standards — leading to dramatically better code generation and reviews
-2. **Recommend a matching preset** based on detected project files:
-   - `package.json` with React/Next.js dependencies → React + TypeScript preset
-   - `pyproject.toml` or `setup.py` with FastAPI → Python + FastAPI preset
+**Do not rationalize using generic preset by claiming "it's more flexible".** When the user's project clearly matches a built-in preset (e.g., has `requirements.txt` with `fastapi` → python-fastapi), generic is a DOWNGRADE in quality. ALWAYS prefer specificity over generality.
+
+**Do not rationalize skipping `manifest.json` read by claiming you "know" the preset list.** Your training data may be outdated. The preset list is dynamic (users can add custom presets). ALWAYS read the current manifest.
+
+**Do not rationalize skipping variable validation by claiming the user will "fix it later".** Unprocessed placeholders (`{{VAR}}` or `<!-- TODO -->`) break AI context parsing. ALWAYS ensure complete rendering before handoff.
+
+**Do not rationalize reporting success without running `/audit-context` by claiming "the files were created so it's done".** File existence ≠ structure correctness. Schema violations (missing sections, broken links, empty values) are common. ALWAYS verify with audit before declaring complete.
+
+**It is NOT acceptable to emit partial initialization output (e.g., only CLAUDE.md without rules/) and claim it as "MVP".** Partial output violates `context-schema.yaml` required files contract. If mandatory sections are missing, HALT and ask the user for missing information.
+
+## 启动协议
+
+**在开始任何操作前，依次执行以下验证**:
+
+1. **读取 preset 清单**:
+   ```
+   Read plugin/presets/manifest.json
+   ```
+   获取当前可用 preset 列表和版本信息。
+
+2. **读取 context schema**:
+   ```
+   Read plugin/presets/context-schema.yaml
+   ```
+   了解产出必须满足的结构要求。
+
+3. **项目结构扫描**:
+   - 检查 `.claude/` 目录是否存在及其内容
+   - 检测项目类型指标: `package.json`, `pyproject.toml`, `setup.py`, `cdk.json`, `go.mod`, `Cargo.toml`, `pom.xml` 等
+   - 判定 Monorepo 结构: 多个子目录各有独立配置文件
+
+**在继续执行方法论工作流之前，必须完成：上述 3 步验证全部执行完毕。**
+
+## 方法论工作流
+
+基于启动协议的扫描结果，路由到对应路径：
+
+### 路由决策
+
+| 条件 | 路径 |
+|------|------|
+| 无 `.claude/` 目录 | Path A: 初始化引导 |
+| `.claude/` 存在但为空或无 `rules/` | Path A（带警告） |
+| `.claude/` 存在且结构完整 | Path B: 优化审计 |
+| 用户明确要求重新初始化 | Path A（带覆盖选项） |
+| 用户询问如何优化 | Path C: 优化路由 |
+
+### Path A: 初始化引导
+
+1. **解释价值**: `.claude/` 目录教会 Claude Code 项目的架构、约定和标准，显著提升代码生成和审查质量
+2. **推荐匹配 preset**（基于检测结果）:
+   - `package.json` + React/Next.js → React + TypeScript preset
+   - `pyproject.toml` / `setup.py` + FastAPI → Python + FastAPI preset
    - `cdk.json` → AWS CDK preset
-   - Multiple sub-directories with their own config files → suggest Monorepo mode
-   - No clear match for built-in presets → mention that `/init-context` supports **any tech stack** via the `generic` preset (AI-powered generation)
-3. **Suggest `/init-context`** to interactively generate the directory
-   - `/init-context` performs deep project analysis and automatically routes to the best path: preset fast-track (for matching projects) or generic AI generation (for any other tech stack)
-   - All paths also generate cross-preset engineering principles (`rules/principles/*.md`) covering architecture, code quality, testing, and security fundamentals
+   - 多子目录各有配置 → 建议 Monorepo 模式
+   - 无匹配 → 告知 `/init-context` 支持 `generic` preset（AI 驱动生成）
+3. **建议 `/init-context`**: 执行深度分析并自动路由到最佳路径
+4. **参数预填**: 利用检测结果减少用户交互（preset 名称、Monorepo 结构）
 
-## Path B: .claude/ Already Exists
+### Path B: 优化审计
 
-The project already has a `.claude/` directory. Instead of doing nothing, help the user improve it.
+1. **确认**现有配置
+2. **建议 `/audit-context`** 从 5 个维度检查质量:
+   - 结构完整性（必需文件 + 推荐文件）
+   - 内容质量（占位符填充率、实质内容）
+   - 最佳实践合规（SSoT、链接、命名）
+   - 覆盖度（架构、测试、安全、代码风格、CI/CD）
+   - 可维护性（文件数、长度、断链）
+3. 告知 `/audit-context` 产出 A/B/C/D 评级和优先改进建议
 
-1. **Acknowledge** the existing configuration
-2. **Suggest `/audit-context`** to check quality across 5 dimensions:
-   - Structure completeness (required and recommended files)
-   - Content quality (placeholder fill rate, substance)
-   - Best practices compliance (SSoT, linking, naming)
-   - Coverage (architecture, testing, security, code style, CI/CD)
-   - Maintainability (file count, length, broken links)
-3. Mention that `/audit-context` produces an actionable report with A/B/C/D ratings and prioritized improvement suggestions
+### Path C: 优化路由
 
-## Path C: User Asks About Optimization
+- `.claude/` 存在 → Path B
+- `.claude/` 不存在 → Path A
+- Monorepo → 提示 `/init-context` 支持 Monorepo 模式
 
-The user proactively asks how to improve Claude Code's understanding or their `.claude/` quality.
+## 产出生成
 
-- If `.claude/` exists → follow Path B (audit first, then improve)
-- If `.claude/` does not exist → follow Path A (create it)
-- If the project is a Monorepo, mention that `/init-context` supports Monorepo mode with per-subproject presets and a shared root configuration
+本 Skill 不直接生成 `.claude/` 文件，而是**引导用户到 `/init-context` 或 `/audit-context` 命令**。
 
-## Available Presets
+**响应模板**:
 
-Read the available preset list from `presets/manifest.json`. Each preset entry contains `display_name` and `description`. The `generic` preset supports any tech stack via AI-powered generation.
+- **无 .claude/，检测到匹配 preset**: 告知检测结果 + 推荐具体 preset + 建议 `/init-context`
+- **无 .claude/，无匹配**: 告知支持任意技术栈 + 建议 `/init-context`（generic 路径）
+- **有 .claude/，用户抱怨质量**: 确认配置存在 + 建议 `/audit-context` + 简述审计维度
+- **Monorepo**: 告知支持 Monorepo 模式 + 每子项目独立 preset + 共享根配置
 
-All presets also include **cross-preset engineering principles** from `_common/rules/principles/*.md` (architecture, code quality, testing, security) — these are universal best practices shared across all tech stacks.
+**语言规则**: 匹配用户语言（中文用户用中文回复，英文用户用英文回复）。
 
-The full rule type taxonomy, quality criteria, and AI generation hints are defined in `presets/context-schema.yaml`.
+**用户拒绝时**: "No problem. If you change your mind, just ask me to 'initialize Claude context'."
 
-## Example Responses
+## 参考资料
 
-**Scenario 1 — No .claude/, Python project detected:**
-
-> I noticed your project doesn't have a `.claude/` directory yet. Based on `pyproject.toml` and FastAPI in your dependencies, this looks like a Python + FastAPI project.
->
-> A `.claude/` directory teaches Claude Code your architecture, conventions, and standards — resulting in much better code suggestions and reviews.
->
-> You can run `/init-context` to generate one. The **Python + FastAPI** preset includes rules for DDD architecture, TDD testing, API design, and more.
->
-> Want me to set it up now?
-
-**Scenario 2 — No .claude/, unrecognized tech stack (e.g., Go + Gin):**
-
-> I noticed your project doesn't have a `.claude/` directory yet. Based on `go.mod` and Gin in your dependencies, this looks like a Go + Gin project.
->
-> While there's no built-in preset for this stack, `/init-context` can perform a deep analysis of your project and **generate tailored rules using AI**. It will create architecture, testing, code style, and security standards specific to your Go + Gin setup.
->
-> Want me to set it up now?
-
-**Scenario 3 — .claude/ exists, user says "Claude keeps making mistakes":**
-
-> Your project already has a `.claude/` directory — that's a great start. The issues you're experiencing might come from incomplete or outdated context rules.
->
-> I recommend running `/audit-context` to identify specific issues causing incorrect suggestions. It will give you a prioritized list of actionable fixes.
->
-> Want me to run the audit now?
-
-## Example Responses (continued)
-
-**Scenario 4 — Monorepo detected:**
-
-> I noticed your project has a Monorepo structure with multiple subprojects (`backend/`, `frontend/`, `infra/`).
->
-> `/init-context` supports Monorepo mode — it will create a root `.claude/` with shared rules, plus separate `.claude/` directories for each subproject with tech stack-specific configurations.
->
-> Want me to set it up now?
-
-## Important
-
-- **Never generate `.claude/` files without explicit user consent** — always suggest the command, let the user decide
-- **Match the user's language** — respond in Chinese if the user writes in Chinese, English if in English
-- **Route to the right command**: no `.claude/` → `/init-context`; has `.claude/` → `/audit-context`
-- **If user declines**, acknowledge their choice and offer: "No problem. If you change your mind, just ask me to 'initialize Claude context'."
-
-## Parameter Pre-filling
-
-When routing to `/init-context`, leverage detected context to reduce user interaction:
-
-- **Detected preset match** (e.g., FastAPI in dependencies): mention the matching preset by name so the user knows it will be auto-selected
-- **Detected Monorepo structure**: mention that `/init-context` will auto-detect the Monorepo layout
-- **User says "re-initialize" or "overwrite"**: inform that `/init-context` will handle the existing `.claude/` conflict gracefully
+| 资源 | 路径 | 用途 |
+|------|------|------|
+| Preset 清单 | `presets/manifest.json` | 可用 preset 列表 + 版本 |
+| 结构 Schema | `presets/context-schema.yaml` | 产出必须满足的结构要求 |
+| 工程原则 | `presets/_common/rules/principles/*.md` | 跨 preset 共享原则 |
+| 模板变量 | `docs/template-variables.md` | 占位符格式参考 |
+| 定制指南 | `docs/customization-guide.md` | Preset 创建流程 |

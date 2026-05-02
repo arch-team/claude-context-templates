@@ -32,14 +32,20 @@ claude-context-templates/            # 仓库根目录
 │   ├── CLAUDE.md                    # 全局入口（速查卡片、分层架构、项目概述）
 │   ├── settings.json                # Claude Code 设置
 │   ├── rules/                       # 自动加载的开发规则
-│   │   ├── common.md                # 语言、Git 提交、命名、审查
-│   │   ├── dev-workflow.md          # 会话协议、质量检查
-│   │   ├── plugin-dev-spec.md       # Plugin/Preset 组件开发规范
-│   │   └── project-structure.md     # 项目结构 SSoT（本文件）
+│   │   ├── compliance-checklist.md  # MVP → 正式插件升级矩阵（来源：agent-platform）
+│   │   ├── conventions.md           # 语言约定 + Git 提交规范（来源：agent-platform，适配）
+│   │   ├── core-constraints.md      # IA 11 原则铁律（来源：agent-platform）
+│   │   ├── dev-workflow.md          # 会话协议、质量检查（本项目特化）
+│   │   ├── hook-command-script.md   # Command/Hook/Script 规范（来源：agent-platform，适配）
+│   │   ├── orchestrator-writing.md  # 编排器编写规范（来源：agent-platform，v2.0 备用）
+│   │   ├── plugin-design.md         # Plugin 五层架构（来源：agent-platform）
+│   │   ├── project-structure.md     # 项目结构 SSoT（本文件，本项目特化）
+│   │   ├── skill-writing.md         # SKILL.md 8 段式规范（来源：agent-platform）
+│   │   ├── subagent-writing.md      # Sub Agent 编写规范（来源：agent-platform，v2.0 备用）
+│   │   └── token-optimization.md    # Token 利用率优化（来源：agent-platform）
 │   └── references/                  # 按需加载的参考文档
-│       ├── component-reference.md   # Agent/Hook/MCP 完整规格参考
-│       ├── design-principles.md     # 设计原则（6 条核心）
-│       └── ia-principles.md         # 11 条通用信息架构原则
+│       ├── component-reference.md   # Plugin 组件规格补充
+│       └── design-principles.md     # 6 条设计原则（IA 原则快速索引）
 ├── .claude-plugin/                  # 根目录 marketplace（本地开发用）
 │   └── marketplace.json
 ├── .github/                         # GitHub 配置
@@ -55,6 +61,9 @@ claude-context-templates/            # 仓库根目录
 │   ├── .claude-plugin/              # Plugin 元数据
 │   │   ├── plugin.json              # Plugin manifest
 │   │   └── marketplace.json         # Marketplace 配置（本地开发）
+│   ├── hooks/                       # Hook 质量门禁（v2.0）
+│   │   ├── README.md                # Hook 体系说明与检查维度
+│   │   └── scripts/                 # Hook 脚本（v2.0 实现）
 │   ├── commands/                    # 命令定义
 │   │   ├── init-context.md          # /init-context 命令
 │   │   └── audit-context.md         # /audit-context 命令
@@ -83,6 +92,8 @@ claude-context-templates/            # 仓库根目录
 │   ├── validate-generated.sh        # 生成结果验证
 │   └── validate-presets.sh          # Preset 结构完整性验证
 ├── docs/                            # 项目文档
+│   ├── architecture-decision-records/ # 架构决策记录
+│   │   └── adr-001-l4-evaluation.md # L4 编排器引入评估
 │   ├── customization-guide.md       # Preset 定制指南
 │   ├── customization-guide.zh-CN.md # Preset 定制指南（中文）
 │   ├── plugin-delivery-design.md    # Plugin 分发架构

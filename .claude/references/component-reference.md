@@ -2,7 +2,11 @@
 
 > **职责**：Agent、Hook、MCP Server 的完整规格参考。按需加载，仅在开发/修改对应组件时使用。
 >
-> 核心开发规范见 `.claude/rules/plugin-dev-spec.md`（始终加载）。
+> **核心规范引用**：Plugin 开发遵循 agent-platform 规范体系：
+> - 五层架构：`rules/plugin-design.md`
+> - SKILL.md 8 段式：`rules/skill-writing.md`
+> - Command/Hook/Script：`rules/hook-command-script.md`
+> - 合规清单：`rules/compliance-checklist.md`
 
 **章节索引**：[Agent 定义](#agent-定义) | [Hooks](#hooks) | [MCP Server 配置](#mcp-server-配置) | [Plugin 开发辅助参考](#plugin-开发辅助参考) | [规范查证方法](#规范查证方法)
 

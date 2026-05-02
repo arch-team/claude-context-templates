@@ -6,6 +6,29 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ### 文件索引
 
+**agent-platform 共享规范（自动加载）**：
+
+| 文件 | 职责 | 来源 |
+|------|------|------|
+| `.claude/rules/core-constraints.md` | IA 11 原则铁律 | agent-platform |
+| `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 | agent-platform |
+| `.claude/rules/plugin-design.md` | Plugin 五层架构 | agent-platform |
+| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform |
+| `.claude/rules/token-optimization.md` | Token 利用率优化 | agent-platform |
+| `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 | agent-platform（适配） |
+| `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 | agent-platform（适配） |
+| `.claude/rules/orchestrator-writing.md` | 编排器编写规范 | agent-platform（v2.0 备用） |
+| `.claude/rules/subagent-writing.md` | Sub Agent 编写规范 | agent-platform（v2.0 备用） |
+
+**claude-context-templates 特化规范（自动加载）**：
+
+| 文件 | 职责 |
+|------|------|
+| `.claude/rules/dev-workflow.md` | 会话协议、质量检查、跨会话连续性 |
+| `.claude/rules/project-structure.md` | 项目结构 SSoT、分层归属、新文件放置 |
+
+**按需加载文档**：
+
 | 文件 | 职责 | 加载方式 |
 |------|------|---------|
 | `docs/project-strategy.md` | 项目方向与路线图 | 按需 |
@@ -13,13 +36,8 @@ This file provides guidance to Claude Code when working with code in this reposi
 | `docs/template-variables.md` | 模板变量占位符（SSoT） | 按需 |
 | `docs/plugin-delivery-design.md` | Plugin 分发策略和工具链 | 按需 |
 | `CONTRIBUTING.md` | 项目贡献指南 | 按需 |
-| `.claude/rules/common.md` | 语言、Git 提交、命名、审查 | 自动加载 |
-| `.claude/rules/dev-workflow.md` | 会话协议、质量检查、跨会话连续性 | 自动加载 |
-| `.claude/rules/plugin-dev-spec.md` | Plugin/Preset 组件开发规范 | 自动加载 |
-| `.claude/rules/project-structure.md` | 项目结构 SSoT、分层归属、新文件放置 | 自动加载 |
-| `.claude/references/component-reference.md` | Agent/Hook/MCP 组件规格 | 按需（开发组件时） |
-| `.claude/references/design-principles.md` | 6 条核心设计原则 | 按需（创建规范时） |
-| `.claude/references/ia-principles.md` | 11 条信息架构原则 | 按需（审计结构时） |
+| `.claude/references/component-reference.md` | Plugin 组件规格补充 | 按需（开发组件时） |
+| `.claude/references/design-principles.md` | 6 条设计原则（IA 原则快速索引） | 按需（创建规范时） |
 
 ---
 
@@ -35,9 +53,10 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 1. **Preset 是核心产出**：所有改进最终服务于 Preset 质量和技术栈覆盖
 2. **规范优先不猜测**：组件开发通过 `claude-code-guide` agent 或官方文档查证，不凭记忆猜测 API
-3. **双语同步交付**：新增 Preset/文档须双语同时完成，规则详见 `plugin-dev-spec.md` §4
-4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest，完整清单见 `rules/plugin-dev-spec.md` §1 扩展同步清单
+3. **双语同步交付**：新增 Preset/文档须双语同时完成
+4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest
 5. **分层不可违反**：产品层独立可分发，检测方法和常见绕过见 `project-structure.md` §3
+6. **agent-platform 规范体系**：Plugin 开发遵循 `rules/plugin-design.md` 五层架构 + `rules/skill-writing.md` 8 段式规范
 
 ---
 
@@ -64,7 +83,7 @@ Claude Context Templates — **AI Coding 工具上下文规范协作治理**的�
 feat/{module-name} → main
 ```
 
-功能分支直接从 main 创建，完成后合并回 main。提交规范见 `rules/common.md`。
+功能分支直接从 main 创建，完成后合并回 main。提交规范见 `rules/conventions.md`。
 
 ---
 

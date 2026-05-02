@@ -33,7 +33,7 @@
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
 2. **遵循设计原则**：实现时参照 `references/design-principles.md` 的 6 条核心原则（SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case）
 3. **分层约束**：产品层（`plugin/`）不引用开发层（`.claude/`、`docs/`、`scripts/`），详见 `project-structure.md` §3
-4. 每完成一个有意义的工作单元，git commit（遵循 `common.md` 提交规范）
+4. 每完成一个有意义的工作单元，git commit（遵循 `conventions.md` 提交规范）
 
 ### 参考加载表
 
@@ -42,8 +42,8 @@
 | 任务类型 | 必读 | 按需 |
 |---------|------|------|
 | Preset 开发/修改 | `docs/customization-guide.md`、`docs/template-variables.md` | `references/design-principles.md`、`plugin/presets/context-schema.yaml` |
-| Plugin 组件开发 | `rules/plugin-dev-spec.md`（已自动加载）、`references/component-reference.md` | 目标组件现有文件 |
-| 规范文档更新 | 目标文件、`references/design-principles.md` | `references/ia-principles.md` |
+| Plugin 组件开发 | `rules/plugin-design.md`、`rules/skill-writing.md`（已自动加载）、`references/component-reference.md` | 目标组件现有文件 |
+| 规范文档更新 | 目标文件、`references/design-principles.md` | `rules/core-constraints.md` |
 | 项目文档更新 | `docs/project-strategy.md` 对应章节 | `CONTRIBUTING.md` |
 | 脚本工具开发 | 目标脚本、相关验证逻辑 | `scripts/lib-yaml.sh`（公共函数） |
 
@@ -72,7 +72,7 @@
 
 ### 手动检查 checklist
 
-- [ ] 代码/文档符合 `common.md` 规范（语言、Git、命名）
+- [ ] 代码/文档符合 `conventions.md` 规范（语言、Git、命名）
 - [ ] 新增文件放置位置正确（对照 `project-structure.md` §0 决策树）
 - [ ] 分层完整性通过（检测命令见 `project-structure.md` §3）
 - [ ] 设计原则对齐（对照 `design-principles.md` §0 的 6 条原则）
@@ -82,7 +82,26 @@
 ### Plugin 验证（修改 plugin/ 时）
 
 - [ ] Plugin 命令可正常加载：`claude --plugin-dir ./plugin` 无报错
-- [ ] 组件规范合规（CSO、版本同步、双语等，详见 `plugin-dev-spec.md`）
+- [ ] 组件规范合规：对照 `rules/compliance-checklist.md` P0 清单
+- [ ] SKILL.md 合规：8 段式结构完整，详见 `rules/skill-writing.md`
+
+### Hook 质量门禁（v2.0 路线图）
+
+本项目 v2.0 将引入 Hook 质量门禁机制，执行方式和阻断语义遵循 `rules/hook-command-script.md` 规范：
+
+**规范验收类 Hook**（默认）：
+- 输出警告但不阻断（`sys.exit(0)`）
+- 用于结构校验、前置依赖、Schema 合规
+- 示例：validate-version-sync.py, validate-preset-structure.py
+
+**安全类 Hook**（谨慎使用）：
+- 可使用 `sys.exit(2)` 阻断
+- 仅用于防止真正的安全风险
+- 示例：block-dangerous-commands.sh, prevent-secret-leak.py
+
+**Hook 目录结构与检查维度**：见 `plugin/hooks/README.md`
+
+**当前状态**：架构定义完成，实现延迟到 v2.0 M2.C.1
 
 ## §4 会话结束协议
 
