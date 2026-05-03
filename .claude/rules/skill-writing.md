@@ -40,12 +40,15 @@ paths:
 ---
 name: kebab-case-name
 description: >
-  This skill should be used when the user asks to "<English trigger>",
+  Use this skill when the user asks to "<English trigger>",
   "<中文触发短语>", or when discussing <domain context>.
+  SKIP when <排除条件>.
 ---
 ```
 
-- `description`：措辞 pushy 对抗 undertrigger；**禁止摘要工作流步骤**；遮住测试（盖住 body 仅看 description，若 Agent 能完成任务 → 重写）
+**硬限制**：`name` ≤64 字符；`description` ≤1024 字符；整个 frontmatter ≤1024 字符。
+
+- `description`：措辞 pushy 对抗 undertrigger；**禁止摘要工作流步骤**；必须含排除条件（`SKIP when...`）防误触发；遮住测试（盖住 body 仅看 description，若 Agent 能完成任务 → 重写）
 - 项目约定：用英文；含中英文触发短语
 
 ### 核心字段参考
@@ -53,7 +56,7 @@ description: >
 | 字段 | 本规范推荐值 | 架构意义 |
 |------|------------|---------|
 | `name` | kebab-case 与目录同名（P0） | 稳定索引 |
-| `description` | 英文 + 触发短语；禁摘要（P0） | Agent 激活判据 |
+| `description` | 英文 + 触发短语 + SKIP 条件；禁摘要（P0） | Agent 激活判据 |
 | `allowed-tools` | 最小权限集（P0） | Reviewer 类只给 `["Read","Grep","Glob"]` |
 | `model` | `inherit`（P0） | 禁止硬编码 opus/sonnet |
 | `disable-model-invocation` | 方法论工作流类建议 `true`（P1） | 防 Agent 误激活长流程 |
@@ -72,6 +75,29 @@ description: >
 - 祈使句（Do/Don't/Never/Always），禁"如果...则..."
 - ≥2 条
 - 示例：`ALWAYS read project-context.md before any action.`
+
+## 扁平化指令（P0）
+
+禁止嵌套条件结构（「如果 A 且 B 则...否则如果 C 则...」）。改写为条件枚举表：
+
+```
+| 条件              | 动作       | 跳转        |
+|-------------------|-----------|-------------|
+| Schema 校验通过    | 继续步骤 3 | → §3        |
+| Schema 校验失败    | 修复循环   | → §错误恢复  |
+```
+
+## 语言精确性（P1）
+
+**禁用词**：视情况、酌情、一般来说、通常、大多数、按惯例、显然、自然地
+
+**用词替换**：
+
+| 禁用 | 改为 |
+|------|------|
+| 视情况调用 X | 当 `<条件>` 满足时调用 X |
+| 大概需要 | 需要 ≥N |
+| 尽量保持 | 必须 ≤N / 应 ≤N |
 
 ## ANTI-RATIONALIZATION（P0）
 
@@ -95,6 +121,29 @@ description: >
 **判别口诀**：合格条目必须能回答"Agent 何时、如何、因何理由会逃避"（三问齐全）。
 
 **降级条件（P1）**：若梳理不出 ≥2 条三问齐全的真实逃避场景，本节降为 P1，需一句话说明"本 Skill 目前未识别出具体逃避模式，待首轮 eval 后补入"。禁止凑数。
+
+## 开篇声明（P0）
+
+SKILL.md body 开篇必须显式声明四要素：
+
+| 要素 | 说明 | 示例 |
+|------|------|------|
+| 角色 | 本 Skill 执行时"我是谁" | "作为架构审查员..." |
+| 环境 | 触发条件 / 前置依赖 | "当 project-context.md 存在时..." |
+| 目标 | 可验证的成功标准 | "产出通过 Schema 校验" |
+| 反向边界 | 禁止项（不可省略） | "不修改源代码，只输出报告" |
+
+## 工具调用规范（P1）
+
+SKILL.md 中每个 Bash / MCP / Agent 调用必须写明：
+
+| 要素 | 说明 |
+|------|------|
+| 何时用 | 可判定触发条件（非"视情况"） |
+| 失败降级 | fallback 路径 |
+| 数据传递 | 输入来源 + 输出去向 |
+
+多种可用工具时须说明选择理由；涉及不可逆操作时须写明回退路径。
 
 ## 方法论工作流
 
@@ -162,7 +211,13 @@ allowed-tools: ["Read", "Write", "Edit"]
 - 禁止直接调用
 - 一个 Skill 只负责一个方法论阶段
 
-## 知识层规则
+## 引用与知识层规则
+
+### 引用深度（P0）
+
+`references/*.md` 和 `knowledge/*.md` 只能从 SKILL.md 直接引用；被引用文件内部禁止再引用其他 references 或 knowledge 文件（仅一层深度）。
+
+### 知识层约束
 
 仅适用于 `knowledge/`；`references/` 由工作流步骤直接引用。
 

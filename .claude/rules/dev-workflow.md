@@ -33,7 +33,7 @@
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
 2. **遵循 IA 原则**：实现时对照下方质量 checklist 中的 6 项实操检查
 3. **分层约束**：详见 `project-structure.md` §3
-4. 每完成一个有意义的工作单元，git commit（遵循 `conventions.md` 提交规范）
+4. 每完成一个有意义的工作单元，建议用户 commit（遵循 `conventions.md` 提交规范）
 
 ### 参考加载表
 
@@ -75,13 +75,7 @@
 - [ ] 代码/文档符合 `conventions.md` 规范（语言、Git、命名）
 - [ ] 新增文件放置位置正确（对照 `project-structure.md` §0 决策树）
 - [ ] 分层完整性通过（检测命令见 `project-structure.md` §3）
-- [ ] IA 原则实操检查（6 项）：
-  - [ ] SSoT（IA-6）：每个概念只在一个文件定义，其他文件通过链接引用
-  - [ ] Section 0（IA-8 + IA-2）：规范文件以速查卡片（表格/决策树）开头
-  - [ ] 分层架构（IA-1）：上下文按层级组织，单向依赖
-  - [ ] 依赖矩阵（IA-1 + IA-9）：用表格而非散文表达层间允许/禁止关系
-  - [ ] 双向链接（IA-8）：文档通过相对链接互引，确保双向可达
-  - [ ] kebab-case（IA-9）：文件命名统一 kebab-case，例外见 `conventions.md`
+- [ ] IA 原则合规：对照 `core-constraints.md` IA 11 原则逐项自检
 - [ ] 模板变量使用正确占位符格式（见 `docs/template-variables.md`）
 - [ ] 示例项目结构与对应 preset 一致
 

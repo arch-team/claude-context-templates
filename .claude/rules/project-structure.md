@@ -53,8 +53,7 @@ claude-context-templates/
 │       ├── dev-workflow.md
 │       ├── hook-command-script.md
 │       ├── project-structure.md
-│       ├── skill-writing.md
-│       └── token-optimization.md
+│       └── skill-writing.md
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── .github/
@@ -126,7 +125,8 @@ claude-context-templates/
 | `plugin/commands/` | 产品 | 按调用 | 是 | 命令定义 |
 | `plugin/skills/` | 产品 | 按触发 | 是 | Skill 定义 |
 | `plugin/presets/` | 产品 | 否 | 是 | 预设模板（init.sh 读取） |
-| `.claude/CLAUDE.md` | 开发 | 是 | 否 | 项目入口 |
+| `CLAUDE.md`（根目录） | 开发 | 是 | 否 | 项目入口 |
+| `.claude/CLAUDE.md` | 开发 | 是 | 否 | 通用编码行为准则 |
 | `.claude/rules/` | 开发 | 是（Rules） | 否 | 开发规范 |
 | `docs/` | 开发 | 否 | 否 | 设计文档、指南 |
 | `scripts/` | 开发 | 否 | 否 | 验证和 CI 脚本 |
@@ -160,7 +160,7 @@ claude-context-templates/
 - L5: `plugin/hooks/`（v2.0 计划）
 - 资产: `plugin/presets/`（核心模板，非标准 Plugin 组件）
 
-升级触发条件见 `compliance-checklist.md` 升级矩阵。
+各层引入时机见 `compliance-checklist.md` 各步骤退出标准。
 五层架构完整定义和编排器规范通过 `claude-code-guide` agent 查证。
 
 ### 入口层与脚本现状

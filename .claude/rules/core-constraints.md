@@ -43,7 +43,6 @@ paths:
 |---------|------|---------|
 | L1/L2 文件出现 `skills/`、`agents/`、`commands/` 路径 | IA-1 | 删除路径引用 |
 | L3 文件出现 `agents/` 路径 | IA-1 | 删除引用；Skill 通过读取产出文件与上游交互 |
-| SKILL.md 内嵌超过 10 行知识内容 | IA-3 | 提取到 `references/` 或 `knowledge/`，改为路径引用 |
 
 ## 约束执行分级
 
