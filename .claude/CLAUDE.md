@@ -8,14 +8,13 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 **agent-platform 共享规范（自动加载）**：
 
-| 文件 | 职责 | 来源 | 当前适用 |
-|------|------|------|---------|
-| `.claude/rules/core-constraints.md` | IA 11 原则铁律 | agent-platform | ✅ 适用 |
-| `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 | agent-platform | ✅ 适用 |
-| `.claude/rules/compliance-checklist.md` | MVP → 正式插件升级矩阵 | agent-platform | ✅ 适用 |
-| `.claude/rules/token-optimization.md` | Token 利用率优化 | agent-platform | ✅ 适用 |
-| `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 | agent-platform（适配） | ✅ 适用 |
-| `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 | agent-platform（适配） | ✅ 适用 |
+| 文件 | 职责 |
+|------|------|
+| `.claude/rules/core-constraints.md` | IA 11 原则铁律 |
+| `.claude/rules/skill-writing.md` | SKILL.md 8 段式规范 + Token 优化自检 |
+| `.claude/rules/compliance-checklist.md` | 合规验收清单 |
+| `.claude/rules/conventions.md` | 语言约定 + Git 提交规范 |
+| `.claude/rules/hook-command-script.md` | Command/Hook/Script 规范 |
 
 **claude-context-templates 特化规范（自动加载）**：
 
@@ -36,74 +35,26 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ---
 
-## 规范适用性说明
+## 项目概述
 
-**当前项目状态**：MVP 级别 Plugin（1 Skill + 2 Commands）
+Claude Context Templates — **AI Coding 工具上下文规范协作治理**的持续守护者。从项目 init 时的结构铺设，延伸到日常开发中的漂移检测、版本演进中的升级路径、团队协作中的质量门禁，为 AI 辅助开发的全生命周期提供行为护栏。
 
-本项目实际使用五层架构中的 **L3（Skill）和 L5（Entry）两层**：
+- **战略定位**: 项目全生命周期的 AI 行为护栏（详见 `docs/project-strategy.md`）
+- **三支柱能力**（v2.x 演进方向）: 漂移检测 / 升级路径 / 质量门禁
+- **核心产出**: Plugin（预设模板 presets + 命令 commands + Skill + 可选 Hooks）
+- **支持模式**: Monorepo 多子项目 | 单项目 | 双语 (zh-CN / en)
+
+---
+
+## 当前架构
+
+本项目使用五层架构中的 **L3（Skill）和 L5（Entry）两层**：
 - L5: `plugin/commands/` — 命令触发
 - L3: `plugin/skills/context-setup/` — 模板初始化逻辑
 
-**暂未使用的架构层**（为未来扩展预留）：
-- L1 (Contract): `contracts/` — 角色定义、状态 Schema（需要 ≥2 角色时引入）
-- L2 (Knowledge): `knowledge/` — 跨 Skill 共享知识（需要 ≥2 Skill 共享内容时提取）
-- L4 (Agent): `agents/` — 编排器（需要自动流转/角色路由时引入）
+其余架构层（L1 Contract、L2 Knowledge、L4 Agent）按需引入，触发条件见 `compliance-checklist.md`。
 
-**开发指引**：
-- **日常开发**：重点关注 `skill-writing.md`、`hook-command-script.md`、`conventions.md`、`dev-workflow.md`
-- **v2.0 开发**：根据实际需求决定是否引入 L1/L2/L4 层
-- **组件规格查证**：通过 `claude-code-guide` agent 或官方文档查证（不依赖本地参考文件）
-
-**何时升级到完整架构**（参考 `compliance-checklist.md` 升级矩阵）：
-- 出现第 2 个 Skill → 考虑引入 L1 `contracts/`
-- 2+ Skill 共享知识 → 提取到 L2 `knowledge/`
-- Skill 数 ≥5 且需要自动流转 → 考虑引入 L4 `agents/`
-
----
-
-## v2.0 架构验证（2026-05-02）
-
-基于 v2.0 三大支柱的技术设计分析，确认当前架构适用性。
-
-### 三大支柱架构需求
-
-| 支柱 | 核心能力 | 实现方式 | 需要的架构层 |
-|------|---------|---------|-------------|
-| **A. 漂移检测** | `/audit-context` — 检查结构完整性、SSoT 违反、链接有效性 | Command + validation scripts | L5 (Command) + Scripts |
-| **B. 升级路径** | `/update-context` — Preset 增量更新，三路合并 | Command + diff/merge 算法 | L5 (Command) + Scripts |
-| **C. 质量门禁** | Hooks 模板库（建议/引导/强制三档） | Hook 脚本模板 | L5 (Hooks) |
-
-### 架构验证结论
-
-✅ **v2.0 MVP 确认不需要 L1/L2/L4 层**：
-- 三大支柱均为**工具层面的增强**，不涉及方法论多阶段执行
-- 继续使用 L3（Skill）+ L5（Command/Hook）两层架构
-
-⚠️ **增强版本可能需要 L3 Skill**：
-- 如引入"交互式漂移修复向导"（audit 后的引导式修复）
-- 如引入"智能冲突解决"（update 时的语义分析）
-- 如引入"Hook 推荐引擎"（根据项目特征推荐 Hook 组合）
-
-### Phase 2A 触发条件（激进精简）
-
-当以下条件**全部满足**时，执行 Phase 2A（进一步优化至 ~8,000 tokens）：
-1. ✅ v2.0 三大支柱实现完成
-2. ✅ 真实代码确认无 L3 Skill 需求
-3. ✅ 连续 3 个月无架构扩展计划
-
-**Phase 2A 内容**（如触发）：
-- 创建 `skill-essentials.md`（MVP 必需部分，~1,500 tokens）
-- 移动 `skill-writing.md` → `references/`（完整规范按需加载）
-- 合并 `plugin-architecture.md`（统一讲完整架构故事）
-- 预计节省：1,600 tokens（17% 进一步削减）
-
----
-
-## 分层架构
-
-本项目分为**开发层**（`.claude/`、`docs/`、`scripts/`、`examples/`）和**产品层**（`plugin/`）。产品层不得依赖开发层，必须独立可分发。
-
-详细分层规则、归属表和检测方法见 `rules/project-structure.md` §3。
+完整目录树和分层约束见 `rules/project-structure.md`。
 
 ---
 
@@ -113,19 +64,8 @@ This file provides guidance to Claude Code when working with code in this reposi
 2. **规范优先不猜测**：组件开发通过 `claude-code-guide` agent 或官方文档查证，不凭记忆猜测 API
 3. **双语同步交付**：新增 Preset/文档须双语同时完成
 4. **plugin.json 必须实时同步**：新增/删除组件后立即更新 manifest
-5. **分层不可违反**：产品层独立可分发，检测方法和常见绕过见 `project-structure.md` §3
-6. **agent-platform 规范体系**：组件设计见 `rules/project-structure.md` §4 + Skill 编写见 `rules/skill-writing.md`
-
----
-
-## 项目概述
-
-Claude Context Templates — **AI Coding 工具上下文规范协作治理**的持续守护者。从项目 init 时的结构铺设，延伸到日常开发中的漂移检测、版本演进中的升级路径、团队协作中的质量门禁，为 AI 辅助开发的全生命周期提供行为护栏。
-
-- **战略定位**: 项目全生命周期的 AI 行为护栏（详见 `docs/project-strategy.md` §1-§2）
-- **三支柱能力**（v2.x 演进方向）: 漂移检测（支柱 A） / 升级路径（支柱 B，BR-003） / 质量门禁（支柱 C）
-- **核心产出**: Plugin（预设模板 presets + 命令 commands + Skill + 可选 Hooks）
-- **支持模式**: Monorepo 多子项目 | 单项目 | 双语 (zh-CN / en)
+5. **分层不可违反**：产品层独立可分发，检测方法见 `project-structure.md` §3
+6. **agent-platform 规范体系**：Skill 编写见 `rules/skill-writing.md`
 
 ---
 
@@ -156,26 +96,8 @@ feat/{module-name} → main
 
 ---
 
-## 项目模块
-
-| 模块 | 路径 | 说明 |
-|------|------|------|
-| Plugin | `plugin/` | Claude Code Plugin（commands、skills、presets） |
-| 预设模板 | `plugin/presets/` | generic, python-fastapi, react-typescript, aws-cdk |
-| 完整示例 | `examples/` | monorepo-taskmanager, single-project-python |
-| 脚本工具 | `scripts/` | CI/CD 和验证脚本 |
-| 项目文档 | `docs/` | 设计原则、定制指南、模板变量、分发架构 |
-
-> 完整目录树见 `rules/project-structure.md` §1（单一真实源）。
-
----
-
 <!-- devpace-start -->
-# Claude Context Templates
-
-> 结构化、可复用的 Claude Code 上下文管理模板。为项目快速生成组织良好的 `.claude/` 目录。
-
-## 研发协作
+## devpace 研发协作
 
 本项目使用 `.devpace/` 管理迭代研发。行为规则由 devpace Plugin 的 `rules/devpace-rules.md` 自动注入，此处不重复。
 
@@ -195,5 +117,3 @@ feat/{module-name} → main
 
 （随开发自然生长 — 首次 `/pace-retro` 或讨论业务目标时引导定义）
 <!-- devpace-end -->
-
----

@@ -45,7 +45,7 @@ description: >
 ---
 ```
 
-- `description`：措辞 pushy 对抗 undertrigger；**禁止摘要工作流步骤**（含"先 X 再 Y"会让 Agent 跳过 SKILL.md body — CSO 陷阱）；遮住测试（盖住 body 仅看 description，若 Agent 能完成任务 → 重写）
+- `description`：措辞 pushy 对抗 undertrigger；**禁止摘要工作流步骤**；遮住测试（盖住 body 仅看 description，若 Agent 能完成任务 → 重写）
 - 项目约定：用英文；含中英文触发短语
 
 ### 核心字段参考
@@ -106,6 +106,25 @@ description: >
 
 继续条件用中文；仅对产出写入/不可逆操作节点加，非每步强制。
 
+## 产出生成
+
+### Annotated Template 模式（P1）
+
+**解决**：template/example 双文件漂移 → HTML 注释内嵌示例。
+
+**实施**：
+```markdown
+| 风险类别 | 影响 | 缓解 |
+|---------|-----|------|
+<!-- FILL EXAMPLE:
+| 技术 | 核心功能 | PoC 验证 |
+-->
+```
+
+**优势**：单一真实源、示例可见、原子更新
+
+**适用**：Generator/Inversion 结构化产出
+
 ## 语言一致性（P0）
 
 同一段落不混用两种自然语言；若采用中英混合策略（如 HARD RULES 用英文、工作流用中文），应在 CLAUDE.md 中声明。
@@ -163,9 +182,51 @@ allowed-tools: ["Read", "Write", "Edit"]
 | 角色定义 | `contracts/roles.md` | — 不下放 | P0 |
 | 状态结构 | `contracts/context-schema.md` | — 不下放 | P0 |
 
+### references/ 自治性原则（P0）
+
+**约束**：目录内容自包含，禁止向上层泄漏引用。
+
+**边界**：
+
+| 文件 | 职责 | 禁止项 |
+|------|------|--------|
+| methodology/ | 理论（如何做） | 不含产出模板 |
+| templates/ | 产出（做什么） | 不含方法论步骤 |
+| checklist.md | 门禁（够不够） | 不含实施细节 |
+
+**合规**：
+- ✅ templates.md 内嵌示例（无需外部 examples/）
+- ✅ methodology 不引用外部 templates
+- ❌ checklist 写"参见 methodology § 3.2"
+- ❌ templates 含"按 methodology 步骤 2 填写"
+
+**适用**：Generator/Reviewer/Inversion 模式
+
 ## 贯穿关注点 Skill（Cross-Cutting）
 
 - 任意阶段可调用
 - 产出增量追加，禁覆盖
 - 每条记录标注当前阶段
 - 前置条件仅依赖 project-context.md 存在
+
+## Token 优化自检
+
+> 铁律：优化 = 删除冗余 + 重组载体。禁止删除：工具选择分支、产出 Schema、错误恢复逻辑、HARD RULES / ANTI-RATIONALIZATION 约束。
+
+**违规扫描清单**：
+
+| 检测模式 | 修复动作 |
+|---------|---------|
+| SKILL.md 连续 >10 行知识/原理描述 | 提取到 `references/methodology.md` |
+| SKILL.md 内嵌完整产出示例 | 移至 Annotated Template 或 `examples/` |
+| description 含流程步骤描述 | 仅保留触发短语 + 领域上下文 |
+| template / example 同义双份维护 | 合并为 Annotated Template |
+
+**Token 消耗优先级**：
+
+| 消耗来源 | 允许动作 |
+|---------|---------|
+| SKILL.md 主干 | 移除方法论泄漏、内嵌示例、重复描述 |
+| references/ 按需加载 | 拆分超限文件、建 `_index.yml` |
+| templates + examples | 采用 Annotated Template |
+| HARD RULES / ANTI-RATIONALIZATION | 仅合并同质，禁止削弱约束 |

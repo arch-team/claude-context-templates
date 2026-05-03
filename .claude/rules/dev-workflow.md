@@ -31,8 +31,8 @@
 ## §2 任务执行
 
 1. **确认范围**：与用户确认任务目标和边界，避免范围蔓延
-2. **遵循设计原则**：实现时遵守 6 条核心原则（SSoT、Section 0、分层架构、依赖矩阵、双向链接、kebab-case），详见质量 checklist
-3. **分层约束**：产品层（`plugin/`）不引用开发层（`.claude/`、`docs/`、`scripts/`），详见 `project-structure.md` §3
+2. **遵循 IA 原则**：实现时对照下方质量 checklist 中的 6 项实操检查
+3. **分层约束**：详见 `project-structure.md` §3
 4. 每完成一个有意义的工作单元，git commit（遵循 `conventions.md` 提交规范）
 
 ### 参考加载表
@@ -75,13 +75,13 @@
 - [ ] 代码/文档符合 `conventions.md` 规范（语言、Git、命名）
 - [ ] 新增文件放置位置正确（对照 `project-structure.md` §0 决策树）
 - [ ] 分层完整性通过（检测命令见 `project-structure.md` §3）
-- [ ] 设计原则对齐（6 条核心原则）：
-  - [ ] SSoT：每个概念只在一个文件定义，其他文件通过链接引用（IA-6）
-  - [ ] Section 0：规范文件以速查卡片（表格/决策树）开头（IA-8 + IA-2）
-  - [ ] 分层架构：上下文按层级组织，单向依赖（IA-1）
-  - [ ] 依赖矩阵：用表格而非散文表达层间允许/禁止关系（IA-1 + IA-9）
-  - [ ] 双向链接：文档通过相对链接互引，确保双向可达（IA-8）
-  - [ ] kebab-case：文件命名统一 kebab-case，例外见 `conventions.md`（IA-9）
+- [ ] IA 原则实操检查（6 项）：
+  - [ ] SSoT（IA-6）：每个概念只在一个文件定义，其他文件通过链接引用
+  - [ ] Section 0（IA-8 + IA-2）：规范文件以速查卡片（表格/决策树）开头
+  - [ ] 分层架构（IA-1）：上下文按层级组织，单向依赖
+  - [ ] 依赖矩阵（IA-1 + IA-9）：用表格而非散文表达层间允许/禁止关系
+  - [ ] 双向链接（IA-8）：文档通过相对链接互引，确保双向可达
+  - [ ] kebab-case（IA-9）：文件命名统一 kebab-case，例外见 `conventions.md`
 - [ ] 模板变量使用正确占位符格式（见 `docs/template-variables.md`）
 - [ ] 示例项目结构与对应 preset 一致
 
@@ -91,23 +91,9 @@
 - [ ] 组件规范合规：对照 `rules/compliance-checklist.md` P0 清单
 - [ ] SKILL.md 合规：8 段式结构完整，详见 `rules/skill-writing.md`
 
-### Hook 质量门禁（v2.0 路线图）
+### Hook 质量门禁（v2.0 计划）
 
-本项目 v2.0 将引入 Hook 质量门禁机制，执行方式和阻断语义遵循 `rules/hook-command-script.md` 规范：
-
-**规范验收类 Hook**（默认）：
-- 输出警告但不阻断（`sys.exit(0)`）
-- 用于结构校验、前置依赖、Schema 合规
-- 示例：validate-version-sync.py, validate-preset-structure.py
-
-**安全类 Hook**（谨慎使用）：
-- 可使用 `sys.exit(2)` 阻断
-- 仅用于防止真正的安全风险
-- 示例：block-dangerous-commands.sh, prevent-secret-leak.py
-
-**Hook 目录结构与检查维度**：见 `plugin/hooks/README.md`
-
-**当前状态**：架构定义完成，实现延迟到 v2.0 M2.C.1
+规范见 `hook-command-script.md`，当前未实现。
 
 ## §4 会话结束协议
 

@@ -152,10 +152,6 @@ claude-context-templates/
 
 ## §4 组件设计
 
-### Agent 质量模型
-
-组件设计时评估四维覆盖：Action Space（工具精确性）、Observation（结果可操作性）、Recovery（错误可恢复性）、Context Budget（窗口利用率）。精简时避免删除工具选择分支、产出 Schema、错误恢复逻辑（详见 `token-optimization.md` 红线清单）。
-
 ### 本项目架构现状
 
 使用 MVP 结构（L3 + L5 两层）：
@@ -166,3 +162,27 @@ claude-context-templates/
 
 升级触发条件见 `compliance-checklist.md` 升级矩阵。
 五层架构完整定义和编排器规范通过 `claude-code-guide` agent 查证。
+
+### 入口层与脚本现状
+
+**Command 路由**：
+- `plugin/commands/init-context.md` 仅做路由触发
+- 实际初始化逻辑在 `plugin/skills/context-setup/SKILL.md` 中
+- 模板渲染通过 `scripts/render-template.sh` 执行
+
+**Hook 校验 Preset 结构（v2.0 计划）**：
+
+| 检查维度 | 脚本名 | 说明 |
+|---------|--------|------|
+| 版本同步 | `validate-version-sync.py` | 校验 plugin.json / marketplace.json / manifest.json 版本一致性 |
+| Preset 结构 | `validate-preset-structure.py` | 校验 zh-CN/ 和 en/ 双语对称性 + required files |
+| 分层约束 | `validate-layer-dependency.py` | 检测产品层（plugin/）引用开发层（.claude/、docs/）|
+
+**Script 场景**（本项目使用 bash 脚本替代 Python 的 `update-context.py`）：
+
+| 脚本 | 职责 |
+|------|------|
+| `scripts/render-template.sh` | 模板变量替换（`{{VAR}}` 占位符） |
+| `scripts/validate-presets.sh` | Preset 结构完整性校验 |
+| `scripts/generate-manifest.sh` | 生成 preset manifest.json |
+| `scripts/audit-context.sh` | .claude/ 目录质量审计 |

@@ -28,3 +28,11 @@ paths:
 | `chore` | 配置、依赖 |
 
 **范围**：`presets` / `plugin` / `skills` / `commands` / `hooks` / `scripts` / `docs` / `.claude` / `devpace` / `config` / `*`
+
+## 优先级分级
+
+| 级别 | 语义 | 偏离处理 |
+|------|------|---------|
+| P0 | 必须遵守 | 违反即不合规 |
+| P1 | 推荐遵守 | 偏离需说明理由 |
+| P2 | 可选 | 按需采纳 |
