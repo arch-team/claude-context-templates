@@ -16,6 +16,7 @@ This document lists all placeholder variables used in the template files. These 
 |----------|-------------|--------------|---------|
 | `{{SUBPROJECT_TABLE}}` | Markdown table of sub-projects | Auto-generated from sub-project list | root CLAUDE.md |
 | `{{MONOREPO_STRUCTURE}}` | ASCII directory tree | Auto-generated from sub-project list | common-rules.md |
+| `{{PARENT_CLAUDE_REF}}` | Reference to parent CLAUDE.md (empty for single-project) | Auto-generated for sub-projects | Sub-project CLAUDE.md |
 
 ### SUBPROJECT_TABLE Format
 

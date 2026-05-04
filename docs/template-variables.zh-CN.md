@@ -18,6 +18,7 @@
 |------|------|---------|---------|
 | `{{SUBPROJECT_TABLE}}` | 子项目 Markdown 表格 | 根据子项目列表自动生成 | 根 CLAUDE.md |
 | `{{MONOREPO_STRUCTURE}}` | ASCII 目录树 | 根据子项目列表自动生成 | common-rules.md |
+| `{{PARENT_CLAUDE_REF}}` | 父级 CLAUDE.md 引用（单项目模式为空） | 子项目自动生成 | 子项目 CLAUDE.md |
 
 ### SUBPROJECT_TABLE 格式
 
