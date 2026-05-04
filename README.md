@@ -114,7 +114,7 @@ This template system is built on 6 core design principles:
 | **Bidirectional Linking** | Documents reference each other with relative links, forming a knowledge network. |
 | **kebab-case Naming** | All files use `kebab-case.md` except `CLAUDE.md` and `README.md`. |
 
-See [.claude/references/design-principles.md](.claude/references/design-principles.md) for details.
+These principles are enforced through automated validation and quality checklists.
 
 ## Customization
 

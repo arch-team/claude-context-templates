@@ -42,4 +42,5 @@ pnpm list aws-cdk-lib jest cdk-nag
 | Document | Description |
 |----------|-------------|
 | [CLAUDE.md](../CLAUDE.md) | Tech stack overview |
+| [code-style.md](code-style.md) | Code style standards |
 | [testing.md](testing.md) | Testing standards |

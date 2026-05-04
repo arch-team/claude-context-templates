@@ -209,5 +209,7 @@ export interface ApiGatewayConstructProps {
 ## 相关文档
 
 - [architecture.md](architecture.md) - Construct 分层规则
+- [checklist.md](checklist.md) - PR Review 检查清单
+- [iam.md](iam.md) - IAM 权限设计规范
 - [security.md](security.md) - 安全配置详细规范
 - [testing.md](testing.md) - Construct 测试规范

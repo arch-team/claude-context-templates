@@ -335,3 +335,12 @@ Layer 1: Database Session (get_db)
 # 运行架构合规测试
 uv run pytest tests/unit/test_architecture_compliance.py -v
 ```
+
+---
+
+## 相关文档
+
+| 文档 | 说明 |
+|------|------|
+| [project-structure.md](project-structure.md) | 项目目录结构规范 |
+| [security.md](security.md) | 安全异常处理规范 |

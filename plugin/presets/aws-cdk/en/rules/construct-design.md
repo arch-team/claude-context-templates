@@ -209,5 +209,7 @@ export interface ApiGatewayConstructProps {
 ## Related Documents
 
 - [architecture.md](architecture.md) - Construct layering rules
+- [checklist.md](checklist.md) - PR Review checklist
+- [iam.md](iam.md) - IAM permission design standards
 - [security.md](security.md) - Detailed security configuration standards
 - [testing.md](testing.md) - Construct testing standards

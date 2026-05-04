@@ -335,3 +335,12 @@ Exceptions are defined in `shared/domain/exceptions.py` and automatically mapped
 # Run architecture compliance tests
 uv run pytest tests/unit/test_architecture_compliance.py -v
 ```
+
+---
+
+## Related Documentation
+
+| Document | Description |
+|----------|-------------|
+| [project-structure.md](project-structure.md) | Project directory structure standards |
+| [security.md](security.md) | Security exception handling standards |

@@ -51,3 +51,5 @@ uv run python -c "import sqlalchemy; print(sqlalchemy.__version__)"
 | [CLAUDE.md](../../CLAUDE.md) | Tech stack overview and development commands |
 | [testing.md](testing.md) | Testing standards |
 | [code-style.md](code-style.md) | Code style standards |
+| [observability.md](observability.md) | Observability dependency versions |
+| [sdk-first.md](sdk-first.md) | SDK version decisions |

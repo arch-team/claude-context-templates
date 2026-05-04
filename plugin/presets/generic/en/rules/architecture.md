@@ -92,4 +92,7 @@
 |----------|-------------|
 | [project-structure.md](project-structure.md) | Project directory structure standards |
 | [tech-stack.md](tech-stack.md) | Tech stack version constraints |
+| [code-style.md](code-style.md) | Code style standards |
+| [testing.md](testing.md) | Testing standards |
+| [security.md](security.md) | Security standards |
 | [checklist.md](checklist.md) | PR Review checklist |

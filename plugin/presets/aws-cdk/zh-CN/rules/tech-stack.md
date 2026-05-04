@@ -42,4 +42,5 @@ pnpm list aws-cdk-lib jest cdk-nag
 | 文档 | 说明 |
 |------|------|
 | [CLAUDE.md](../CLAUDE.md) | 技术栈概述 |
+| [code-style.md](code-style.md) | 代码风格规范 |
 | [testing.md](testing.md) | 测试规范 |

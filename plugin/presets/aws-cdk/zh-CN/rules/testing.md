@@ -178,6 +178,10 @@ describe('CDK Nag Compliance', () => {
 
 ## 相关文档
 
-- [project-structure.md](project-structure.md) - 测试文件位置
+- [architecture.md](architecture.md) - 架构规范
+- [checklist.md](checklist.md) - PR Review 检查清单
+- [code-style.md](code-style.md) - 代码风格规范
 - [construct-design.md](construct-design.md) - Construct 设计模式
+- [project-structure.md](project-structure.md) - 测试文件位置
+- [security.md](security.md) - 安全规范
 - [tech-stack.md](tech-stack.md) - 测试框架版本约束

@@ -71,5 +71,6 @@
 | Document | Description |
 |----------|-------------|
 | [CLAUDE.md](../CLAUDE.md) | Tech stack overview and development commands |
+| [architecture.md](architecture.md) | Architecture standards |
 | [testing.md](testing.md) | Testing standards |
 | [code-style.md](code-style.md) | Code style standards |

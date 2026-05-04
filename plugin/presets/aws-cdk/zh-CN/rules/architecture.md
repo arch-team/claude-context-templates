@@ -190,7 +190,10 @@ new NetworkStack(app, `Network-${envName}`, {
 
 ## 相关文档
 
-- [project-structure.md](project-structure.md) - 目录结构规范
+- [checklist.md](checklist.md) - PR Review 检查清单
+- [code-style.md](code-style.md) - 代码风格规范
 - [construct-design.md](construct-design.md) - Construct 设计规范
+- [iam.md](iam.md) - IAM 权限设计规范
+- [project-structure.md](project-structure.md) - 目录结构规范
 - [security.md](security.md) - 安全规范
 - [testing.md](testing.md) - 测试规范

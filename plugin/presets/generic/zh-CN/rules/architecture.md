@@ -92,4 +92,5 @@
 |------|------|
 | [project-structure.md](project-structure.md) | 项目目录结构规范 |
 | [tech-stack.md](tech-stack.md) | 技术栈版本约束 |
+| [security.md](security.md) | 安全规范 |
 | [checklist.md](checklist.md) | PR Review 检查清单 |

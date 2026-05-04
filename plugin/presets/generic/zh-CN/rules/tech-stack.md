@@ -71,5 +71,6 @@
 | 文档 | 说明 |
 |------|------|
 | [CLAUDE.md](../CLAUDE.md) | 技术栈概述和开发命令 |
+| [architecture.md](architecture.md) | 架构规范 |
 | [testing.md](testing.md) | 测试规范 |
 | [code-style.md](code-style.md) | 代码风格规范 |

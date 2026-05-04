@@ -179,5 +179,7 @@ pnpm audit                  # Dependency vulnerability check
 | Document | Description |
 |----------|-------------|
 | [architecture.md](architecture.md) | Stack dependencies, environment configuration |
-| [security.md](security.md) | Deployment security, IAM permissions |
+| [checklist.md](checklist.md) | PR Review checklist |
 | [cost-optimization.md](cost-optimization.md) | Environment cost management |
+| [iam.md](iam.md) | IAM permission design, CI/CD roles |
+| [security.md](security.md) | Deployment security, IAM permissions |

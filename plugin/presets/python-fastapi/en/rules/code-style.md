@@ -180,3 +180,11 @@ def get_user(user_id: int) -> User | None:
 ## Checklist
 
 See [checklist.md](checklist.md) Section: Code Style for the full checklist.
+
+---
+
+## Related Documentation
+
+| Document | Description |
+|----------|-------------|
+| [tech-stack.md](tech-stack.md) | Ruff/MyPy version requirements |

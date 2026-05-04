@@ -180,3 +180,11 @@ def get_user(user_id: int) -> User | None:
 ## 检查清单
 
 完整检查清单见 [checklist.md](checklist.md) §代码风格
+
+---
+
+## 相关文档
+
+| 文档 | 说明 |
+|------|------|
+| [tech-stack.md](tech-stack.md) | Ruff/MyPy 版本要求 |

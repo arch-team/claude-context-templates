@@ -235,6 +235,9 @@ new config.ManagedRule(this, 'RdsEncrypt', {
 
 | Document | Description |
 |----------|-------------|
+| [architecture.md](architecture.md) | Architecture standards |
+| [checklist.md](checklist.md) | PR Review checklist |
 | [construct-design.md](construct-design.md) | Secure default configuration code templates |
+| [deployment.md](deployment.md) | Deployment security |
 | [testing.md](testing.md) | CDK Nag testing |
 | [AWS Well-Architected - Security](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/) | External reference |

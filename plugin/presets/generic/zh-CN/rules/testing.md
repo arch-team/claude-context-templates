@@ -2,6 +2,8 @@
 
 > **职责**: 测试的设计原则、标准和具体实现模式。
 
+> **相关规范**: [project-structure.md](project-structure.md) (测试目录结构) | [tech-stack.md](tech-stack.md) (测试框架版本)
+
 > 跨技术栈的测试通用原则见 `_common/rules/principles/testing.md`
 > TDD 工作流见 [CLAUDE.md](../CLAUDE.md)
 

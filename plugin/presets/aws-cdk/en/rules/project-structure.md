@@ -121,3 +121,12 @@ infra/                          # CDK project root
 - [ ] `.gitignore` includes `cdk.context.json`
 - [ ] `.gitignore` includes `cdk.out/`
 - [ ] `.gitignore` includes `node_modules/`
+
+---
+
+## Related Documents
+
+- [architecture.md](architecture.md) - Architecture standards
+- [checklist.md](checklist.md) - PR Review checklist
+- [code-style.md](code-style.md) - Code style standards
+- [testing.md](testing.md) - Testing standards

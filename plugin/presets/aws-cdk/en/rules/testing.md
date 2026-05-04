@@ -178,6 +178,10 @@ describe('CDK Nag Compliance', () => {
 
 ## Related Documents
 
-- [project-structure.md](project-structure.md) - Test file locations
+- [architecture.md](architecture.md) - Architecture standards
+- [checklist.md](checklist.md) - PR Review checklist
+- [code-style.md](code-style.md) - Code style standards
 - [construct-design.md](construct-design.md) - Construct design patterns
+- [project-structure.md](project-structure.md) - Test file locations
+- [security.md](security.md) - Security standards
 - [tech-stack.md](tech-stack.md) - Test framework version constraints

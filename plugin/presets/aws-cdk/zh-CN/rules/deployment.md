@@ -179,5 +179,7 @@ pnpm audit                  # 依赖漏洞检查
 | 文档 | 说明 |
 |------|------|
 | [architecture.md](architecture.md) | Stack 依赖关系、环境配置 |
-| [security.md](security.md) | 部署安全、IAM 权限 |
+| [checklist.md](checklist.md) | PR Review 检查清单 |
 | [cost-optimization.md](cost-optimization.md) | 环境成本管理 |
+| [iam.md](iam.md) | IAM 权限设计、CI/CD 角色 |
+| [security.md](security.md) | 部署安全、IAM 权限 |

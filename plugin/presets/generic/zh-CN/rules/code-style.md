@@ -2,6 +2,8 @@
 
 > **职责**: 代码风格设计原则和具体规范。
 
+> **相关规范**: [tech-stack.md](tech-stack.md) (工具链配置)
+
 > 跨技术栈的代码质量通用原则见 `_common/rules/principles/code-quality.md`
 
 ---

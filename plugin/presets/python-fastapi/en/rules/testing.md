@@ -203,3 +203,12 @@ class TaskFactory(factory.Factory):
 ## 7. Coverage
 
 See [CLAUDE.md](../../CLAUDE.md) Section: Coverage Requirements for per-layer targets. See `pyproject.toml` `[tool.coverage]` for configuration details.
+
+---
+
+## Related Documentation
+
+| Document | Description |
+|----------|-------------|
+| [project-structure.md](project-structure.md) | Test directory structure standards |
+| [tech-stack.md](tech-stack.md) | pytest version requirements |

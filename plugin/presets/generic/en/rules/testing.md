@@ -2,6 +2,8 @@
 
 > **Purpose**: Testing standards - TDD workflow, test layering, coverage requirements, test commands, mock strategy
 
+> **Related**: [project-structure.md](project-structure.md) (test directory structure) | [tech-stack.md](tech-stack.md) (test framework versions)
+
 > For universal testing principles (TDD cycle, test integrity, AAA pattern, mock boundaries, test independence, naming), see `_common/rules/principles/testing.md`
 > TDD workflow: see [CLAUDE.md](../CLAUDE.md)
 

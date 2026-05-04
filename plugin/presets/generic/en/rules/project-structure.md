@@ -89,5 +89,6 @@
 | Document | Description |
 |----------|-------------|
 | [architecture.md](architecture.md) | Module internal structure |
+| [code-style.md](code-style.md) | Code style standards |
 | [testing.md](testing.md) | Test directory structure |
 | [checklist.md](checklist.md) | PR Review - Project Structure section |

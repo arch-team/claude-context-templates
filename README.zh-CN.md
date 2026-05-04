@@ -114,7 +114,7 @@ your-project/
 | **双向链接** | 文档间通过相对链接互相引用，形成知识网络 |
 | **kebab-case 命名** | 除 `CLAUDE.md` 和 `README.md` 外统一使用 `kebab-case.md` |
 
-详见 [.claude/references/design-principles.md](.claude/references/design-principles.md)。
+这些原则通过自动化验证和质量检查清单执行。
 
 ## 定制化
 

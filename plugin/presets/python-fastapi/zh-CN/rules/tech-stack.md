@@ -51,3 +51,5 @@ uv run python -c "import sqlalchemy; print(sqlalchemy.__version__)"
 | [CLAUDE.md](../../CLAUDE.md) | 技术栈概述和开发命令 |
 | [testing.md](testing.md) | 测试规范 |
 | [code-style.md](code-style.md) | 代码风格规范 |
+| [observability.md](observability.md) | 可观测性依赖版本 |
+| [sdk-first.md](sdk-first.md) | SDK 版本决策 |

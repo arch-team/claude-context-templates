@@ -1,6 +1,8 @@
 # 安全规范
 
 > **职责**: 安全规范 - 前端安全模型、XSS 防护代码、CSRF 配置、CSP 模板
+>
+> **相关规范**: [state-management.md](state-management.md) (敏感数据存储实现) | [checklist.md](checklist.md) (PR Review 检查清单)
 
 ---
 

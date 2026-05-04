@@ -121,3 +121,12 @@ infra/                          # CDK 项目根目录
 - [ ] `.gitignore` 包含 `cdk.context.json`
 - [ ] `.gitignore` 包含 `cdk.out/`
 - [ ] `.gitignore` 包含 `node_modules/`
+
+---
+
+## 相关文档
+
+- [architecture.md](architecture.md) - 架构规范
+- [checklist.md](checklist.md) - PR Review 检查清单
+- [code-style.md](code-style.md) - 代码风格规范
+- [testing.md](testing.md) - 测试规范

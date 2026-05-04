@@ -1,6 +1,6 @@
 > **Purpose**: Component design standards - Component types, props design, compound component patterns
 >
-> **Related**: [architecture.md](architecture.md) (FSD layer definitions) | [state-management.md](state-management.md) (component state selection)
+> **Related**: [architecture.md](architecture.md) (FSD layer definitions) | [state-management.md](state-management.md) (component state selection) | [checklist.md](checklist.md) (PR Review checklist)
 
 # Component Design Standards
 

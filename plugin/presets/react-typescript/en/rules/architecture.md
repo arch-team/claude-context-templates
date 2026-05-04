@@ -1,6 +1,8 @@
 # Architecture Standards
 
 > **Purpose**: Architecture standards - FSD layering principles, dependency rules, slice structure templates, export examples, cross-layer communication code
+>
+> **Related**: [component-design.md](component-design.md) (component types & placement) | [state-management.md](state-management.md) (cross-layer state management) | [checklist.md](checklist.md) (PR Review checklist)
 
 > **Architecture Pattern**: Feature-Sliced Design (FSD)
 > **Scope**: React + TypeScript frontend projects

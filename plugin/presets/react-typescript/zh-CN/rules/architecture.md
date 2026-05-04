@@ -1,6 +1,8 @@
 # 架构规范
 
 > **职责**: 架构规范 - FSD 分层原则、依赖规则、Slice 结构模板、导出示例、跨层通信代码
+>
+> **相关规范**: [component-design.md](component-design.md) (组件类型与位置) | [state-management.md](state-management.md) (跨层状态管理) | [checklist.md](checklist.md) (PR Review 检查清单)
 
 > **架构模式**: Feature-Sliced Design (FSD)
 > **适用范围**: React + TypeScript 前端项目

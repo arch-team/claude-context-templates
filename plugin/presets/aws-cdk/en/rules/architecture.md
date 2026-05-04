@@ -190,7 +190,10 @@ new NetworkStack(app, `Network-${envName}`, {
 
 ## Related Documents
 
-- [project-structure.md](project-structure.md) - Directory structure standards
+- [checklist.md](checklist.md) - PR Review checklist
+- [code-style.md](code-style.md) - Code style standards
 - [construct-design.md](construct-design.md) - Construct design standards
+- [iam.md](iam.md) - IAM permission design standards
+- [project-structure.md](project-structure.md) - Directory structure standards
 - [security.md](security.md) - Security standards
 - [testing.md](testing.md) - Testing standards

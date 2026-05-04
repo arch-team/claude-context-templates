@@ -203,3 +203,12 @@ class TaskFactory(factory.Factory):
 ## 7. 覆盖率
 
 分层覆盖率目标见 [CLAUDE.md](../../CLAUDE.md) §覆盖率要求。配置详见 `pyproject.toml` `[tool.coverage]`。
+
+---
+
+## 相关文档
+
+| 文档 | 说明 |
+|------|------|
+| [project-structure.md](project-structure.md) | 测试目录结构规范 |
+| [tech-stack.md](tech-stack.md) | pytest 版本要求 |

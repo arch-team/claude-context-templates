@@ -1,6 +1,8 @@
 # Security Standards
 
 > **Purpose**: Security standards - Frontend security model, XSS protection code, CSRF configuration, CSP templates
+>
+> **Related**: [state-management.md](state-management.md) (sensitive data storage implementation) | [checklist.md](checklist.md) (PR Review checklist)
 
 ---
 

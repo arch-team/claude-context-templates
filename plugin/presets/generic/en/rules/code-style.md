@@ -2,6 +2,8 @@
 
 > **Purpose**: Code style standards - Naming conventions, type annotations, import ordering, DO/DON'T examples
 
+> **Related**: [tech-stack.md](tech-stack.md) (toolchain configuration)
+
 ---
 
 ## 0. Quick Reference Card
@@ -104,5 +106,6 @@
 
 - **Architecture**: [architecture.md](architecture.md)
 - **Tech Stack**: [tech-stack.md](tech-stack.md)
+- **Testing**: [testing.md](testing.md)
 - **PR Checklist**: [checklist.md](checklist.md)
 - **Project Structure**: [project-structure.md](project-structure.md)
